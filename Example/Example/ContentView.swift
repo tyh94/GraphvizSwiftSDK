@@ -10,7 +10,7 @@ import GraphvizSDK
 
 struct ContentView: View {
     var body: some View {
-        GraphCanvasView()
+        GraphCanvasView(graph: DataSource.createGraph())
     }
 }
 
