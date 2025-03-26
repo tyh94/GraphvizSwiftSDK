@@ -8,5 +8,5 @@
 import Foundation
 
 public final class GVLConfig {
-    @MainActor public static let dpi: CGFloat = 96.0
+    @MainActor public static let dpi: CGFloat = 72
 }

@@ -26,18 +26,13 @@ class DataSource {
                 _ = graph.addEdge(from: from, to: to)
             }
             
-            person.partners.forEach { partnerId in
-                let partner = persons.first(where: { $0.id == partnerId })!
-                let from = graph.nodes.first(where: { $0.label == person.name })!
-                let to = graph.nodes.first(where: { $0.label == partner.name })!
-                let diamond = graph.addNode("")
-                diamond.shape = .diamond
-                diamond.fontSize = 1
-                let edge = graph.addEdge(from: from, to: diamond)
-                edge.color = .red
-                let edge2 = graph.addEdge(from: diamond, to: to)
-                edge2.color = .red
-            }
+//            person.partners.forEach { partnerId in
+//                let partner = persons.first(where: { $0.id == partnerId })!
+//                let from = graph.nodes.first(where: { $0.label == person.name })!
+//                let to = graph.nodes.first(where: { $0.label == partner.name })!
+//                let edge = graph.addEdge(from: from, to: to)
+//                edge.color = .red
+//            }
         }
 //        let node1 = graph.addNode("The quick\nbrown fox jumps\nover the lazy\ndog")
 //        let node2 = graph.addNode("node 2")
@@ -168,4 +163,4 @@ let personsPreview: [Person] = [
     Person(id: 141, name: "Jessie 2", parents: [], partners:[131], children: [911, 91], gender: .female),
     Person(id: 15, name: "Raymond", parents: [], partners:[16], children: [14], gender: .male),
     Person(id: 16, name: "Betty", parents: [], partners:[15], children: [14], gender: .female),
-].shuffled()
+]

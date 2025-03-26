@@ -11,6 +11,19 @@ import CGraphvizSDK
 import CoreGraphics
 import UIKit
 
+public enum NodeShapeType: String {
+    case rectangle = "rectangle"
+    case box = "box"
+    case hexagon = "hexagon"
+    case polygon = "polygon"
+    case diamond = "diamond"
+    case mDiamond = "Mdiamond"
+    case mSquare = "Msquare"
+    case star = "star"
+    case ellipse
+    case circle
+}
+
 public final class GVLUtils {
     
     // MARK: - Graph Dimensions
@@ -39,21 +52,10 @@ public final class GVLUtils {
     
     // MARK: - Path Conversion
     
-    public static func toPath(type: String, poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath? {
-        let supportedShapes: Set<String> = [
-            "rectangle", "box", "hexagon", "polygon",
-            "diamond", "Mdiamond", "Msquare", "star"
-        ]
-        
-        if supportedShapes.contains(type) {
-            var points = toPolygon(poly, width: width, height: height)
-            if let first = points.first {
-                points.append(first)
-            }
-            return toPath(points: points)
-        } else if ["ellipse", "circle"].contains(type) {
+    public static func toPath(type: NodeShapeType, poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath {
+        var points = toPolygon(poly, width: width, height: height)
+        if points.count == 2 {
             let points = toPolygon(poly, width: width, height: height)
-            guard points.count >= 2 else { return nil }
             
             let p1 = points[0]
             let p2 = points[1]
@@ -61,8 +63,10 @@ public final class GVLUtils {
             return CGPath(ellipseIn: rect, transform: nil)
         }
         
-        print("Unsupported shape \(type)")
-        return nil
+        if let first = points.first {
+            points.append(first)
+        }
+        return toPath(points: points)
     }
     
     public static func toPath(splines: splines, height: CGFloat) -> CGPath {

@@ -626,12 +626,3 @@ typedef enum {NATIVEFONTS,PSFONTS,SVGFONTS} fontname_kind;
 }
 #endif
 /// @defgroup public_apis Graphviz public APIs
-
-
-boxf getGraphBoundingBox(Agraph_t *graph);
-double getND_width(Agnode_t *n);
-double getND_height(Agnode_t *n);
-pointf getND_coord(Agnode_t *n);
-shape_desc *getND_shape(Agnode_t *n);
-void *getND_shape_info(Agnode_t *n);
-splines *getED_spl(Agedge_t *e);

@@ -58,23 +58,23 @@ public class GVLNode {
         // Get shape information
         guard let shape = getND_shape(node),
               let shapeName = shape.pointee.name,
-              let shapeInfo = getND_shape_info(node) else {
+              let shapeInfoPtr = get_shape_info(node) else {
             return
         }
         
         // Convert to Swift types
         let type = String(cString: shapeName)
-        let poly = shapeInfo.bindMemory(to: polygon_t.self, capacity: 1).pointee
+        let poly = shapeInfoPtr.assumingMemoryBound(to: polygon_t.self).pointee
         
         // Create path
-        if let cgPath = GVLUtils.toPath(
-            type: type,
+        let cgPath = GVLUtils.toPath(
+            type: NodeShapeType(rawValue: type) ?? .circle,
             poly: poly,
             width: width,
             height: height
-        ) {
-            bezierPath = UIBezierPath(cgPath: cgPath)
-        }
+        )
+        bezierPath = UIBezierPath(cgPath: cgPath)
+        
         
         // Calculate coordinates
         let graphHeight = GVLUtils.getHeight(for: parent)
