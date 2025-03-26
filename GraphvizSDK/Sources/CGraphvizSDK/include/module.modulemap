@@ -1,0 +1,4 @@
+module CGraphvizSDK {
+  header "config.h"
+  header "graphviz_wrapper.h"
+}

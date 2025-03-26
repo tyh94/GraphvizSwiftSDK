@@ -6,7 +6,7 @@
 //  MIT License
 //
 
-#include <gvc/gvc.h>
+#import <gvc/gvc.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

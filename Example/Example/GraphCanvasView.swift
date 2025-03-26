@@ -72,16 +72,16 @@ struct GraphCanvasView: View {
                     startLocation = startLocation ?? location // 2
                 }
         )
-        .gesture(
-            MagnifyGesture()
-                .onChanged { value in
-                    currentZoom = value.magnification - 1
-                }
-                .onEnded { value in
-                    totalZoom += currentZoom
-                    currentZoom = 0
-                }
-        )
+//        .gesture(
+//            MagnifyGesture()
+//                .onChanged { value in
+//                    currentZoom = value.magnification - 1
+//                }
+//                .onEnded { value in
+//                    totalZoom += currentZoom
+//                    currentZoom = 0
+//                }
+//        )
         .onAppear {
             graph.applyLayout()
             // Центрируем график при старте

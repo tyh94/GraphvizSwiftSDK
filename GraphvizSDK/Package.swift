@@ -10,22 +10,13 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "GraphvizSDK",
-            targets: ["ObjCGraphvizSDK", "GraphvizSDK"]),
+            targets: ["GraphvizSDK", "CGraphvizSDK"]),
     ],
     targets: [
-        .target(
-            name: "ObjCGraphvizSDK",
-            path: "Sources/ObjC",
-            cSettings: [
-                .headerSearchPath("../C/"),
-            ]
-        ),
+        .target(name: "CGraphvizSDK"),
         .target(
             name: "GraphvizSDK",
-            dependencies: ["ObjCGraphvizSDK"],
-            cSettings: [
-                .headerSearchPath("../C/"),
-            ]
+            dependencies: ["CGraphvizSDK"]
         ),
         .testTarget(
             name: "GraphvizSDKTests",

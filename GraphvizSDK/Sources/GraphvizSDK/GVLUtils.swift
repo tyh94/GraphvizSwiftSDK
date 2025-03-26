@@ -5,6 +5,9 @@
 //  Created by Татьяна Макеева on 25.03.2025.
 //
 
+//#if SWIFT_PACKAGE
+import CGraphvizSDK
+//#endif
 import CoreGraphics
 import UIKit
 
@@ -12,7 +15,7 @@ public final class GVLUtils {
     
     // MARK: - Graph Dimensions
     
-    public static func getHeight(for graph: Agraph_t) -> CGFloat {
+    public static func getHeight(for graph: UnsafeMutablePointer<Agraph_t>) -> CGFloat {
         let boundingBox = graph.getBoundingBox()
         return CGFloat(boundingBox.UR.y)
     }
@@ -164,14 +167,8 @@ public final class GVLUtils {
 
 // MARK: - Graphviz Integration
 
-extension Agraph_t {
+extension UnsafeMutablePointer<Agraph_t> {
     func getBoundingBox() -> boxf {
-        GD_bb(self)
+        getGraphBoundingBox(self)
     }
-}
-
-// MARK: - Configuration
-
-public final class GVLConfig {
-    @MainActor public static let dpi: CGFloat = 96.0
 }

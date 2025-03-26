@@ -32,7 +32,7 @@ public class Edge: Equatable {
     }
 
     public func getAttribute(name: String) -> String? {
-        gvlEdge.getAttributeForKey(name)
+        gvlEdge.getAttribute(forKey: name)
     }
 
     func setAttribute(name: String, value: String) {
@@ -40,23 +40,23 @@ public class Edge: Equatable {
     }
 
     public func frame() -> CGRect? {
-        gvlEdge.frame()
+        gvlEdge.frame
     }
 
     public func bounds() -> CGRect? {
-        gvlEdge.bounds()
+        gvlEdge.bounds
     }
 
     public func body() -> UIBezierPath? {
-        gvlEdge.body()
+        gvlEdge.body
     }
 
     public func headArrow() -> UIBezierPath? {
-        gvlEdge.headArrow()
+        gvlEdge.headArrow
     }
 
     public func tailArrow() -> UIBezierPath? {
-        gvlEdge.tailArrow()
+        gvlEdge.tailArrow
     }
 
     public static func == (lhs: Edge, rhs: Edge) -> Bool {
@@ -68,7 +68,7 @@ public class Node: Equatable {
     fileprivate var gvlNode: GVLNode
 
     public var label: String {
-        gvlNode.label ?? ""
+        gvlNode.label
     }
     public var color: UIColor = UIColor.white
     public var highlihtedColor: UIColor = UIColor.lightGray
@@ -91,7 +91,7 @@ public class Node: Equatable {
     }
 
     public func getAttribute(name: String) -> String? {
-        gvlNode.getAttributeForKey(name)
+        gvlNode.getAttribute(forKey: name)
     }
 
     func setAttribute(name: String, value: String) {
@@ -99,15 +99,15 @@ public class Node: Equatable {
     }
 
     public func frame() -> CGRect? {
-        gvlNode.frame()
+        gvlNode.frame
     }
 
     public func bounds() -> CGRect? {
-        gvlNode.bounds()
+        gvlNode.bounds
     }
 
     public func path() -> UIBezierPath? {
-        gvlNode.path()
+        gvlNode.bezierPath
     }
 
     public static func == (lhs: Node, rhs: Node) -> Bool {
@@ -131,7 +131,7 @@ public class Graph {
     public private(set) var nodes = [Node]()
     public private(set) var edges = [Edge]()
     public var size: CGSize {
-        gvlGraph.size()
+        gvlGraph.size
     }
     public var splines: Splines = .spline {
         didSet {
@@ -144,7 +144,7 @@ public class Graph {
     }
 
     public func addNode(_ label: String) -> Node {
-        let gvlNode = gvlGraph.addNode(label)!
+        let gvlNode = gvlGraph.addNode(label: label)
         let node = Node(gvlNode: gvlNode)
         nodes.append(node)
         return node
@@ -152,7 +152,7 @@ public class Graph {
 
     public func removeNode(node: Node) {
         guard nodes.count > 1 else { return }
-        if let index = nodes.index(of: node) {
+        if let index = nodes.firstIndex(of: node) {
             for edge in edges {
                 if edge.from == node || edge.to == node {
                     removeEdge(edge: edge)
@@ -163,19 +163,19 @@ public class Graph {
     }
 
     public func addEdge(from: Node, to: Node) -> Edge {
-        let gvlEdge = gvlGraph.addEdge(withSource: from.gvlNode, andTarget: to.gvlNode)
-        let edge = Edge(gvlEdge: gvlEdge!, from: from, to: to)
+        let gvlEdge = gvlGraph.addEdge(from: from.gvlNode, to: to.gvlNode)
+        let edge = Edge(gvlEdge: gvlEdge, from: from, to: to)
         edges.append(edge)
         return edge
     }
 
     public func removeEdge(edge: Edge) {
-        if let index = edges.index(of: edge) {
+        if let index = edges.firstIndex(of: edge) {
             edges.remove(at: index)
         }
     }
 
-    public func applyLayout() {
+    @MainActor public func applyLayout() {
         gvlGraph.applyLayout()
     }
 }

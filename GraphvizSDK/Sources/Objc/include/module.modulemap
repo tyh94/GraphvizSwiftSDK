@@ -1,3 +1,0 @@
-module ObjCGraphvizSDK {
-    header "GVLGraph.h"
-}
