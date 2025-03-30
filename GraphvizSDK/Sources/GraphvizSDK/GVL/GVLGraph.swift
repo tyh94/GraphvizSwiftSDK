@@ -32,51 +32,47 @@ public class GVLGraph {
     }
     
     // MARK: - Attributes Management
-    
-    public func getAttribute(forKey key: String) -> String? {
-        let cKey = key.withCString { UnsafeMutablePointer(mutating: $0) }
-          
-        guard let value = agget(graph, cKey) else { return nil }
-        return String(cString: value)
+    public func setAttribute(_ value: String, forKey key: String) {
+        agsafeset(graph, strdup(key), strdup(value), "")
     }
     
-    public func setAttribute(_ value: String, forKey key: String) {
-        let cKey = key.withCString { UnsafeMutablePointer(mutating: $0) }
-        let cValue = value.withCString { UnsafeMutablePointer(mutating: $0) }
-        agsafeset(graph, cKey, cValue, "")
+    public func getAttribute(forKey key: String) -> String {
+        guard let cValue = agget(graph, strdup(key)) else {
+            return ""
+        }
+        return String(cString: cValue)
     }
     
     // MARK: - Nodes & Edges Management
     
     public func addNode(label: String) -> GVLNode {
-        let node = GVLNode()
-        node.node = agnode(graph, nil, 1)
-        node.parent = graph
-        node.label = label
+        let node = GVLNode(parent: graph, label: label)
         nodes.append(node)
         return node
     }
     
     public func addEdge(from source: GVLNode, to target: GVLNode) -> GVLEdge {
-        let edge = GVLEdge()
-        edge.edge = agedge(graph, source.node, target.node, nil, 1)
-        edge.parent = graph
+        let edge = GVLEdge(parent: graph, from: source, to: target)
         edges.append(edge)
         return edge
     }
     
-    public func deleteNode(_ node: GVLNode) -> Bool {
-        guard let index = nodes.firstIndex(where: { $0 === node }) else { return false }
-        agdelnode(graph, node.node)
-        nodes.remove(at: index)
-        return true
-    }
+//    public func deleteNode(_ node: GVLNode) -> Bool {
+//        guard let index = nodes.firstIndex(where: { $0 === node }) else { return false }
+//        agdelnode(graph, node.node)
+//        nodes.remove(at: index)
+//        return true
+//    }
+//    
+//    public func deleteEdge(_ edge: GVLEdge) -> Bool {
+//        guard let index = edges.firstIndex(where: { $0 === edge }) else { return false }
+//        agdeledge(graph, edge.edge)
+//        edges.remove(at: index)
+//        return true
+//    }
     
-    public func deleteEdge(_ edge: GVLEdge) -> Bool {
-        guard let index = edges.firstIndex(where: { $0 === edge }) else { return false }
-        agdeledge(graph, edge.edge)
-        edges.remove(at: index)
-        return true
+    public func addSubgraph() -> GVLSubgraph {
+        GVLSubgraph(parent: graph)
     }
     
     // MARK: - Layout Operations
@@ -93,19 +89,14 @@ public class GVLGraph {
         // Парсинг узлов и ребер
         var node = agfstnode(graph)
         while node != nil {
-            let gvlNode = GVLNode()
-            gvlNode.node = node
-            gvlNode.parent = graph
-            gvlNode.label = gvlNode.getAttribute(forKey: "label")
+            let gvlNode = GVLNode(parent: graph, node: node!)
             nodes.append(gvlNode)
             gvlNode.prepare()
             
             // Обработка ребер
             var edge = agfstout(graph, node)
             while edge != nil {
-                let gvlEdge = GVLEdge()
-                gvlEdge.edge = edge
-                gvlEdge.parent = graph
+                let gvlEdge = GVLEdge(parent: graph, edge: edge!)
                 edges.append(gvlEdge)
                 gvlEdge.prepare()
                 edge = agnxtout(graph, edge)
@@ -144,6 +135,6 @@ public class GVLGraph {
 
 extension Agdesc_t {
     static var directed: Agdesc_t {
-        return get_agdirected()
+        get_agdirected()
     }
 }

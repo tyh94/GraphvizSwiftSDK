@@ -21,8 +21,8 @@ public class GVLEdge {
     private var _tail: UIBezierPath?
     
     // Graphviz pointers
-    var edge: UnsafeMutablePointer<Agedge_t>!
-    var parent: UnsafeMutablePointer<Agraph_t>!
+    let edge: UnsafeMutablePointer<Agedge_t>
+    private let parent: UnsafeMutablePointer<Agraph_t>
     
     // MARK: - Public Accessors
     public var frame: CGRect { _frame }
@@ -34,18 +34,30 @@ public class GVLEdge {
     
     // MARK: - Attribute Management
     public func setAttribute(_ value: String, forKey key: String) {
-        key.withCString { cKey in
-            value.withCString { cValue in
-                agsafeset(edge, UnsafeMutablePointer(mutating: cKey), UnsafeMutablePointer(mutating: cValue), "")
-            }
-        }
+        agsafeset(edge, strdup(key), strdup(value), "")
     }
     
     public func getAttribute(forKey key: String) -> String {
-        guard let cValue = key.withCString({ agget(edge, UnsafeMutablePointer(mutating: $0)) }) else {
+        guard let cValue = agget(edge, strdup(key)) else {
             return ""
         }
         return String(cString: cValue)
+    }
+    
+    init(
+        parent: UnsafeMutablePointer<Agraph_t>,
+        edge: UnsafeMutablePointer<Agedge_t>
+    ) {
+        self.edge = edge
+        self.parent = parent
+    }
+    
+    convenience init(
+        parent: UnsafeMutablePointer<Agraph_t>,
+        from source: GVLNode,
+        to target: GVLNode
+    ) {
+        self.init(parent: parent, edge: agedge(parent, source.node, target.node, nil, 1))
     }
     
     // MARK: - Layout Preparation
@@ -54,9 +66,9 @@ public class GVLEdge {
         let graphHeight = GVLUtils.getHeight(for: parent)
         
         // Convert main spline
-         let bodyPath = GVLUtils.toPath(splines: splines, height: graphHeight)
-            _body = UIBezierPath(cgPath: bodyPath)
-            _bezierPath = UIBezierPath(cgPath: bodyPath)
+        let bodyPath = GVLUtils.toPath(splines: splines, height: graphHeight)
+        _body = UIBezierPath(cgPath: bodyPath)
+        _bezierPath = UIBezierPath(cgPath: bodyPath)
         
         // Create arrows
         _head = createArrow(from: splines, isHead: true, height: graphHeight)

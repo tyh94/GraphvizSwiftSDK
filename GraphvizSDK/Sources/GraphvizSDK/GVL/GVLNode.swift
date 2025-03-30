@@ -5,9 +5,7 @@
 //  Created by Татьяна Макеева on 25.03.2025.
 //
 
-//#if SWIFT_PACKAGE
 import CGraphvizSDK
-//#endif
 import UIKit
 import CoreGraphics
 
@@ -18,33 +16,37 @@ public class GVLNode {
     public private(set) var bounds: CGRect = .zero
     public private(set) var origin: CGPoint = .zero
     
-    private var _label: String = ""
     public var label: String {
-        get { _label }
+        get { getAttribute(forKey: "label") }
         set {
-            _label = newValue
             setAttribute(newValue, forKey: "label")
         }
     }
     
     // Graphviz pointers
-    var node: UnsafeMutablePointer<Agnode_t>!
-    var parent: UnsafeMutablePointer<Agraph_t>!
+    let node: UnsafeMutablePointer<Agnode_t>
+    private let parent: UnsafeMutablePointer<Agraph_t>
     
     // MARK: - Attribute Management
     public func setAttribute(_ value: String, forKey key: String) {
-        key.withCString { cKey in
-            value.withCString { cValue in
-                agsafeset(node, UnsafeMutablePointer(mutating: cKey), UnsafeMutablePointer(mutating: cValue), "")
-            }
-        }
+        agsafeset(node, strdup(key), strdup(value), "")
     }
     
     public func getAttribute(forKey key: String) -> String {
-        guard let cValue = key.withCString({ agget(node, UnsafeMutablePointer(mutating: $0)) }) else {
+        guard let cValue = agget(node, strdup(key)) else {
             return ""
         }
         return String(cString: cValue)
+    }
+    
+     init(parent: UnsafeMutablePointer<Agraph_t>, node: UnsafeMutablePointer<Agnode_t>) {
+         self.parent = parent
+         self.node = node
+     }
+    
+    convenience init(parent: UnsafeMutablePointer<Agraph_t>, label: String) {
+        self.init(parent: parent, node: agnode(parent, nil, 1))
+        self.label = label
     }
     
     // MARK: - Layout Preparation
@@ -91,31 +93,3 @@ public class GVLNode {
         frame = CGRect(x: origin.x, y: origin.y, width: width, height: height)
     }
 }
-
-// MARK: - Graphviz C API Extensions
-//extension Agnode_s {
-//    var shape: shape_desc? {
-//        get { getND_shape(self).pointee }
-//        set { getND_shape(self) = newValue }
-//    }
-//    
-//    var shapeInfo: UnsafeMutableRawPointer? {
-//        get { getND_shape_info(self) }
-//        set { getND_shape_info(self) = newValue }
-//    }
-//    
-//    var width: Double {
-//        get { getND_width(self) }
-//        set { getND_width(self) = newValue }
-//    }
-//    
-//    var height: Double {
-//        get { getND_height(self) }
-//        set { getND_height(self) = newValue }
-//    }
-//    
-//    var coord: pointf {
-//        get { getND_coord(self) }
-//        set { getND_coord(self) = newValue }
-//    }
-//}

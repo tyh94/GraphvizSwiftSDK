@@ -109,7 +109,77 @@ extension CGRect {
 }
 
 #Preview {
-    GraphCanvasView(graph: demoGraph())
+    GraphCanvasView(graph: demoFamily())
+}
+
+func demoFamily() -> Graph {
+    let graph = Graph()
+
+    graph.gvlGraph.setAttribute("ortho", forKey: "splines") // Тип соединений
+    graph.gvlGraph.setAttribute("none", forKey: "dir") // Убираем стрелки у рёбер
+
+    // 2. Создаём основные узлы
+//    var abraham = graph.addNode("Abraham")
+//    abraham.shape = .box
+//
+//    let mona = graph.addNode("Mona")
+//    mona.shape = .ellipse
+//
+////    var herb = graph.addNode("Herb")
+////    herb.shape = .box
+////
+////    var homer = graph.addNode("Homer")
+////    homer.shape = .box
+//
+//    // 3. Создаём вспомогательные узлы
+//    let a1 = graph.addNode("")
+//    a1.shape = .diamond
+//
+////    let b1 = graph.addNode("")
+////    b1.shape = .circle
+////    b1.setAttribute(name: "height", value: "0.01")
+////    b1.setAttribute(name: "width", value: "0.01")
+////
+////    let b2 = graph.addNode("")
+////    b2.shape = .circle
+////    b2.setAttribute(name: "height", value: "0.01")
+////    b2.setAttribute(name: "width", value: "0.01")
+////
+////    let b3 = graph.addNode("")
+////    b3.shape = .circle
+////    b3.setAttribute(name: "height", value: "0.01")
+////    b3.setAttribute(name: "width", value: "0.01")
+//
+//    // 4. Группируем узлы по уровням
+//    let topLevel = graph.createSubgraph()
+//    topLevel.addNode(abraham)
+//    topLevel.addNode(a1)
+//    topLevel.addNode(mona)
+//    let edgeAbrahamToA1 = graph.addEdge(from: abraham, to: a1)
+//    topLevel.addEdge(edgeAbrahamToA1)
+//    let edgeFromA1ToMona = graph.addEdge(from: a1, to: mona)
+//    topLevel.addEdge(edgeFromA1ToMona)
+//    topLevel.setRank(.same)
+////    let middleLevel = graph.createSubgraph()
+//    middleLevel.addNode(b1)
+//    middleLevel.addNode(b2)
+//    middleLevel.addNode(b3)
+//    graph.setRank(.same, for: middleLevel)
+
+//    let bottomLevel = graph.createSubgraph()
+//    bottomLevel.addNode(herb)
+//    bottomLevel.addNode(homer)
+//    graph.setRank(.same, for: bottomLevel)
+//
+//    // 5. Создаём соединения
+//    graph.addEdge(from: a1, to: b2)
+//    graph.addEdge(from: b1, to: herb)
+//    graph.addEdge(from: b3, to: homer)
+//
+//    // 6. Добавляем горизонтальные соединения между вспомогательными узлами
+//    graph.addEdge(from: b1, to: b2)
+//    graph.addEdge(from: b2, to: b3)
+    return graph
 }
 
 func demoGraph() -> Graph {
