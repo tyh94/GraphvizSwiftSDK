@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E25275BD2D91B9AD0030FCC2 /* GraphvizSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E25275BC2D91B9AD0030FCC2 /* GraphvizSDK */; };
+		E26700042D9A5621003D116F /* GraphvizSDK in Frameworks */ = {isa = PBXBuildFile; productRef = E26700032D9A5621003D116F /* GraphvizSDK */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +28,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E25275BB2D91B9810030FCC2 /* GraphvizSDK */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GraphvizSDK; path = ../GraphvizSDK; sourceTree = SOURCE_ROOT; };
 		E2D9B4F62D8EEB21003B290D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2D9B50A2D8EEB22003B290D /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2D9B5142D8EEB22003B290D /* ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,7 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E25275BD2D91B9AD0030FCC2 /* GraphvizSDK in Frameworks */,
+				E26700042D9A5621003D116F /* GraphvizSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,7 +100,6 @@
 		E2D9B4ED2D8EEB21003B290D = {
 			isa = PBXGroup;
 			children = (
-				E25275BB2D91B9810030FCC2 /* GraphvizSDK */,
 				E2D9B4F82D8EEB21003B290D /* Example */,
 				E2D9B50D2D8EEB22003B290D /* ExampleTests */,
 				E2D9B5172D8EEB22003B290D /* ExampleUITests */,
@@ -140,7 +138,7 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				E25275BC2D91B9AD0030FCC2 /* GraphvizSDK */,
+				E26700032D9A5621003D116F /* GraphvizSDK */,
 			);
 			productName = Example;
 			productReference = E2D9B4F62D8EEB21003B290D /* Example.app */;
@@ -225,6 +223,9 @@
 			);
 			mainGroup = E2D9B4ED2D8EEB21003B290D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E26700022D9A5621003D116F /* XCLocalSwiftPackageReference "../../GraphvizSDK" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E2D9B4F72D8EEB21003B290D /* Products */;
 			projectDirPath = "";
@@ -608,8 +609,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E26700022D9A5621003D116F /* XCLocalSwiftPackageReference "../../GraphvizSDK" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../GraphvizSDK;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		E25275BC2D91B9AD0030FCC2 /* GraphvizSDK */ = {
+		E26700032D9A5621003D116F /* GraphvizSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GraphvizSDK;
 		};

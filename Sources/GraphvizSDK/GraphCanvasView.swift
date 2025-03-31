@@ -109,7 +109,7 @@ extension CGRect {
 }
 
 #Preview {
-    GraphCanvasView(graph: demoFamily())
+    GraphCanvasView(graph: demoGraph())
 }
 
 func demoFamily() -> Graph {
