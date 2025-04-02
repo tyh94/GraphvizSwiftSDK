@@ -115,8 +115,8 @@ extension CGRect {
 func demoFamily() -> Graph {
     let graph = Graph()
 
-    graph.gvlGraph.setAttribute("ortho", forKey: "splines") // Тип соединений
-    graph.gvlGraph.setAttribute("none", forKey: "dir") // Убираем стрелки у рёбер
+//    graph.gvlGraph.setAttribute("ortho", forKey: "splines") // Тип соединений
+//    graph.gvlGraph.setAttribute("none", forKey: "dir") // Убираем стрелки у рёбер
 
     // 2. Создаём основные узлы
 //    var abraham = graph.addNode("Abraham")

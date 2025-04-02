@@ -16,16 +16,31 @@ public class Graph {
     public var size: CGSize {
         gvlGraph.size
     }
-    public var splines: Splines = .spline {
+    public var splines: GVParamValueSplines = .ortho {
         didSet {
-            gvlGraph.setAttribute(splines.rawValue, forKey: "splines")
+            gvlGraph.setAttribute(splines.rawValue, forKey: .splines)
         }
     }
 
-    public init() {
-        gvlGraph = GVLGraph()
+    public convenience init() {
+        self.init(GVLGraph())
+    }
+    
+    public init(_ gvlGraph: GVLGraph) {
+        self.gvlGraph = gvlGraph
+    }
+    
+    public convenience init(str: String) {
+        self.init(GVLGraph(str: str))
+        fillNodesAndEdges()
+    }
+    
+    func fillNodesAndEdges() {
+        nodes = gvlGraph.nodes.map(Node.init(gvlNode:))
+        edges = gvlGraph.edges.map(Edge.init(gvlEdge:))
     }
 
+    // TODO: Add name and label. if name nil, use label in both
     public func addNode(_ label: String) -> Node {
         let gvlNode = gvlGraph.addNode(label: label)
         let node = Node(gvlNode: gvlNode)
@@ -33,34 +48,20 @@ public class Graph {
         return node
     }
 
-    public func removeNode(node: Node) {
-        guard nodes.count > 1 else { return }
-        if let index = nodes.firstIndex(of: node) {
-            for edge in edges {
-                if edge.from == node || edge.to == node {
-                    removeEdge(edge: edge)
-                }
-            }
-            nodes.remove(at: index)
-        }
-    }
-
     public func addEdge(from: Node, to: Node) -> Edge {
         let gvlEdge = gvlGraph.addEdge(from: from.gvlNode, to: to.gvlNode)
-        let edge = Edge(gvlEdge: gvlEdge, from: from, to: to)
+        let edge = Edge(gvlEdge: gvlEdge)
         edges.append(edge)
         return edge
-    }
-
-    public func removeEdge(edge: Edge) {
-        if let index = edges.firstIndex(of: edge) {
-            edges.remove(at: index)
-        }
     }
     
     public func createSubgraph() -> Subgraph {
         let gvlSubgraph = gvlGraph.addSubgraph()
         return Subgraph(gvlSubgraph: gvlSubgraph)
+    }
+    
+    public func setSameRank(nodes: [String]) {
+        gvlGraph.setSameRank(nodes: nodes)
     }
 
     @MainActor public func applyLayout() {

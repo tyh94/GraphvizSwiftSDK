@@ -11,32 +11,29 @@ import UIKit
 public class Edge: Equatable {
     fileprivate let gvlEdge: GVLEdge
 
-    public let from: Node
-    public let to: Node
     public var color: UIColor = UIColor.black
     public var width: Float = 1.0
-    public var weight: Float = 1 {
-        didSet {
-            setAttribute(name: "weight", value: weight.description)
+    public var weight: Float {
+        get { Float(getAttribute(name: .weight) ?? "") ?? 1 }
+        set {
+            setAttribute(name: .weight, value: weight.description)
         }
     }
 
-    public init(gvlEdge: GVLEdge, from: Node, to: Node) {
+    public init(gvlEdge: GVLEdge) {
         self.gvlEdge = gvlEdge
-        self.from = from
-        self.to = to
     }
 
-    public func getAttribute(name: String) -> String? {
+    public func getAttribute(name: GVEdgeParameters) -> String? {
         gvlEdge.getAttribute(forKey: name)
     }
 
-    func setAttribute(name: String, value: String) {
+    func setAttribute(name: GVEdgeParameters, value: String) {
         gvlEdge.setAttribute(value, forKey: name)
     }
     
     public func setNoDirection() {
-        gvlEdge.setAttribute("dir", forKey: "none")
+        gvlEdge.setAttribute(GVEdgeParamDir.none.rawValue, forKey: .dir)
     }
 
     public func frame() -> CGRect? {

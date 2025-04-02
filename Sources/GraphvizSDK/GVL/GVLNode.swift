@@ -17,50 +17,54 @@ public class GVLNode {
     public private(set) var origin: CGPoint = .zero
     
     public var label: String {
-        get { getAttribute(forKey: "label") }
+        get { getAttribute(forKey: .label) }
         set {
-            setAttribute(newValue, forKey: "label")
+            setAttribute(newValue, forKey: .label)
         }
     }
     
     // Graphviz pointers
-    let node: UnsafeMutablePointer<Agnode_t>
-    private let parent: UnsafeMutablePointer<Agraph_t>
+    public let node: GVNode
+    private let parent: GVGraph
     
     // MARK: - Attribute Management
-    public func setAttribute(_ value: String, forKey key: String) {
-        agsafeset(node, strdup(key), strdup(value), "")
+    public func setAttribute(_ value: String, forKey key: GVNodeParameters) {
+        agsafeset(node, cString(key.rawValue), cString(value), "")
     }
     
-    public func getAttribute(forKey key: String) -> String {
-        guard let cValue = agget(node, strdup(key)) else {
+    public func getAttribute(forKey key: GVNodeParameters) -> String {
+        guard let cValue = agget(node, cString(key.rawValue)) else {
             return ""
         }
         return String(cString: cValue)
     }
     
-     init(parent: UnsafeMutablePointer<Agraph_t>, node: UnsafeMutablePointer<Agnode_t>) {
+    public init(parent: GVGraph, node: GVNode) {
          self.parent = parent
          self.node = node
      }
     
-    convenience init(parent: UnsafeMutablePointer<Agraph_t>, label: String) {
-        self.init(parent: parent, node: agnode(parent, nil, 1))
+    convenience init(parent: GVGraph, label: String) {
+        var node = agnode(parent, cString(label), 0)
+        if node == nil {
+            node = agnode(parent, cString(label), 1)
+        }
+        self.init(parent: parent, node: node!)
         self.label = label
     }
     
     // MARK: - Layout Preparation
     @MainActor public func prepare() {
-        let dpi = GVLConfig.dpi
+        let dpi = pointsPerInch
         
         // Get node dimensions
-        let width = CGFloat(getND_width(node)) * dpi
-        let height = CGFloat(getND_height(node)) * dpi
+        let width = node.width
+        let height = node.height
         
         // Get shape information
-        guard let shape = getND_shape(node),
+        guard let shape = nd_shape(node),
               let shapeName = shape.pointee.name,
-              let shapeInfoPtr = get_shape_info(node) else {
+              let shapeInfoPtr = nd_shape_info(node) else {
             return
         }
         
@@ -80,7 +84,7 @@ public class GVLNode {
         
         // Calculate coordinates
         let graphHeight = GVLUtils.getHeight(for: parent)
-        let coord = getND_coord(node)
+        let coord = nd_coord(node)
         let point = GVLUtils.toPointF(coord, height: graphHeight)
         
         origin = GVLUtils.centerToOrigin(

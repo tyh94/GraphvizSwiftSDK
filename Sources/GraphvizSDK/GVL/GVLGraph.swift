@@ -10,34 +10,62 @@ import Foundation
 import CoreGraphics
 
 public class GVLGraph {
-    private var graph: UnsafeMutablePointer<Agraph_t>!
-    private var context: UnsafeMutablePointer<GVC_t>!
+    private var graph: GVGraph
+    private let context: GVGlobalContextPointer
     public var nodes: [GVLNode] = []
     public var edges: [GVLEdge] = []
     
-    public init() {
+    public convenience init(type: GVGraphType = .nonStrictDirected) {
         let name = "graph_\(arc4random())"
+        let cName = strdup(name)
+        let graph = agopen(cName, type.graphvizValue, nil)!
+        self.init(graph)
+    }
+    
+    public convenience init(str: String) {
+        let graph = agmemread(str)!
+        self.init(graph)
+        fillNodesAndEdges()
+    }
+    
+    public init(_ graph: GVGraph) {
+        self.graph = graph
         
         // Инициализация контекста и графа
         context = gvContext()
         gvAddLibrary(context, &gvplugin_dot_layout_LTX_library)
         gvAddLibrary(context, &gvplugin_core_LTX_library)
         
-        let cName = strdup(name)
-        graph = agopen(cName, Agdesc_t.directed, nil)
-        
         // Установка атрибутов графа
-        setAttribute("spline", forKey: "splines")
-        setAttribute("scalexy", forKey: "overlap")
+        setAttribute("spline", forKey: .splines)
+        setAttribute(GVParamValueOverlap.scalexy.rawValue, forKey: .overlap)
+        
+    }
+    
+    func fillNodesAndEdges() {
+        var currentNode: GVNode? = agfstnode(graph)
+        while currentNode != nil {
+            let node = GVLNode(parent: graph, node: currentNode!)
+            nodes.append(node)
+            
+            var currentEdge: GVEdge? = agfstout(graph, currentNode!)
+            while currentEdge != nil {
+                let edge = GVLEdge(parent: graph, edge: currentEdge!)
+                edges.append(edge)
+                currentEdge = agnxtout(graph, currentEdge!)
+            }
+            
+            currentNode = agnxtnode(graph, currentNode!)
+        }
     }
     
     // MARK: - Attributes Management
-    public func setAttribute(_ value: String, forKey key: String) {
-        agsafeset(graph, strdup(key), strdup(value), "")
+    public func setAttribute(_ value: String, forKey key: GVGraphParameters) {
+        agsafeset(graph, cString(key.rawValue), cString(value), "")
     }
     
-    public func getAttribute(forKey key: String) -> String {
-        guard let cValue = agget(graph, strdup(key)) else {
+    public func getAttribute(forKey key: GVGraphParameters) -> String {
+        guard let cValue = agget(graph, cString(key.rawValue)) else {
             return ""
         }
         return String(cString: cValue)
@@ -57,61 +85,31 @@ public class GVLGraph {
         return edge
     }
     
-//    public func deleteNode(_ node: GVLNode) -> Bool {
-//        guard let index = nodes.firstIndex(where: { $0 === node }) else { return false }
-//        agdelnode(graph, node.node)
-//        nodes.remove(at: index)
-//        return true
-//    }
-//    
-//    public func deleteEdge(_ edge: GVLEdge) -> Bool {
-//        guard let index = edges.firstIndex(where: { $0 === edge }) else { return false }
-//        agdeledge(graph, edge.edge)
-//        edges.remove(at: index)
-//        return true
-//    }
-    
     public func addSubgraph() -> GVLSubgraph {
         GVLSubgraph(parent: graph)
     }
     
-    // MARK: - Layout Operations
-    
-    @MainActor public func loadLayout(from text: String) -> Bool {
-        guard let graph = text.withCString({ agmemread($0) }) else { return false }
-        guard gvLayout(context, graph, "dot") == 0 else { return false }
-        
-        // Обновление данных
-        self.graph = graph
-        nodes.removeAll()
-        edges.removeAll()
-        
-        // Парсинг узлов и ребер
-        var node = agfstnode(graph)
-        while node != nil {
-            let gvlNode = GVLNode(parent: graph, node: node!)
-            nodes.append(gvlNode)
-            gvlNode.prepare()
-            
-            // Обработка ребер
-            var edge = agfstout(graph, node)
-            while edge != nil {
-                let gvlEdge = GVLEdge(parent: graph, edge: edge!)
-                edges.append(gvlEdge)
-                gvlEdge.prepare()
-                edge = agnxtout(graph, edge)
-            }
-            
-            node = agnxtnode(graph, node)
-        }
-        
-        return true
+    public func setSameRank(nodes: [String]) {
+        let nodesStr = nodes.joined(separator: "; ")
+        let sameNodes = "\(GVRank.same.rawValue); \(nodesStr)"
+        setAttribute(sameNodes, forKey: .rank)
     }
+    
+    // MARK: - Layout Operations
     
     @discardableResult
     @MainActor
     public func applyLayout() -> Bool {
         guard gvLayout(context, graph, "dot") == 0 else { return false }
+        
+        var data: CHAR?
+        var len: size_t = 0
+        gvRenderData(context, graph, "dot", &data, &len)
+        if let data {
+            print("==========================")
+            print(String(cString: data))
+            print("==========================")
+        }
         
         nodes.forEach { $0.prepare() }
         edges.forEach { $0.prepare() }
@@ -130,11 +128,5 @@ public class GVLGraph {
         gvFreeLayout(context, graph)
         agclose(graph)
         gvFreeContext(context)
-    }
-}
-
-extension Agdesc_t {
-    static var directed: Agdesc_t {
-        get_agdirected()
     }
 }

@@ -11,31 +11,32 @@ public class Node: Equatable {
     let gvlNode: GVLNode
 
     public var label: String {
-        gvlNode.label
+        get { gvlNode.label }
+        set { gvlNode.label = newValue }
     }
-    public var color: UIColor = UIColor.white 
+    public var color: UIColor = UIColor.white
     public var highlihtedColor: UIColor = UIColor.lightGray
     public var borderColor: UIColor = UIColor.black
     public var borderWidth: Float = 1.0
     public var textColor: UIColor = UIColor.black
     public var fontSize: Int = 14 {
         didSet {
-            setAttribute(name: "fontsize", value: fontSize.description)
+            setAttribute(name: .fontsize, value: fontSize.description)
         }
     }
-    public var shape: NodeShape = .ellipse {
+    public var shape: GVNodeShape = .ellipse {
         didSet {
-            setAttribute(name: "shape", value: shape.rawValue)
+            setAttribute(name: .shape, value: shape.rawValue)
         }
     }
     public var width: Double = 1.0 {
         didSet {
-            setAttribute(name: "width", value: width.description)
+            setAttribute(name: .width, value: width.description)
         }
     }
     public var height: Double = 1.0 {
         didSet {
-            setAttribute(name: "height", value: height.description)
+            setAttribute(name: .height, value: height.description)
         }
     }
     
@@ -43,11 +44,11 @@ public class Node: Equatable {
         self.gvlNode = gvlNode
     }
 
-    public func getAttribute(name: String) -> String? {
+    public func getAttribute(name: GVNodeParameters) -> String? {
         gvlNode.getAttribute(forKey: name)
     }
 
-    func setAttribute(name: String, value: String) {
+    func setAttribute(name: GVNodeParameters, value: String) {
         gvlNode.setAttribute(value, forKey: name)
     }
 

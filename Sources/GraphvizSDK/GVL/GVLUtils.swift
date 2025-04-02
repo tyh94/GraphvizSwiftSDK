@@ -28,9 +28,8 @@ public final class GVLUtils {
     
     // MARK: - Graph Dimensions
     
-    public static func getHeight(for graph: UnsafeMutablePointer<Agraph_t>) -> CGFloat {
-        let boundingBox = graph.getBoundingBox()
-        return CGFloat(boundingBox.UR.y)
+    public static func getHeight(for graph: GVGraph) -> CGFloat {
+        graph.height
     }
     
     // MARK: - Polygon Conversion
@@ -171,8 +170,8 @@ public final class GVLUtils {
 
 // MARK: - Graphviz Integration
 
-extension UnsafeMutablePointer<Agraph_t> {
+extension GVGraph {
     func getBoundingBox() -> boxf {
-        getGraphBoundingBox(self)
+        gd_bb(self)
     }
 }

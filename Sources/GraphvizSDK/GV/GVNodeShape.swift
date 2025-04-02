@@ -7,6 +7,6 @@
 
 import Foundation
 
-public enum NodeShape: String {
+public enum GVNodeShape: String {
     case rectangle, box, hexagon, polygon, diamond, star, ellipse, circle
 }

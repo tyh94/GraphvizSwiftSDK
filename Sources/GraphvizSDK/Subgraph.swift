@@ -35,7 +35,7 @@ public class Subgraph {
     
     public func addEdge(from: Node, to: Node) -> Edge {
         let gvlEdge = gvlSubgraph.addEdge(from: from.gvlNode, to: to.gvlNode)
-        let edge = Edge(gvlEdge: gvlEdge, from: from, to: to)
+        let edge = Edge(gvlEdge: gvlEdge)
         return edge
     }
     

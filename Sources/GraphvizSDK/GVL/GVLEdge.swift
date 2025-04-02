@@ -5,9 +5,7 @@
 //  Created by Татьяна Макеева on 25.03.2025.
 //
 
-#if SWIFT_PACKAGE
 @preconcurrency import CGraphvizSDK
-#endif
 import UIKit
 import CoreGraphics
 
@@ -21,8 +19,8 @@ public class GVLEdge {
     private var _tail: UIBezierPath?
     
     // Graphviz pointers
-    let edge: UnsafeMutablePointer<Agedge_t>
-    private let parent: UnsafeMutablePointer<Agraph_t>
+    let edge: GVEdge
+    private let parent: GVGraph
     
     // MARK: - Public Accessors
     public var frame: CGRect { _frame }
@@ -33,36 +31,40 @@ public class GVLEdge {
     public var tailArrow: UIBezierPath? { _tail }
     
     // MARK: - Attribute Management
-    public func setAttribute(_ value: String, forKey key: String) {
-        agsafeset(edge, strdup(key), strdup(value), "")
+    public func setAttribute(_ value: String, forKey key: GVEdgeParameters) {
+        agsafeset(edge, cString(key.rawValue), cString(value), "")
     }
     
-    public func getAttribute(forKey key: String) -> String {
-        guard let cValue = agget(edge, strdup(key)) else {
+    public func getAttribute(forKey key: GVEdgeParameters) -> String {
+        guard let cValue = agget(edge, cString(key.rawValue)) else {
             return ""
         }
         return String(cString: cValue)
     }
     
     init(
-        parent: UnsafeMutablePointer<Agraph_t>,
-        edge: UnsafeMutablePointer<Agedge_t>
+        parent: GVGraph,
+        edge: GVEdge
     ) {
         self.edge = edge
         self.parent = parent
     }
     
     convenience init(
-        parent: UnsafeMutablePointer<Agraph_t>,
+        parent: GVGraph,
         from source: GVLNode,
         to target: GVLNode
     ) {
-        self.init(parent: parent, edge: agedge(parent, source.node, target.node, nil, 1))
+        var edge = agedge(parent, source.node, target.node, nil, 0)
+        if edge == nil {
+            edge = agedge(parent, source.node, target.node, nil, 1)
+        }
+        self.init(parent: parent, edge: edge!)
     }
     
     // MARK: - Layout Preparation
     public func prepare() {
-        let splines = getED_spl(edge).pointee
+        let splines = ed_spl(edge).pointee
         let graphHeight = GVLUtils.getHeight(for: parent)
         
         // Convert main spline
@@ -71,8 +73,8 @@ public class GVLEdge {
         _bezierPath = UIBezierPath(cgPath: bodyPath)
         
         // Create arrows
-        _head = createArrow(from: splines, isHead: true, height: graphHeight)
-        _tail = createArrow(from: splines, isTail: true, height: graphHeight)
+        _head = createHeadArrow(from: splines, height: graphHeight)
+        _tail = createTailArrow(from: splines, height: graphHeight)
         
         updateFrames()
         normalizePaths()
@@ -110,15 +112,13 @@ public class GVLEdge {
         }
     }
     
-    private func createArrow(
+    private func createHeadArrow(
         from splines: splines,
-        isHead: Bool = false,
-        isTail: Bool = false,
         height: CGFloat
     ) -> UIBezierPath? {
         let bezier = splines.list.pointee
         
-        if isHead, bezier.eflag != 0 {
+        if bezier.eflag != 0 {
             let lastIndex = Int(bezier.size) - 1
             let p1 = GVLUtils.toPointF(bezier.list[lastIndex], height: height)
             let p2 = GVLUtils.toPointF(bezier.ep, height: height)
@@ -131,7 +131,16 @@ public class GVLEdge {
             )
         }
         
-        if isTail, bezier.sflag != 0 {
+        return nil
+    }
+    
+    private func createTailArrow(
+        from splines: splines,
+        height: CGFloat
+    ) -> UIBezierPath? {
+        let bezier = splines.list.pointee
+        
+        if bezier.sflag != 0 {
             let p1 = GVLUtils.toPointF(bezier.sp, height: height)
             let p2 = GVLUtils.toPointF(bezier.list[0], height: height)
             return GVLUtils.arrow(
@@ -150,6 +159,6 @@ public class GVLEdge {
 // MARK: - Graphviz C API Extensions
 extension UnsafeMutablePointer<Agedge_s> {
     var splines: splines? {
-        getED_spl(self).pointee
+        ed_spl(self).pointee
     }
 }
