@@ -18,13 +18,13 @@ public extension UnsafeMutablePointer where Pointee == Agedge_t {
         }
         return nil
     }
-    var headLabelPos:CGPoint? {
+    var headLabelPos: CGPoint? {
         if let lPos = ed_head_lp(self) {
             return convertZeroPointToNil(CGPoint(gvPoint: lPos.pointee))
         }
         return nil
     }
-    var tailLabelPos:CGPoint? {
+    var tailLabelPos: CGPoint? {
         if let lPos = ed_tail_lp(self) {
             return convertZeroPointToNil(CGPoint(gvPoint: lPos.pointee))
         }

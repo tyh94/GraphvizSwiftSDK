@@ -30,6 +30,10 @@ public class Graph {
         self.gvlGraph = gvlGraph
     }
     
+    public func setBaseParameters(params: [GVGraphParameters: String]) {
+        params.forEach { gvlGraph.setAttribute($0.value, forKey: $0.key) }
+    }
+    
     public convenience init(str: String) {
         self.init(GVLGraph(str: str))
         fillNodesAndEdges()

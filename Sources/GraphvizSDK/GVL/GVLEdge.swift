@@ -20,6 +20,15 @@ public class GVLEdge {
     public var body: UIBezierPath = .init()
     public var headArrow: UIBezierPath?
     public var tailArrow: UIBezierPath?
+    public var arrowheadType: GVEdgeEnding {
+        get { GVEdgeEnding(rawValue: getAttribute(forKey: .arrowhead)) ?? .normal }
+        set { setAttribute(newValue.rawValue, forKey: .arrowhead) }
+    }
+    
+    public var arrowtailType: GVEdgeEnding {
+        get { GVEdgeEnding(rawValue: getAttribute(forKey: .arrowtail)) ?? .normal }
+        set { setAttribute(newValue.rawValue, forKey: .arrowtail) }
+    }
     
     // MARK: - Attribute Management
     public func setAttribute(_ value: String, forKey key: GVEdgeParameters) {
@@ -72,13 +81,13 @@ public class GVLEdge {
         // Create arrows
         if let arrowHead = edge.arrowHead?.revertY(height: graphHeight) {
             let arrowHead2 = cgPath[cgPath.count - 1]
-            let headPath = definePath(pos: arrowHead, type: .normal, otherPoint: arrowHead2)
+            let headPath = definePath(pos: arrowHead, type: arrowheadType, otherPoint: arrowHead2)
             headArrow = headPath
         }
         
         if let arrowTail = edge.arrowTail?.revertY(height: graphHeight) {
             let arrowTail2 = cgPath[0]
-            let tailPath = definePath(pos: arrowTail, type: .normal, otherPoint: arrowTail2)
+            let tailPath = definePath(pos: arrowTail, type: arrowtailType, otherPoint: arrowTail2)
             tailArrow = tailPath
         }
         updateFrames()

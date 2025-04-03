@@ -30,6 +30,10 @@ public class Edge: Equatable {
     public init(gvlEdge: GVLEdge) {
         self.gvlEdge = gvlEdge
     }
+    
+    public func setBaseParameters(params: [GVEdgeParameters: String]) {
+        params.forEach { setAttribute(name: $0.key, value: $0.value) }
+    }
 
     public func getAttribute(name: GVEdgeParameters) -> String {
         gvlEdge.getAttribute(forKey: name)

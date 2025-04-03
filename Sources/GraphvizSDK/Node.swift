@@ -50,6 +50,10 @@ public class Node: Equatable {
     public init(gvlNode: GVLNode) {
         self.gvlNode = gvlNode
     }
+    
+    public func setBaseParameters(params: [GVNodeParameters: String]) {
+        params.forEach { setAttribute(name: $0.key, value: $0.value) }
+    }
 
     public func getAttribute(name: GVNodeParameters) -> String {
         gvlNode.getAttribute(forKey: name)

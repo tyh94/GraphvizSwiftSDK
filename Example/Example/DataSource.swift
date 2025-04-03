@@ -41,7 +41,7 @@ class DataSource {
         let persons = personsPreview
         persons.forEach {
             let node = graph.addNode($0.name)
-            node.shape = .box
+            node.shape = $0.gender == .male ? .box : .ellipse
             node.style = .rounded
         }
         var partnersEdded: Set<PersonId> = []
