@@ -147,7 +147,7 @@ public func finishGraphviz() {
 ///   1. Don't destroy the orignal string before the result is handed over to the C funtion.
 ///   2. Don't use it if the String reference is kept on C side.
 func cString(_ s: String) -> CHAR {
-    return UnsafeMutablePointer<Int8>(mutating: (s as NSString).utf8String!)
+    UnsafeMutablePointer<Int8>(mutating: (s as NSString).utf8String!)
 }
 
 public typealias GVParams = [GVParameter: String]

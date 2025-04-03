@@ -13,7 +13,7 @@ import UIKit
 public typealias GVEdge = UnsafeMutablePointer<Agedge_t>
 
 public extension UnsafeMutablePointer where Pointee == Agedge_t {
-    var labelPos: CGPoint? { //lp
+    var labelPos: CGPoint? {
         if let lPos = ed_lp(self) {
             return convertZeroPointToNil(CGPoint(gvPoint: lPos.pointee))
         }
@@ -100,11 +100,11 @@ public extension UnsafeMutablePointer where Pointee == Agedge_t {
     }
     
     var headPortPos: CGPoint {
-        return pointTransformGraphvizToCGPoint(ed_headPort_pos(self))
+        pointTransformGraphvizToCGPoint(ed_headPort_pos(self))
     }
     
     var tailPortPos: CGPoint {
-        return pointTransformGraphvizToCGPoint(ed_tailPort_pos(self))
+        pointTransformGraphvizToCGPoint(ed_tailPort_pos(self))
     }
     
 

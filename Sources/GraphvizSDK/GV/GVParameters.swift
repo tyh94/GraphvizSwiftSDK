@@ -143,13 +143,13 @@ public enum GVEdgeEnding: String {
     case diamond
 }
 
-public enum GVEdgeStyle: String {
-    case curved
-    case lines
-    case polyLines
-    case orthogonal
-    case splines
-}
+//public enum GVEdgeStyle: String {
+//    case curved
+//    case lines
+//    case polyLines
+//    case orthogonal
+//    case splines
+//}
 
 
 public enum GVRank: String {

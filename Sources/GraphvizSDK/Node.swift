@@ -40,11 +40,18 @@ public class Node: Equatable {
         }
     }
     
+    public var style: GVNodeStyle {
+        get { GVNodeStyle(rawValue: getAttribute(name: .style)) ?? .none }
+        set {
+            setAttribute(name: .style, value: newValue.rawValue)
+        }
+    }
+    
     public init(gvlNode: GVLNode) {
         self.gvlNode = gvlNode
     }
 
-    public func getAttribute(name: GVNodeParameters) -> String? {
+    public func getAttribute(name: GVNodeParameters) -> String {
         gvlNode.getAttribute(forKey: name)
     }
 

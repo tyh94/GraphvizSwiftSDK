@@ -35,7 +35,11 @@ public struct GraphCanvasView: View {
                 let path = Path(node.path().cgPath)
                 context.stroke(path, with: .color(Color(node.borderColor)), lineWidth: CGFloat(node.borderWidth))
                 context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
-                context.draw(Text(node.label).font(Font.system(size: CGFloat(node.fontSize))), in: frame)
+                context.draw(
+                    Text(node.label)
+                        .font(Font.system(size: CGFloat(node.fontSize))),
+                    in: frame
+                )
             }
             
             for edge in graph.edges {

@@ -42,6 +42,7 @@ class DataSource {
         persons.forEach {
             let node = graph.addNode($0.name)
             node.shape = .box
+            node.style = .rounded
         }
         var partnersEdded: Set<PersonId> = []
         

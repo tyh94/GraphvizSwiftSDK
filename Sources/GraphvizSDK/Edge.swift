@@ -14,9 +14,16 @@ public class Edge: Equatable {
     public var color: UIColor = UIColor.black
     public var width: Float = 1.0
     public var weight: Float {
-        get { Float(getAttribute(name: .weight) ?? "") ?? 1 }
+        get { Float(getAttribute(name: .weight)) ?? 1 }
         set {
             setAttribute(name: .weight, value: weight.description)
+        }
+    }
+    
+    public var style: GVEdgeStyle {
+        get { GVEdgeStyle(rawValue: getAttribute(name: .style)) ?? .none }
+        set {
+            setAttribute(name: .style, value: newValue.rawValue)
         }
     }
 
@@ -24,7 +31,7 @@ public class Edge: Equatable {
         self.gvlEdge = gvlEdge
     }
 
-    public func getAttribute(name: GVEdgeParameters) -> String? {
+    public func getAttribute(name: GVEdgeParameters) -> String {
         gvlEdge.getAttribute(forKey: name)
     }
 

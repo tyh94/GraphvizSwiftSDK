@@ -20,9 +20,9 @@ public  struct NodeLayout: Equatable {
         self.size = node.size
     }
     public static var zero: NodeLayout {
-        return NodeLayout(pos: .zero, size: .zero)
+        NodeLayout(pos: .zero, size: .zero)
     }
     public var rect: CGRect {
-        return CGRect(midPoint: self.pos, size: self.size)
+        CGRect(midPoint: self.pos, size: self.size)
     }
 }
