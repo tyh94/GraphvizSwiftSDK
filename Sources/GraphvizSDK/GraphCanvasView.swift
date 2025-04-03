@@ -26,28 +26,29 @@ public struct GraphCanvasView: View {
             // TODO: плохо работает
                 .scaledBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
             for node in graph.nodes {
-                let frame = node.frame()!.applying(globalOffset)
+                let frame = node.frame().applying(globalOffset)
                 
                 context.translateBy(
                     x: frame.origin.x,
                     y: frame.origin.y
                 )
-                let path = Path(node.path()!.cgPath)
+                let path = Path(node.path().cgPath)
                 context.stroke(path, with: .color(Color(node.borderColor)), lineWidth: CGFloat(node.borderWidth))
                 context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
                 context.draw(Text(node.label).font(Font.system(size: CGFloat(node.fontSize))), in: frame)
             }
             
             for edge in graph.edges {
-                let frame = edge.frame()!.applying(globalOffset)
+                let frame = edge.frame().applying(globalOffset)
                 let edgeWidth = CGFloat(edge.width)
                 context.translateBy(
                     x: frame.origin.x,
                     y: frame.origin.y
                 )
-                if let path = edge.body()?.cgPath {
-                    context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
-                }
+                
+                let path = edge.body().cgPath
+                context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
+                
                 if let path = edge.headArrow()?.cgPath {
                     context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
                 }

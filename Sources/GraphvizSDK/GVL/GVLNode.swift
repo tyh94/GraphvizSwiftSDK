@@ -11,7 +11,7 @@ import CoreGraphics
 
 public class GVLNode {
     // MARK: - Properties
-    public private(set) var bezierPath: UIBezierPath?
+    public private(set) var bezierPath: UIBezierPath = .init()
     public private(set) var frame: CGRect = .zero
     public private(set) var bounds: CGRect = .zero
     public private(set) var origin: CGPoint = .zero

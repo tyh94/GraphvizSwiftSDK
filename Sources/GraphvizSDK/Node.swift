@@ -52,15 +52,15 @@ public class Node: Equatable {
         gvlNode.setAttribute(value, forKey: name)
     }
 
-    public func frame() -> CGRect? {
+    public func frame() -> CGRect {
         gvlNode.frame
     }
 
-    public func bounds() -> CGRect? {
+    public func bounds() -> CGRect {
         gvlNode.bounds
     }
 
-    public func path() -> UIBezierPath? {
+    public func path() -> UIBezierPath {
         gvlNode.bezierPath
     }
 

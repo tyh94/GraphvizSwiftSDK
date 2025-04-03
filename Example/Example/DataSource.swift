@@ -46,16 +46,6 @@ class DataSource {
         var partnersEdded: Set<PersonId> = []
         
         persons.forEach { person in
-            person.parents.forEach { childId in
-                guard let child = persons.first(where: { $0.id == childId }),
-                      let from = graph.nodes.first(where: { $0.label == person.name }),
-                      let to = graph.nodes.first(where: { $0.label == child.name }) else {
-                    return
-                }
-                let edge = graph.addEdge(from: from, to: to)
-                edge.setNoDirection()
-            }
-            
             person.children.forEach { childId in
                 guard let child = persons.first(where: { $0.id == childId }),
                       let from = graph.nodes.first(where: { $0.label == person.name }),
@@ -213,7 +203,7 @@ let personsPreview: [Person] = [
     Person(id:  6, name: "Boyfriend", parents: [], partners:[5], children: [7], gender: .male),
     Person(id:  7, name: "Son Lat", parents: [5,6], partners:[], children: [], gender: .male),
     Person(id:  8, name: "Jeff", parents: [10,11], partners:[9], children: [], gender: .male),
-    Person(id:  9, name: "Maggie", parents: [13,14], partners:[8], children: [], gender: .female),
+    Person(id:  9, name: "Maggie", parents: [13,14], partners:[8], children: [1], gender: .female),
     Person(id: 10, name: "Bob", parents: [12], partners:[11], children: [8], gender: .male),
     Person(id: 11, name: "Mary", parents: [], partners:[10,14], children: [8], gender: .female),
     Person(id: 12, name: "John", parents: [], partners:[], children: [10], gender: .male),

@@ -13,8 +13,8 @@ public class GVLEdge {
     // MARK: - Properties
     private var _bounds: CGRect = .zero
     private var _frame: CGRect = .zero
-    private var _bezierPath: UIBezierPath?
-    private var _body: UIBezierPath?
+    private var _bezierPath: UIBezierPath = .init()
+    private var _body: UIBezierPath = .init()
     private var _head: UIBezierPath?
     private var _tail: UIBezierPath?
     
@@ -25,8 +25,8 @@ public class GVLEdge {
     // MARK: - Public Accessors
     public var frame: CGRect { _frame }
     public var bounds: CGRect { _bounds }
-    public var path: UIBezierPath? { _bezierPath }
-    public var body: UIBezierPath? { _body }
+    public var path: UIBezierPath { _bezierPath }
+    public var body: UIBezierPath { _body }
     public var headArrow: UIBezierPath? { _head }
     public var tailArrow: UIBezierPath? { _tail }
     
@@ -82,7 +82,7 @@ public class GVLEdge {
     
     // MARK: - Private Methods
     private func updateFrames() {
-        _frame = _body?.bounds ?? .zero
+        _frame = _body.bounds
         
         if let headBounds = _head?.bounds {
             _frame = _frame.union(headBounds)

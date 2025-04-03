@@ -36,15 +36,15 @@ public class Edge: Equatable {
         gvlEdge.setAttribute(GVEdgeParamDir.none.rawValue, forKey: .dir)
     }
 
-    public func frame() -> CGRect? {
+    public func frame() -> CGRect {
         gvlEdge.frame
     }
 
-    public func bounds() -> CGRect? {
+    public func bounds() -> CGRect {
         gvlEdge.bounds
     }
 
-    public func body() -> UIBezierPath? {
+    public func body() -> UIBezierPath {
         gvlEdge.body
     }
 
