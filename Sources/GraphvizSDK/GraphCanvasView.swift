@@ -37,7 +37,8 @@ public struct GraphCanvasView: View {
                 context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
                 context.draw(
                     Text(node.label)
-                        .font(Font.system(size: CGFloat(node.fontSize))),
+                        .font(Font.system(size: CGFloat(node.fontSize)))
+                        .foregroundStyle(Color(node.textColor)),
                     at: frame.center
                 )
             }
