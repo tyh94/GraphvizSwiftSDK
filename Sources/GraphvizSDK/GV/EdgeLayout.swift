@@ -59,33 +59,33 @@ public struct EdgeLayout : Equatable, Hashable {
         arrowTail2 = cgPath[0]
     }
     
-    public func getHeadPath(type: GVEdgeEnding) -> CGPath {
+    public func getHeadPath(type: GVEdgeEnding) -> UIBezierPath {
         return definePath(pos: arrowHead, type: type, otherPoint: arrowHead2)
     }
     
-    public func getTailPath(type: GVEdgeEnding) -> CGPath {
+    public func getTailPath(type: GVEdgeEnding) -> UIBezierPath {
         return definePath(pos: arrowTail, type: type, otherPoint: arrowTail2)
     }
     
-    private func definePath (pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -> CGPath {
+    private func definePath (pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -> UIBezierPath {
         switch type {
             case .normal :
 //                let secondPos = pos + CGVector(from: pos, to: otherPoint).normalized() * CGFloat(10.0)
 //                return NSBezierPath(arrowHeadWithStartPoint: secondPos, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: secondPos.distance(to: pos)).cgPath
-                return UIBezierPath(arrowHeadWithStartPoint: otherPoint, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: otherPoint.distance(to: pos)).cgPath
+            return UIBezierPath.arrow(startPoint: otherPoint, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: otherPoint.distance(to: pos))
             case .dot:
 //                let secondPos = pos + CGVector(from: pos, to: otherPoint).normalized() * CGFloat(8.0)
 //                return NSBezierPath(circleBetween: pos, and: secondPos).cgPath
-                return UIBezierPath(circleBetween: pos, and: otherPoint).cgPath
+                return UIBezierPath(circleBetween: pos, and: otherPoint)
             case .none:
                 let path = UIBezierPath()
                 path.move(to: pos)
             path.addLine(to: otherPoint)
 //                debugPrint("none - length \(CGVector(from: pos, to: otherPoint).length())")
-                return path.cgPath
+                return path
             case  .diamond:
 //                let secondPos = pos + CGVector(from: pos, to: otherPoint) * CGFloat(10.0)
-                return UIBezierPath(diamondBetween: pos, and: otherPoint).cgPath
+                return UIBezierPath(diamondBetween: pos, and: otherPoint)
         }
     }
     

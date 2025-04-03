@@ -9,7 +9,6 @@
 @preconcurrency import CGraphvizSDK
 import UIKit
 
-
 public typealias GVEdge = UnsafeMutablePointer<Agedge_t>
 
 public extension UnsafeMutablePointer where Pointee == Agedge_t {
@@ -54,16 +53,7 @@ public extension UnsafeMutablePointer where Pointee == Agedge_t {
     }
     
     var spline: GVSplines? {
-        guard let t = pointee.base.data else {
-            return nil
-        }
-        guard let spline = t.withMemoryRebound(to: Agedgeinfo_t.self, capacity: 1, {return $0.pointee.spl})  else {
-            return nil
-        }
-        if spline.pointee.size != 1 {
-            print("an edge with size == \(spline.pointee.size)")
-        }
-        return spline
+        ed_spl(self)
     }
     
     func getPath() throws -> [CGPoint]  {
@@ -81,20 +71,23 @@ public extension UnsafeMutablePointer where Pointee == Agedge_t {
     
     var arrowHead: CGPoint? {
         guard let spline = spline, let bezier = spline.pointee.list else {
-            fatalError()
-            
+            return nil
+        }
+        if bezier.pointee.eflag == 0 {
+            return nil
         }
         let result = bezier.pointee.ep
-//        return convertZeroPointToNil(pointTransformGraphvizToCGPoint(result))
         return pointTransformGraphvizToCGPoint(result)
     }
     
     var arrowTail: CGPoint? {
         guard let spline = spline, let bezier = spline.pointee.list else {
-            fatalError()
+            return nil
+        }
+        if bezier.pointee.sflag == 0 {
+            return nil
         }
         let result = bezier.pointee.sp
-//        return convertZeroPointToNil(pointTransformGraphvizToCGPoint(result))
         return pointTransformGraphvizToCGPoint(result)
    
     }
@@ -106,7 +99,5 @@ public extension UnsafeMutablePointer where Pointee == Agedge_t {
     var tailPortPos: CGPoint {
         pointTransformGraphvizToCGPoint(ed_tailPort_pos(self))
     }
-    
-
 }
 

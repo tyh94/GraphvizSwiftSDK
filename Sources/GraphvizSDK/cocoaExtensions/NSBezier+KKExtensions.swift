@@ -13,16 +13,18 @@ import UIKit
 //  from: https://gist.github.com/mwermuth/07825df27ea28f5fc89a
 extension UIBezierPath {
 
-    class func getAxisAlignedArrowPoints( points: inout [CGPoint], forLength: CGFloat, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat ) {
-
+    class func getAxisAlignedArrowPoints(forLength: CGFloat, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat ) -> [CGPoint] {
+        
         let tailLength = forLength - headLength
-        points.append(CGPoint(x: 0, y: tailWidth/2))
-        points.append(CGPoint(x: tailLength, y: tailWidth/2))
-        points.append(CGPoint(x: tailLength, y: headWidth/2))
-        points.append(CGPoint(x: forLength, y: 0))
-        points.append(CGPoint(x: tailLength, y: -headWidth/2))
-        points.append(CGPoint(x: tailLength, y: -tailWidth/2))
-        points.append(CGPoint(x: 0, y: -tailWidth/2))
+        return [
+            CGPoint(x: 0, y: tailWidth/2),
+            CGPoint(x: tailLength, y: tailWidth/2),
+            CGPoint(x: tailLength, y: headWidth/2),
+            CGPoint(x: forLength, y: 0),
+            CGPoint(x: tailLength, y: -headWidth/2),
+            CGPoint(x: tailLength, y: -tailWidth/2),
+            CGPoint(x: 0, y: -tailWidth/2),
+        ]
     }
 
     class func transformForStartPoint(startPoint: CGPoint, endPoint: CGPoint, length: CGFloat) -> CGAffineTransform {
@@ -32,29 +34,22 @@ extension UIBezierPath {
         return CGAffineTransform(a: cosine, b: sine, c: -sine, d: cosine, tx: startPoint.x, ty: startPoint.y)
     }
 
-    public convenience init(arrowHeadWithStartPoint startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) {
-        self.init()
-        let xdiff: Float = Float(endPoint.x) - Float(startPoint.x)
-        let ydiff: Float = Float(endPoint.y) - Float(startPoint.y)
-        let length = CGFloat(hypotf(xdiff, ydiff))
+    public class func arrow(startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) -> UIBezierPath {
+        let length = hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
         if length.isZero {
             print("length between start and end isZero. Why?")
-            return
         }
-        //        Swift.print("length \(length)")
 
-        var points = [CGPoint]()
-        UIBezierPath.getAxisAlignedArrowPoints(points: &points, forLength: CGFloat(length), tailWidth: tailWidth, headWidth: headWidth, headLength: headLength)
+        let points = UIBezierPath.getAxisAlignedArrowPoints(forLength: length, tailWidth: tailWidth, headWidth: headWidth, headLength: headLength)
 
         let transform: CGAffineTransform = UIBezierPath.transformForStartPoint(startPoint: startPoint, endPoint: endPoint, length: length)
 
-        move(to: points[0].applying(transform))
-        for p in 1..<points.count {
-            //TODO:
-//            line(to: points[p].applying(transform))
-        }
-        close()
-
+        let path = CGMutablePath()
+        path.addLines(between: points, transform: transform)
+        
+        let uiPath = UIBezierPath(cgPath: path)
+        uiPath.close()
+        return uiPath
     }
 
 }

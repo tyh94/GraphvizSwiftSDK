@@ -102,8 +102,14 @@ func pointTransformGraphvizToCGPoint(_ point: pointf_s) -> CGPoint {
     CGPoint(gvPoint: point)
 }
 
+extension CGPoint {
+    func revertY(height: CGFloat) -> CGPoint {
+        CGPoint(x: x, y: height - y)
+    }
+}
+
  extension CGPoint : Hashable {
-    public  func hash(into hasher: inout Hasher){
+    public func hash(into hasher: inout Hasher){
         hasher.combine(x)
         hasher.combine(y)
     }

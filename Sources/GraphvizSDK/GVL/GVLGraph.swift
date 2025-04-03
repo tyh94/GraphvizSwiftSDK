@@ -104,7 +104,7 @@ public class GVLGraph {
         
         var data: CHAR?
         var len: size_t = 0
-        gvRenderData(context, graph, "dot", &data, &len)
+        gvRenderData(context, graph, "svg", &data, &len)
         if let data {
             print("==========================")
             print(String(cString: data))

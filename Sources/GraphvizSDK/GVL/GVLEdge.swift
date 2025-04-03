@@ -10,25 +10,16 @@ import UIKit
 import CoreGraphics
 
 public class GVLEdge {
-    // MARK: - Properties
-    private var _bounds: CGRect = .zero
-    private var _frame: CGRect = .zero
-    private var _bezierPath: UIBezierPath = .init()
-    private var _body: UIBezierPath = .init()
-    private var _head: UIBezierPath?
-    private var _tail: UIBezierPath?
-    
     // Graphviz pointers
     let edge: GVEdge
     private let parent: GVGraph
     
     // MARK: - Public Accessors
-    public var frame: CGRect { _frame }
-    public var bounds: CGRect { _bounds }
-    public var path: UIBezierPath { _bezierPath }
-    public var body: UIBezierPath { _body }
-    public var headArrow: UIBezierPath? { _head }
-    public var tailArrow: UIBezierPath? { _tail }
+    public var frame: CGRect = .zero
+    public var bounds: CGRect = .zero
+    public var body: UIBezierPath = .init()
+    public var headArrow: UIBezierPath?
+    public var tailArrow: UIBezierPath?
     
     // MARK: - Attribute Management
     public func setAttribute(_ value: String, forKey key: GVEdgeParameters) {
@@ -65,100 +56,80 @@ public class GVLEdge {
     // MARK: - Layout Preparation
     public func prepare() {
         let splines = ed_spl(edge).pointee
-        let graphHeight = GVLUtils.getHeight(for: parent)
+        let graphHeight = parent.height
         
-        // Convert main spline
-        let bodyPath = GVLUtils.toPath(splines: splines, height: graphHeight)
-        _body = UIBezierPath(cgPath: bodyPath)
-        _bezierPath = UIBezierPath(cgPath: bodyPath)
+        
+        let cgPath = try! edge.getPath().map { $0.revertY(height: graphHeight) }
+        let buildPath = CGMutablePath()
+        buildPath.move(to: cgPath[0])
+        
+        for i in stride(from: 1, to: cgPath.count, by: 3) {
+            buildPath.addCurve(to: cgPath[i + 2], control1: cgPath[i], control2: cgPath[i + 1])
+        }
+        
+        body = UIBezierPath(cgPath: buildPath)
         
         // Create arrows
-        _head = createHeadArrow(from: splines, height: graphHeight)
-        _tail = createTailArrow(from: splines, height: graphHeight)
+        if let arrowHead = edge.arrowHead?.revertY(height: graphHeight) {
+            let arrowHead2 = cgPath[cgPath.count - 1]
+            let headPath = definePath(pos: arrowHead, type: .normal, otherPoint: arrowHead2)
+            headArrow = headPath
+        }
         
+        if let arrowTail = edge.arrowTail?.revertY(height: graphHeight) {
+            let arrowTail2 = cgPath[0]
+            let tailPath = definePath(pos: arrowTail, type: .normal, otherPoint: arrowTail2)
+            tailArrow = tailPath
+        }
         updateFrames()
         normalizePaths()
     }
     
     // MARK: - Private Methods
     private func updateFrames() {
-        _frame = _body.bounds
+        frame = body.bounds
         
-        if let headBounds = _head?.bounds {
-            _frame = _frame.union(headBounds)
+        if let headBounds = headArrow?.bounds {
+            frame = frame.union(headBounds)
         }
         
-        if let tailBounds = _tail?.bounds {
-            _frame = _frame.union(tailBounds)
+        if let tailBounds = tailArrow?.bounds {
+            frame = frame.union(tailBounds)
         }
         
-        _bounds = CGRect(
+        bounds = CGRect(
             origin: .zero,
             size: CGSize(
-                width: _frame.width,
-                height: _frame.height
+                width: frame.width,
+                height: frame.height
             )
         )
     }
     
     private func normalizePaths() {
         let translation = CGAffineTransform(
-            translationX: -_frame.origin.x,
-            y: -_frame.origin.y
+            translationX: -frame.origin.x,
+            y: -frame.origin.y
         )
         
-        [_body, _head, _tail].forEach {
+        [body, headArrow, tailArrow].forEach {
             $0?.apply(translation)
         }
     }
     
-    private func createHeadArrow(
-        from splines: splines,
-        height: CGFloat
-    ) -> UIBezierPath? {
-        let bezier = splines.list.pointee
-        
-        if bezier.eflag != 0 {
-            let lastIndex = Int(bezier.size) - 1
-            let p1 = GVLUtils.toPointF(bezier.list[lastIndex], height: height)
-            let p2 = GVLUtils.toPointF(bezier.ep, height: height)
-            return GVLUtils.arrow(
-                from: p1,
-                to: p2,
-                tailWidth: 0.5,
-                headWidth: 8,
-                headLength: 12
-            )
+    private func definePath (pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -> UIBezierPath {
+        switch type {
+        case .normal :
+            return UIBezierPath.arrow(startPoint: otherPoint, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: otherPoint.distance(to: pos))
+        case .dot:
+            return UIBezierPath(circleBetween: pos, and: otherPoint)
+        case .none:
+            let path = UIBezierPath()
+            path.move(to: pos)
+            path.addLine(to: otherPoint)
+            return path
+        case  .diamond:
+            return UIBezierPath(diamondBetween: pos, and: otherPoint)
         }
-        
-        return nil
-    }
-    
-    private func createTailArrow(
-        from splines: splines,
-        height: CGFloat
-    ) -> UIBezierPath? {
-        let bezier = splines.list.pointee
-        
-        if bezier.sflag != 0 {
-            let p1 = GVLUtils.toPointF(bezier.sp, height: height)
-            let p2 = GVLUtils.toPointF(bezier.list[0], height: height)
-            return GVLUtils.arrow(
-                from: p1,
-                to: p2,
-                tailWidth: 0.5,
-                headWidth: 8,
-                headLength: 12
-            )
-        }
-        
-        return nil
-    }
-}
-
-// MARK: - Graphviz C API Extensions
-extension UnsafeMutablePointer<Agedge_s> {
-    var splines: splines? {
-        ed_spl(self).pointee
     }
 }
