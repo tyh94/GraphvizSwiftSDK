@@ -9,15 +9,20 @@
 import SwiftUI
 
 public struct GraphCanvasView: View {
-    public let graph: Graph
+    let graph: Graph
+    let onTapNode: ((Node) -> ())?
     
     @State private var location = CGPoint.zero
     @GestureState private var startLocation: CGPoint? = nil
     @State private var currentZoom = 0.0
     @State private var totalZoom = 1.0
     
-    public init(graph: Graph) {
+    public init(
+        graph: Graph,
+        tapNode: ((Node) -> ())? = nil
+    ) {
         self.graph = graph
+        self.onTapNode = tapNode
     }
     
     public var body: some View {
@@ -81,16 +86,26 @@ public struct GraphCanvasView: View {
                     startLocation = startLocation ?? location // 2
                 }
         )
-        //        .gesture(
-        //            MagnifyGesture()
-        //                .onChanged { value in
-        //                    currentZoom = value.magnification - 1
-        //                }
-        //                .onEnded { value in
-        //                    totalZoom += currentZoom
-        //                    currentZoom = 0
-        //                }
-        //        )
+        .gesture(
+            MagnifyGesture()
+                .onChanged { value in
+                    currentZoom = value.magnification - 1
+                }
+                .onEnded { value in
+                    totalZoom += currentZoom
+                    currentZoom = 0
+                }
+        )
+        .onTapGesture { tapLocation in
+            print(tapLocation)
+            let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
+            for node in graph.nodes {
+                let frame = node.frame().applying(globalOffset)
+                if frame.contains(tapLocation) {
+                    self.onTapNode?(node)
+                }
+            }
+        }
         .onAppear {
             graph.applyLayout()
             // Центрируем график при старте
