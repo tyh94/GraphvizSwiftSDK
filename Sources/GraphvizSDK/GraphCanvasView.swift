@@ -23,15 +23,20 @@ public struct GraphCanvasView: View {
     ) {
         self.graph = graph
         self.onTapNode = tapNode
+        if let firstNode = graph.nodes.first?.frame() {
+            location = CGPoint(
+                x: -firstNode.midX,
+                y: -firstNode.midY
+            )
+        }
     }
     
     public var body: some View {
         Canvas { context, size in
-            let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
-            // TODO: плохо работает
-                .scaledBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
+            context.translateBy(x: location.x, y: location.y)
+            context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
             for node in graph.nodes {
-                let frame = node.frame().applying(globalOffset)
+                let frame = node.frame()
                 
                 context.translateBy(
                     x: frame.origin.x,
@@ -49,7 +54,7 @@ public struct GraphCanvasView: View {
             }
             
             for edge in graph.edges {
-                let frame = edge.frame().applying(globalOffset)
+                let frame = edge.frame()
                 let edgeWidth = CGFloat(edge.width)
                 context.translateBy(
                     x: frame.origin.x,
@@ -74,7 +79,7 @@ public struct GraphCanvasView: View {
         .gesture(
             DragGesture()
                 .onChanged { value in
-                    var newLocation = startLocation ?? location // 3
+                    var newLocation = startLocation ?? location
                     newLocation.x += value.translation.width
                     newLocation.y += value.translation.height
                     self.location = newLocation
@@ -83,7 +88,7 @@ public struct GraphCanvasView: View {
                     }
                 }
                 .updating($startLocation) { (value, startLocation, transaction) in
-                    startLocation = startLocation ?? location // 2
+                    startLocation = startLocation ?? location
                 }
         )
         .gesture(
@@ -109,12 +114,13 @@ public struct GraphCanvasView: View {
         .onAppear {
             graph.applyLayout()
             // Центрируем график при старте
-            if let firstNode = graph.nodes.first?.frame() {
-                location = CGPoint(
-                    x: -firstNode.midX,
-                    y: -firstNode.midY
-                )
-            }
+            // TODO: не работает
+//            if let firstNode = graph.nodes.first?.frame() {
+//                location = CGPoint(
+//                    x: -firstNode.midX,
+//                    y: -firstNode.midY
+//                )
+//            }
         }
     }
 }

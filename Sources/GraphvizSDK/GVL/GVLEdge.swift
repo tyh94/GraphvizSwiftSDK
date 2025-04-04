@@ -126,7 +126,7 @@ public class GVLEdge {
         }
     }
     
-    private func definePath (pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -> UIBezierPath {
+    private func definePath(pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -> UIBezierPath {
         switch type {
         case .normal :
             return UIBezierPath.arrow(startPoint: otherPoint, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: otherPoint.distance(to: pos))

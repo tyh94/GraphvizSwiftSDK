@@ -66,9 +66,6 @@ class DataSource {
 //                let to = graph.nodes.first(where: { $0.label == partner.name })!
                 
                 let diamondName = "diamond_\(arc4random())"
-                let diamond = graph.addNode(diamondName)
-                diamond.label = ""
-                diamond.shape = .diamond
 //                diamond.width = 0.25
 //                diamond.height = 0.25
                 

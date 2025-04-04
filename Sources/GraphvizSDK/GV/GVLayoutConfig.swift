@@ -8,7 +8,6 @@
 
 @preconcurrency import CGraphvizSDK
 import Foundation
-//import Vithanco
 
 public struct GVLayoutConfig {
     public let name: String
@@ -47,17 +46,13 @@ public struct GVLayoutConfig {
             gvRender(gvc, g, second.rawValue, nil)
         }
         if saveGVOutput {
-            print("now saving Graphviz Graph to file!")
             var data: UnsafeMutablePointer<CChar>?
             var len: size_t = 0
-            gvRenderData(gvc, g, "svg", &data, &len)
+            gvRenderData(gvc, g, "dot", &data, &len)
             if let data {
                 print(String(cString: data))
             }
-//            gvRenderFilename(gvc, g, "png", cString(("~/Downloads/Graphviz.png" as NSString).expandingTildeInPath))
-            //        gvRenderFilename(gvc, g, "cmap", cString("/Users/klauskneupner/Downloads/out.map"))
             
-            //            gvRender(gvc, g, "plain", stdout);
         }
     }
     
