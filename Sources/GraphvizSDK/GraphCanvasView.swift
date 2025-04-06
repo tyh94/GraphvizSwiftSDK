@@ -35,6 +35,9 @@ public struct GraphCanvasView: View {
         Canvas { context, size in
             context.translateBy(x: location.x, y: location.y)
             context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
+            if graph.nodes.first?.frame().size == .zero {
+                graph.applyLayout()
+            }
             for node in graph.nodes {
                 let frame = node.frame()
                 
