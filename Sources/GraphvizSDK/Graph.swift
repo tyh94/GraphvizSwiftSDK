@@ -16,11 +16,6 @@ public class Graph {
     public var size: CGSize {
         gvlGraph.size
     }
-    public var splines: GVParamValueSplines = .ortho {
-        didSet {
-            gvlGraph.setAttribute(splines.rawValue, forKey: .splines)
-        }
-    }
 
     public convenience init() {
         self.init(GVLGraph())
