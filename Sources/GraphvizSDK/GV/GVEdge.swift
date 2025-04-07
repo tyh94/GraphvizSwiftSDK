@@ -56,9 +56,10 @@ public extension UnsafeMutablePointer where Pointee == Agedge_t {
         ed_spl(self)
     }
     
-    func getPath() throws -> [CGPoint]  {
-        guard let spline = spline, let bezier = spline.pointee.list else {  //warning! this could be an array, see warning log in var spine: GVSlines?
-            throw GraphvizError.noPath
+    func getPath() -> [CGPoint]?  {
+        guard let spline = spline, let bezier = spline.pointee.list else {
+            // if setup no splines
+            return nil
         }
         let nrPoints = Int(bezier.pointee.size)
         let pointer = UnsafeRawPointer(bezier.pointee.list).bindMemory(to: pointf_s.self, capacity: nrPoints)

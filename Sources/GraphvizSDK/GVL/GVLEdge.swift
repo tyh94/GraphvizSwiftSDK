@@ -64,11 +64,10 @@ public class GVLEdge {
     
     // MARK: - Layout Preparation
     public func prepare() {
-        let splines = ed_spl(edge).pointee
+        guard let path = try? edge.getPath() else { return }
         let graphHeight = parent.height
         
-        
-        let cgPath = try! edge.getPath().map { $0.revertY(height: graphHeight) }
+        let cgPath = path.map { $0.revertY(height: graphHeight) }
         let buildPath = CGMutablePath()
         buildPath.move(to: cgPath[0])
         

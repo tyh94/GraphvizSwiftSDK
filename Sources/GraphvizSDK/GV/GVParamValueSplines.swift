@@ -8,7 +8,10 @@
 
 import UIKit
 
+// https://graphviz.org/docs/attrs/splines/
 public enum GVParamValueSplines: String {
+    case none
+    case line
     case spline
     case polyline
     case ortho
