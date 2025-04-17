@@ -8,6 +8,7 @@
 @preconcurrency import CGraphvizSDK
 import Foundation
 import CoreGraphics
+import OSLog
 
 public class GVLGraph {
     private var graph: GVGraph
@@ -104,11 +105,11 @@ public class GVLGraph {
         
         var data: CHAR?
         var len: size_t = 0
-        gvRenderData(context, graph, "svg", &data, &len)
+        gvRenderData(context, graph, "dot", &data, &len)
         if let data {
-            print("==========================")
-            print(String(cString: data))
-            print("==========================")
+            Logger.graphviz.debug(message: "==========================")
+            Logger.graphviz.debug(message: String(cString: data))
+            Logger.graphviz.debug(message: "==========================")
         }
         
         nodes.forEach { $0.prepare() }

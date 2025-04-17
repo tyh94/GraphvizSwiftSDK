@@ -5,11 +5,10 @@
 //  Created by Татьяна Макеева on 25.03.2025.
 //
 
-//#if SWIFT_PACKAGE
 import CGraphvizSDK
-//#endif
 import CoreGraphics
 import UIKit
+import OSLog
 
 public enum NodeShapeType: String {
     case rectangle = "rectangle"
@@ -36,7 +35,7 @@ public final class GVLUtils {
     
     public static func toPolygon(_ poly: polygon_t, width: CGFloat, height: CGFloat) -> [CGPoint] {
         guard poly.peripheries == 1 else {
-            print("Unsupported number of peripheries \(poly.peripheries)")
+            Logger.graphviz.warning(message: "Unsupported number of peripheries \(poly.peripheries)")
             return []
         }
         

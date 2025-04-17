@@ -8,6 +8,7 @@
 
 @preconcurrency import CGraphvizSDK
 import Foundation
+import OSLog
 
 public struct GVLayoutConfig {
     public let name: String
@@ -50,9 +51,8 @@ public struct GVLayoutConfig {
             var len: size_t = 0
             gvRenderData(gvc, g, "dot", &data, &len)
             if let data {
-                print(String(cString: data))
+                Logger.graphviz.debug(message: String(cString: data))
             }
-            
         }
     }
     

@@ -105,7 +105,6 @@ public struct GraphCanvasView: View {
                 }
         )
         .onTapGesture { tapLocation in
-            print(tapLocation)
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
             for node in graph.nodes {
                 let frame = node.frame().applying(globalOffset)

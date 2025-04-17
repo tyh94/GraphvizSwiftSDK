@@ -6,6 +6,7 @@
 //  Copyright © 2017 Klaus Kneupner. All rights reserved.
 //
 
+import OSLog
 import UIKit
 //
 //fileprivate let logger = Logger(label: "com.vithanco.swiftgraphviz.NSBezierPath")
@@ -37,7 +38,7 @@ extension UIBezierPath {
     public class func arrow(startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) -> UIBezierPath {
         let length = hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
         if length.isZero {
-            print("length between start and end isZero. Why?")
+            Logger.graphviz.warning("length between start and end isZero. Why?")
         }
 
         let points = UIBezierPath.getAxisAlignedArrowPoints(forLength: length, tailWidth: tailWidth, headWidth: headWidth, headLength: headLength)
