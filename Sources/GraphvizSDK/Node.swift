@@ -8,6 +8,7 @@
 import UIKit
 
 public class Node: Equatable {
+    // TODO: add image https://graphviz.org/docs/attrs/image/
     let gvlNode: GVLNode
 
     public var label: String {
@@ -16,9 +17,9 @@ public class Node: Equatable {
     }
     public var color: UIColor = UIColor.white
     public var highlihtedColor: UIColor = UIColor.lightGray
-    public var borderColor: UIColor = UIColor.black
-    public var borderWidth: Float = 1.0
-    public var textColor: UIColor = UIColor.black
+    public var borderColor: UIColor = UIColor.black // TODO: color https://graphviz.org/docs/attrs/color/
+    public var borderWidth: Float = 1.0 // TODO: penwidth https://graphviz.org/docs/attrs/penwidth/
+    public var textColor: UIColor = UIColor.black // TODO: fontcolor  https://graphviz.org/docs/attrs/fontcolor/
     public var fontSize: Int = 14 {
         didSet {
             setAttribute(name: .fontsize, value: fontSize.description)

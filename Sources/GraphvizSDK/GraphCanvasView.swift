@@ -142,7 +142,33 @@ extension CGRect {
 }
 
 #Preview {
-    GraphCanvasView(graph: demoGraph())
+    GraphCanvasView(graph: rankGraph())
+}
+
+func rankGraph() -> Graph {
+    Graph(str: """
+        digraph G {
+          edge [dir=none];
+          node [shape=box];
+          graph [splines=ortho];
+
+          "Herb"      [shape=box, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
+          "Homer"     [shape=box, regular=0, color="blue", style="bold, filled" fillcolor="lightblue"] ;
+          "Abraham"   [shape=box, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
+          "Mona"      [shape=oval, regular=0, color="red", style="filled" fillcolor="pink"] ;
+          
+          a1 [shape=diamond,label="",height=0.25,width=0.25];
+          b1 [shape=circle,label="",height=0.01,width=0.01];
+          b2 [shape=circle,label="",height=0.01,width=0.01];
+          b3 [shape=circle,label="",height=0.01,width=0.01];
+          a1 -> b2
+          b1 -> Herb
+          b3 -> Homer
+          {rank=same; Abraham -> a1 -> Mona};
+          {rank=same; b1 -> b2 -> b3}
+          {rank=same; Herb; Homer};
+        }
+        """)
 }
 
 func demoGraph() -> Graph {

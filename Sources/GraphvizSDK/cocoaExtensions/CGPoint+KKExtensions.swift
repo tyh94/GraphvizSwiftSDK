@@ -108,18 +108,6 @@ extension CGPoint {
     }
 }
 
- extension CGPoint : Hashable {
-    public func hash(into hasher: inout Hasher){
-        hasher.combine(x)
-        hasher.combine(y)
-    }
-}
-//
-//func ==(lhs: CGPoint, rhs: CGPoint) -> Bool {
-//    return lhs.distance(to: rhs) < 0.000001 //CGPointEqualToPoint(lhs, rhs)
-//}
-
-
 
 
 public func + (left: CGPoint, right: CGPoint) -> CGPoint {

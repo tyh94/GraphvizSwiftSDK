@@ -17,6 +17,7 @@ public enum GVNodeShape: String {
     case star
     case ellipse
     case circle
+    case oval
     case triangle
     case mDiamond = "Mdiamond"
     case mSquare = "Msquare"
