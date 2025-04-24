@@ -37,6 +37,23 @@ extension UnsafeMutablePointer where Pointee == Agnode_t  {
         return CGRect(midPoint: mid, size: CGSize(width: w, height: h))
     }
     
+    public var nodeType: GVNodeShape? {
+        guard let shape = nd_shape(self),
+              let shapeName = shape.pointee.name else {
+            return nil
+        }
+        
+        let type = String(cString: shapeName)
+        
+        return GVNodeShape(rawValue: type)
+    }
+    
+    public var polygon: polygon_t? {
+        guard let shapeInfoPtr = nd_shape_info(self) else {
+            return nil
+        }
+        return shapeInfoPtr.assumingMemoryBound(to: polygon_t.self).pointee
+    }
 }
 
 extension CGRect{

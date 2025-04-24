@@ -10,19 +10,6 @@ import CoreGraphics
 import UIKit
 import OSLog
 
-public enum NodeShapeType: String {
-    case rectangle = "rectangle"
-    case box = "box"
-    case hexagon = "hexagon"
-    case polygon = "polygon"
-    case diamond = "diamond"
-    case mDiamond = "Mdiamond"
-    case mSquare = "Msquare"
-    case star = "star"
-    case ellipse
-    case circle
-}
-
 public final class GVLUtils {
     
     // MARK: - Graph Dimensions
@@ -50,7 +37,7 @@ public final class GVLUtils {
     
     // MARK: - Path Conversion
     
-    public static func toPath(type: NodeShapeType, poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath {
+    public static func toPath(type: GVNodeShape, poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath {
         var points = toPolygon(poly, width: width, height: height)
         if points.count == 2 {
             let points = toPolygon(poly, width: width, height: height)

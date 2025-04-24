@@ -33,9 +33,7 @@ public class GVLGraph {
         self.graph = graph
         
         // Инициализация контекста и графа
-        context = gvContext()
-        gvAddLibrary(context, &gvplugin_dot_layout_LTX_library)
-        gvAddLibrary(context, &gvplugin_core_LTX_library)
+        context = loadGraphvizLibraries()
         
         // Установка атрибутов графа
         setAttribute("spline", forKey: .splines)

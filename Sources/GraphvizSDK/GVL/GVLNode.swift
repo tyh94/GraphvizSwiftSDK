@@ -55,31 +55,23 @@ public class GVLNode {
     
     // MARK: - Layout Preparation
     @MainActor public func prepare() {
-        let dpi = pointsPerInch
-        
         // Get node dimensions
         let width = node.width
         let height = node.height
         
         // Get shape information
-        guard let shape = nd_shape(node),
-              let shapeName = shape.pointee.name,
-              let shapeInfoPtr = nd_shape_info(node) else {
-            return
+        if let nodeType = node.nodeType,
+            let poly = node.polygon {
+            
+            // Create path
+            let cgPath = GVLUtils.toPath(
+                type: nodeType,
+                poly: poly,
+                width: width,
+                height: height
+            )
+            bezierPath = UIBezierPath(cgPath: cgPath)
         }
-        
-        // Convert to Swift types
-        let type = String(cString: shapeName)
-        let poly = shapeInfoPtr.assumingMemoryBound(to: polygon_t.self).pointee
-        
-        // Create path
-        let cgPath = GVLUtils.toPath(
-            type: NodeShapeType(rawValue: type) ?? .circle,
-            poly: poly,
-            width: width,
-            height: height
-        )
-        bezierPath = UIBezierPath(cgPath: cgPath)
         
         
         // Calculate coordinates

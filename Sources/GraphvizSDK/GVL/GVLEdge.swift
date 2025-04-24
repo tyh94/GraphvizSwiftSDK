@@ -64,7 +64,7 @@ public class GVLEdge {
     
     // MARK: - Layout Preparation
     public func prepare() {
-        guard let path = try? edge.getPath() else { return }
+        guard let path = edge.getPath() else { return }
         let graphHeight = parent.height
         
         let cgPath = path.map { $0.revertY(height: graphHeight) }
