@@ -58,6 +58,7 @@ public class GVLNode {
         // Get node dimensions
         let width = node.width
         let height = node.height
+        let graphHeight = parent.height
         
         // Get shape information
         if let nodeType = node.nodeType,
@@ -70,14 +71,13 @@ public class GVLNode {
                 width: width,
                 height: height
             )
-            bezierPath = UIBezierPath(cgPath: cgPath)
+            bezierPath = UIBezierPath(cgPath: cgPath).rotate(degree: 180)
         }
         
         
         // Calculate coordinates
-        let graphHeight = GVLUtils.getHeight(for: parent)
         let coord = nd_coord(node)
-        let point = GVLUtils.toPointF(coord, height: graphHeight)
+        let point = coord.toCGPoint(height: graphHeight)
         
         origin = GVLUtils.centerToOrigin(
             point,
@@ -87,5 +87,20 @@ public class GVLNode {
         
         bounds = CGRect(x: 0, y: 0, width: width, height: height)
         frame = CGRect(x: origin.x, y: origin.y, width: width, height: height)
+    }
+}
+
+extension UIBezierPath {
+    func rotate(degree: CGFloat) -> UIBezierPath {
+        let bounds: CGRect = self.cgPath.boundingBox
+        let center = CGPoint(x: bounds.midX, y: bounds.midY)
+
+        let radians = degree / 180.0 * .pi
+        var transform: CGAffineTransform = .identity
+        transform = transform.translatedBy(x: center.x, y: center.y)
+        transform = transform.rotated(by: radians)
+        transform = transform.translatedBy(x: -center.x, y: -center.y)
+        self.apply(transform)
+        return self
     }
 }

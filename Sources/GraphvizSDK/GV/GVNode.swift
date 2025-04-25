@@ -17,10 +17,12 @@ extension UnsafeMutablePointer where Pointee == Agnode_t  {
         let s = nd_coord(self)
         return CGPoint(gvPoint: s)
     }
+    
     public var width: CGFloat {
         let s = nd_width(self)
         return CGFloat(s) * pointsPerInch
     }
+    
     public var height: CGFloat {
         let s = nd_height(self)
         return CGFloat(s) * pointsPerInch

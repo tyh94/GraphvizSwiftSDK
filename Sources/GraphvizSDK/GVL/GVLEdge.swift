@@ -64,64 +64,34 @@ public class GVLEdge {
     
     // MARK: - Layout Preparation
     public func prepare() {
-        guard let path = edge.getPath() else { return }
+        guard let pathPoints = edge.getPath(),
+                  !pathPoints.isEmpty else {
+                return
+            }
         let graphHeight = parent.height
         
-        let cgPath = path.map { $0.revertY(height: graphHeight) }
+        let cgPath = pathPoints.map { $0.convertFromGraphviz(graphHeight: graphHeight) }
         let buildPath = CGMutablePath()
         buildPath.move(to: cgPath[0])
         
         for i in stride(from: 1, to: cgPath.count, by: 3) {
+            guard i+2 < cgPath.count else { break }
             buildPath.addCurve(to: cgPath[i + 2], control1: cgPath[i], control2: cgPath[i + 1])
         }
         
         body = UIBezierPath(cgPath: buildPath)
         
         // Create arrows
-        if let arrowHead = edge.arrowHead?.revertY(height: graphHeight) {
+        if let arrowHead = edge.arrowHead?.convertFromGraphviz(graphHeight: graphHeight) {
             let arrowHead2 = cgPath[cgPath.count - 1]
             let headPath = definePath(pos: arrowHead, type: arrowheadType, otherPoint: arrowHead2)
             headArrow = headPath
         }
         
-        if let arrowTail = edge.arrowTail?.revertY(height: graphHeight) {
+        if let arrowTail = edge.arrowTail?.convertFromGraphviz(graphHeight: graphHeight) {
             let arrowTail2 = cgPath[0]
             let tailPath = definePath(pos: arrowTail, type: arrowtailType, otherPoint: arrowTail2)
             tailArrow = tailPath
-        }
-        updateFrames()
-        normalizePaths()
-    }
-    
-    // MARK: - Private Methods
-    private func updateFrames() {
-        frame = body.bounds
-        
-        if let headBounds = headArrow?.bounds {
-            frame = frame.union(headBounds)
-        }
-        
-        if let tailBounds = tailArrow?.bounds {
-            frame = frame.union(tailBounds)
-        }
-        
-        bounds = CGRect(
-            origin: .zero,
-            size: CGSize(
-                width: frame.width,
-                height: frame.height
-            )
-        )
-    }
-    
-    private func normalizePaths() {
-        let translation = CGAffineTransform(
-            translationX: -frame.origin.x,
-            y: -frame.origin.y
-        )
-        
-        [body, headArrow, tailArrow].forEach {
-            $0?.apply(translation)
         }
     }
     

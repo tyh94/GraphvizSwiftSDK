@@ -34,11 +34,6 @@ public class GVLGraph {
         
         // Инициализация контекста и графа
         context = loadGraphvizLibraries()
-        
-        // Установка атрибутов графа
-        setAttribute("spline", forKey: .splines)
-        setAttribute(GVParamValueOverlap.scalexy.rawValue, forKey: .overlap)
-        
     }
     
     func fillNodesAndEdges() {

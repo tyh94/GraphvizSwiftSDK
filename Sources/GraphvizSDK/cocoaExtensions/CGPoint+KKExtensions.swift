@@ -103,12 +103,17 @@ func pointTransformGraphvizToCGPoint(_ point: pointf_s) -> CGPoint {
 }
 
 extension CGPoint {
-    func revertY(height: CGFloat) -> CGPoint {
-        CGPoint(x: x, y: height - y)
+    func convertFromGraphviz(graphHeight: CGFloat) -> CGPoint {
+        CGPoint(x: self.x, y: graphHeight - self.y)
     }
 }
 
-
+// Вместо функции revertY
+extension Array where Element == CGPoint {
+    func convertedFromGraphviz(graphHeight: CGFloat) -> [CGPoint] {
+        self.map { $0.convertFromGraphviz(graphHeight: graphHeight) }
+    }
+}
 
 public func + (left: CGPoint, right: CGPoint) -> CGPoint {
     CGPoint(x: left.x + right.x, y: left.y + right.y)

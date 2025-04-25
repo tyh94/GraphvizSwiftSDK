@@ -101,15 +101,15 @@ public final class GVLUtils {
     // MARK: - Coordinate Conversion
     
     public static func toPointF(_ p: pointf, height: CGFloat) -> CGPoint {
-        return CGPoint(x: CGFloat(p.x), y: height - CGFloat(p.y))
+        CGPoint(x: CGFloat(p.x), y: height - CGFloat(p.y))
     }
     
     public static func toPoint(_ p: point, height: CGFloat) -> CGPoint {
-        return CGPoint(x: CGFloat(p.x), y: height - CGFloat(p.y))
+        CGPoint(x: CGFloat(p.x), y: height - CGFloat(p.y))
     }
     
     public static func centerToOrigin(_ point: CGPoint, width: CGFloat, height: CGFloat) -> CGPoint {
-        return CGPoint(
+        CGPoint(
             x: point.x - width/2,
             y: point.y - height/2
         )
@@ -151,6 +151,12 @@ public final class GVLUtils {
         let uiPath = UIBezierPath(cgPath: path)
         uiPath.close()
         return uiPath
+    }
+}
+
+extension pointf {
+    func toCGPoint(height: CGFloat) -> CGPoint {
+        CGPoint(x: CGFloat(x), y: height - CGFloat(y))
     }
 }
 

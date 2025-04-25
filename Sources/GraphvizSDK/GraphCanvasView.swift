@@ -152,10 +152,10 @@ func rankGraph() -> Graph {
           node [shape=box];
           graph [splines=ortho];
 
-          "Herb"      [shape=box, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
-          "Homer"     [shape=box, regular=0, color="blue", style="bold, filled" fillcolor="lightblue"] ;
-          "Abraham"   [shape=box, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
-          "Mona"      [shape=oval, regular=0, color="red", style="filled" fillcolor="pink"] ;
+          "Herb"      [shape=egg, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
+          "Homer"     [shape=parallelogram, regular=0, color="blue", style="bold, filled" fillcolor="lightblue"] ;
+          "Abraham"   [shape=egg, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
+          "Mona"      [shape=egg, regular=0, color="red", style="filled" fillcolor="pink"] ;
           
           a1 [shape=diamond,label="",height=0.25,width=0.25];
           b1 [shape=circle,label="",height=0.01,width=0.01];
