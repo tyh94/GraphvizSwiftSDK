@@ -16,13 +16,14 @@ public enum RankType: String {
 
 public class GVLSubgraph {
     private let subgraph: GVGraph
-    private let parentGraph: GVGraph
+    public var nodes: [GVLNode] = []
+    public var edges: [GVLEdge] = []
     
-    public init(parent: GVGraph) {
-        let cName = cString("graph_\(arc4random())")
-        self.parentGraph = parent
-        self.subgraph = agsubg(parent, cName, 1)
-//        free(cName)
+    public init(
+        name: String,
+        parent: GVGraph
+    ) {
+        self.subgraph = agsubg(parent, cString(name), 1)
     }
     
     public func setAttribute(_ value: String, forKey key: String) {
@@ -36,37 +37,19 @@ public class GVLSubgraph {
         return String(cString: cValue)
     }
     
-    public func addNode(_ node: GVLNode) {
-        let node = agsubnode(subgraph, node.node, 1)
-        if node == nil {
-            fatalError()
-        }
-    }
-    
-    public func addEdge(_ edge: GVLEdge) {
-        let edge = agsubedge(subgraph, edge.edge, 1)
-        if edge == nil {
-            fatalError()
-        }
-    }
-    
     public func addNode(label: String) -> GVLNode {
         let node = GVLNode(parent: subgraph, label: label)
-        agsubnode(subgraph, node.node, 1)
+        nodes.append(node)
         return node
     }
     
     public func addEdge(from source: GVLNode, to target: GVLNode) -> GVLEdge {
         let edge = GVLEdge(parent: subgraph, from: source, to: target)
-        agsubedge(subgraph, edge.edge, 1)
+        edges.append(edge)
         return edge
     }
     
     public func setRank(_ rank: RankType) {
         setAttribute(rank.rawValue, forKey: "rank")
-    }
-    
-    deinit {
-        agclose(subgraph)
     }
 }

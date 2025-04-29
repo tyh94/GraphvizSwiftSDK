@@ -15,10 +15,11 @@ public class GVLGraph {
     private let context: GVGlobalContextPointer
     public var nodes: [GVLNode] = []
     public var edges: [GVLEdge] = []
+    public var subgraphs: [GVLSubgraph] = []
     
     public convenience init(type: GVGraphType = .nonStrictDirected) {
         let name = "graph_\(arc4random())"
-        let cName = strdup(name)
+        let cName = cString(name)
         let graph = agopen(cName, type.graphvizValue, nil)!
         self.init(graph)
     }
@@ -39,12 +40,12 @@ public class GVLGraph {
     func fillNodesAndEdges() {
         var currentNode: GVNode? = agfstnode(graph)
         while currentNode != nil {
-            let node = GVLNode(parent: graph, node: currentNode!)
+            let node = GVLNode(node: currentNode!)
             nodes.append(node)
             
             var currentEdge: GVEdge? = agfstout(graph, currentNode!)
             while currentEdge != nil {
-                let edge = GVLEdge(parent: graph, edge: currentEdge!)
+                let edge = GVLEdge(edge: currentEdge!)
                 edges.append(edge)
                 currentEdge = agnxtout(graph, currentEdge!)
             }
@@ -79,8 +80,10 @@ public class GVLGraph {
         return edge
     }
     
-    public func addSubgraph() -> GVLSubgraph {
-        GVLSubgraph(parent: graph)
+    public func addSubgraph(name: String) -> GVLSubgraph {
+        let subgraph = GVLSubgraph(name: name, parent: graph)
+        subgraphs.append(subgraph)
+        return subgraph
     }
     
     public func setSameRank(nodes: [String]) {
@@ -98,15 +101,19 @@ public class GVLGraph {
         
         var data: CHAR?
         var len: size_t = 0
-        gvRenderData(context, graph, "dot", &data, &len)
+        gvRenderData(context, graph, "svg", &data, &len)
         if let data {
             Logger.graphviz.debug(message: "==========================")
             Logger.graphviz.debug(message: String(cString: data))
             Logger.graphviz.debug(message: "==========================")
         }
-        
-        nodes.forEach { $0.prepare() }
-        edges.forEach { $0.prepare() }
+        let graphHeight = graph.height
+        nodes.forEach { $0.prepare(graphHeight: graphHeight) }
+        edges.forEach { $0.prepare(graphHeight: graphHeight) }
+        subgraphs.forEach { subgraph in
+            subgraph.nodes.forEach { $0.prepare(graphHeight: graphHeight) }
+            subgraph.edges.forEach { $0.prepare(graphHeight: graphHeight) }
+        }
         
         return true
     }

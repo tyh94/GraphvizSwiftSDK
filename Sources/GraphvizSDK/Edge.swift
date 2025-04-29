@@ -9,7 +9,7 @@
 import UIKit
 
 public class Edge: Equatable {
-    fileprivate let gvlEdge: GVLEdge
+    let gvlEdge: GVLEdge
 
     public var color: UIColor = UIColor.black
     public var width: Float = 1.0

@@ -23,7 +23,7 @@ public struct GraphCanvasView: View {
     ) {
         self.graph = graph
         self.onTapNode = tapNode
-        if let firstNode = graph.nodes.first?.frame() {
+        if let firstNode = graph.nodesDraw.first?.frame() {
             location = CGPoint(
                 x: -firstNode.midX,
                 y: -firstNode.midY
@@ -35,10 +35,10 @@ public struct GraphCanvasView: View {
         Canvas { context, size in
             context.translateBy(x: location.x, y: location.y)
             context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
-            if graph.nodes.first?.frame().size == .zero {
+            if graph.nodesDraw.first?.frame().size == .zero {
                 graph.applyLayout()
             }
-            for node in graph.nodes {
+            for node in graph.nodesDraw {
                 let frame = node.frame()
                 
                 context.translateBy(
@@ -56,7 +56,7 @@ public struct GraphCanvasView: View {
                 )
             }
             
-            for edge in graph.edges {
+            for edge in graph.edgesDraw {
                 let frame = edge.frame()
                 let edgeWidth = CGFloat(edge.width)
                 context.translateBy(
@@ -106,7 +106,7 @@ public struct GraphCanvasView: View {
         )
         .onTapGesture { tapLocation in
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
-            for node in graph.nodes {
+            for node in graph.nodesDraw {
                 let frame = node.frame().applying(globalOffset)
                 if frame.contains(tapLocation) {
                     self.onTapNode?(node)
@@ -145,30 +145,33 @@ extension CGRect {
     GraphCanvasView(graph: rankGraph())
 }
 
-func rankGraph() -> Graph {
+func rankStrGraph() -> Graph {
     Graph(str: """
         digraph G {
           edge [dir=none];
           node [shape=box];
           graph [splines=ortho];
 
-          "Herb"      [shape=egg, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
-          "Homer"     [shape=parallelogram, regular=0, color="blue", style="bold, filled" fillcolor="lightblue"] ;
           "Abraham"   [shape=egg, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
           "Mona"      [shape=egg, regular=0, color="red", style="filled" fillcolor="pink"] ;
           
           a1 [shape=diamond,label="",height=0.25,width=0.25];
-          b1 [shape=circle,label="",height=0.01,width=0.01];
-          b2 [shape=circle,label="",height=0.01,width=0.01];
-          b3 [shape=circle,label="",height=0.01,width=0.01];
-          a1 -> b2
-          b1 -> Herb
-          b3 -> Homer
           {rank=same; Abraham -> a1 -> Mona};
-          {rank=same; b1 -> b2 -> b3}
-          {rank=same; Herb; Homer};
         }
         """)
+}
+
+func rankGraph() -> Graph {
+    let graph = Graph()
+    let subgraph = graph.createSubgraph(name: "sub")
+    let abraham = subgraph.addNode("Abraham")
+    let mona = subgraph.addNode("Mona")
+    let diamond = subgraph.addNode("")
+    diamond.shape = .diamond
+    let edge1 = subgraph.addEdge(from: abraham, to: diamond)
+    let edge2 = subgraph.addEdge(from: diamond, to: mona)
+    subgraph.setRank(.same)
+    return graph
 }
 
 func demoGraph() -> Graph {
@@ -226,7 +229,8 @@ func demoGraph() -> Graph {
     let e9_1 = graph.addEdge(from: node9, to: node1)
     _ = graph.addEdge(from: node9, to: node11)
     _ = graph.addEdge(from: node13, to: node3)
-    node2.shape = .box
+    node1.shape = .egg
+    node2.shape = .egg
     node4.shape = .hexagon
     node1.color = UIColor.yellow
     node3.fontSize = 24

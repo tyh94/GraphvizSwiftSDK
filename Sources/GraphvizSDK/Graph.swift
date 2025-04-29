@@ -10,9 +10,18 @@ import UIKit
 
 public class Graph {
     var gvlGraph: GVLGraph
+    
+    public var nodesDraw: [Node] {
+        nodes + subgraphs.flatMap { $0.nodes }
+    }
+    
+    public var edgesDraw: [Edge] {
+        edges + subgraphs.flatMap { $0.edges }
+    }
 
-    public private(set) var nodes = [Node]()
-    public private(set) var edges = [Edge]()
+    private var nodes = [Node]()
+    private var edges = [Edge]()
+    private var subgraphs = [Subgraph]()
     public var size: CGSize {
         gvlGraph.size
     }
@@ -54,9 +63,11 @@ public class Graph {
         return edge
     }
     
-    public func createSubgraph() -> Subgraph {
-        let gvlSubgraph = gvlGraph.addSubgraph()
-        return Subgraph(gvlSubgraph: gvlSubgraph)
+    public func createSubgraph(name: String) -> Subgraph {
+        let gvlSubgraph = gvlGraph.addSubgraph(name: name)
+        let subgraph = Subgraph(gvlSubgraph: gvlSubgraph)
+        subgraphs.append(subgraph)
+        return subgraph
     }
     
     public func setSameRank(nodes: [String]) {

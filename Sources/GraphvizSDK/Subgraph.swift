@@ -10,6 +10,8 @@ import UIKit
 
 public class Subgraph {
     var gvlSubgraph: GVLSubgraph
+    public private(set) var nodes = [Node]()
+    public private(set) var edges = [Edge]()
     
     public init(gvlSubgraph: GVLSubgraph) {
         self.gvlSubgraph = gvlSubgraph
@@ -23,19 +25,17 @@ public class Subgraph {
         gvlSubgraph.setAttribute(value, forKey: name)
     }
     
-    public func add(node: Node) {
-        gvlSubgraph.addNode(node.gvlNode)
-    }
-    
     public func addNode(_ label: String) -> Node {
         let gvlNode = gvlSubgraph.addNode(label: label)
         let node = Node(gvlNode: gvlNode)
+        nodes.append(node)
         return node
     }
-    
+
     public func addEdge(from: Node, to: Node) -> Edge {
         let gvlEdge = gvlSubgraph.addEdge(from: from.gvlNode, to: to.gvlNode)
         let edge = Edge(gvlEdge: gvlEdge)
+        edges.append(edge)
         return edge
     }
     

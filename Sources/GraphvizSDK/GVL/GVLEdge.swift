@@ -12,7 +12,6 @@ import CoreGraphics
 public class GVLEdge {
     // Graphviz pointers
     let edge: GVEdge
-    private let parent: GVGraph
     
     // MARK: - Public Accessors
     public var frame: CGRect = .zero
@@ -43,11 +42,9 @@ public class GVLEdge {
     }
     
     init(
-        parent: GVGraph,
         edge: GVEdge
     ) {
         self.edge = edge
-        self.parent = parent
     }
     
     convenience init(
@@ -55,20 +52,16 @@ public class GVLEdge {
         from source: GVLNode,
         to target: GVLNode
     ) {
-        var edge = agedge(parent, source.node, target.node, nil, 0)
-        if edge == nil {
-            edge = agedge(parent, source.node, target.node, nil, 1)
-        }
-        self.init(parent: parent, edge: edge!)
+        let edge = agedge(parent, source.node, target.node, nil, 1)
+        self.init(edge: edge!)
     }
     
     // MARK: - Layout Preparation
-    public func prepare() {
+    public func prepare(graphHeight: CGFloat) {
         guard let pathPoints = edge.getPath(),
                   !pathPoints.isEmpty else {
                 return
             }
-        let graphHeight = parent.height
         
         let cgPath = pathPoints.map { $0.convertFromGraphviz(graphHeight: graphHeight) }
         let buildPath = CGMutablePath()

@@ -25,7 +25,6 @@ public class GVLNode {
     
     // Graphviz pointers
     public let node: GVNode
-    private let parent: GVGraph
     
     // MARK: - Attribute Management
     public func setAttribute(_ value: String, forKey key: GVNodeParameters) {
@@ -39,26 +38,21 @@ public class GVLNode {
         return String(cString: cValue)
     }
     
-    public init(parent: GVGraph, node: GVNode) {
-         self.parent = parent
+    public init(node: GVNode) {
          self.node = node
      }
     
     convenience init(parent: GVGraph, label: String) {
-        var node = agnode(parent, cString(label), 0)
-        if node == nil {
-            node = agnode(parent, cString(label), 1)
-        }
-        self.init(parent: parent, node: node!)
+        let node = agnode(parent, cString(label), 1)
+        self.init(node: node!)
         self.label = label
     }
     
     // MARK: - Layout Preparation
-    @MainActor public func prepare() {
+    @MainActor public func prepare(graphHeight: CGFloat) {
         // Get node dimensions
         let width = node.width
         let height = node.height
-        let graphHeight = parent.height
         
         // Get shape information
         if let nodeType = node.nodeType,
