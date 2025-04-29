@@ -16,7 +16,11 @@ public func pixelToInchParameter(_ x: CGFloat) -> String {
     return "\(x / pointsPerInch)"
 }
 
-
+public enum GVRankType: String {
+    case same
+    case min
+    case source
+}
 
 public enum GVEdgeParameters : String {
     case arrowtail

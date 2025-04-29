@@ -23,7 +23,7 @@ public struct GraphCanvasView: View {
     ) {
         self.graph = graph
         self.onTapNode = tapNode
-        if let firstNode = graph.nodesDraw.first?.frame() {
+        if let firstNode = graph.nodesDraw.first?.frame {
             location = CGPoint(
                 x: -firstNode.midX,
                 y: -firstNode.midY
@@ -35,17 +35,17 @@ public struct GraphCanvasView: View {
         Canvas { context, size in
             context.translateBy(x: location.x, y: location.y)
             context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
-            if graph.nodesDraw.first?.frame().size == .zero {
+            if graph.nodesDraw.first?.frame.size == .zero {
                 graph.applyLayout()
             }
             for node in graph.nodesDraw {
-                let frame = node.frame()
+                let frame = node.frame
                 
                 context.translateBy(
                     x: frame.origin.x,
                     y: frame.origin.y
                 )
-                let path = Path(node.path().cgPath)
+                let path = Path(node.path)
                 context.stroke(path, with: .color(Color(node.borderColor)), lineWidth: CGFloat(node.borderWidth))
                 context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
                 context.draw(
@@ -57,20 +57,20 @@ public struct GraphCanvasView: View {
             }
             
             for edge in graph.edgesDraw {
-                let frame = edge.frame()
+                let frame = edge.frame
                 let edgeWidth = CGFloat(edge.width)
                 context.translateBy(
                     x: frame.origin.x,
                     y: frame.origin.y
                 )
                 
-                let path = edge.body().cgPath
+                let path = edge.body
                 context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
                 
-                if let path = edge.headArrow()?.cgPath {
+                if let path = edge.headArrow {
                     context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
                 }
-                if let path = edge.tailArrow()?.cgPath {
+                if let path = edge.tailArrow {
                     context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
                 }
                 context.translateBy(
@@ -107,7 +107,7 @@ public struct GraphCanvasView: View {
         .onTapGesture { tapLocation in
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
             for node in graph.nodesDraw {
-                let frame = node.frame().applying(globalOffset)
+                let frame = node.frame.applying(globalOffset)
                 if frame.contains(tapLocation) {
                     self.onTapNode?(node)
                 }
@@ -142,7 +142,7 @@ extension CGRect {
 }
 
 #Preview {
-    GraphCanvasView(graph: rankGraph())
+    GraphCanvasView(graph: demoGraph())
 }
 
 func rankStrGraph() -> Graph {
@@ -163,13 +163,13 @@ func rankStrGraph() -> Graph {
 
 func rankGraph() -> Graph {
     let graph = Graph()
-    let subgraph = graph.createSubgraph(name: "sub")
-    let abraham = subgraph.addNode("Abraham")
-    let mona = subgraph.addNode("Mona")
-    let diamond = subgraph.addNode("")
+    let subgraph = graph.addSubgraph(name: "sub")
+    let abraham = subgraph.addNode(label: "Abraham")
+    let mona = subgraph.addNode(label: "Mona")
+    let diamond = subgraph.addNode(label: "")
     diamond.shape = .diamond
-    let edge1 = subgraph.addEdge(from: abraham, to: diamond)
-    let edge2 = subgraph.addEdge(from: diamond, to: mona)
+    _ = subgraph.addEdge(from: abraham, to: diamond)
+    _ = subgraph.addEdge(from: diamond, to: mona)
     subgraph.setRank(.same)
     return graph
 }
@@ -177,21 +177,21 @@ func rankGraph() -> Graph {
 func demoGraph() -> Graph {
     let graph = Graph()
     
-    let node1 = graph.addNode("The quick\nbrown fox jumps\nover the lazy\ndog")
-    let node2 = graph.addNode("node 2")
-    let node3 = graph.addNode("node 3")
-    let node4 = graph.addNode("node\n4")
-    let node5 = graph.addNode("A picture\nis worth\na thousand\nwords")
-    let node6 = graph.addNode("node 6")
-    let node7 = graph.addNode("node \n 7")
-    let node8 = graph.addNode("node 8")
-    let node9 = graph.addNode("node 9")
-    let node10 = graph.addNode("node \n 10")
-    let node11 = graph.addNode("node 11")
-    let node12 = graph.addNode("node \n 12")
-    let node13 = graph.addNode("node 13")
-    let node14 = graph.addNode("node \n 14")
-    let node15 = graph.addNode("node 15")
+    let node1 = graph.addNode(label: "The quick\nbrown fox jumps\nover the lazy\ndog")
+    let node2 = graph.addNode(label: "node 2")
+    let node3 = graph.addNode(label: "node 3")
+    let node4 = graph.addNode(label: "node\n4")
+    let node5 = graph.addNode(label: "A picture\nis worth\na thousand\nwords")
+    let node6 = graph.addNode(label: "node 6")
+    let node7 = graph.addNode(label: "node \n 7")
+    let node8 = graph.addNode(label: "node 8")
+    let node9 = graph.addNode(label: "node 9")
+    let node10 = graph.addNode(label: "node \n 10")
+    let node11 = graph.addNode(label: "node 11")
+    let node12 = graph.addNode(label: "node \n 12")
+    let node13 = graph.addNode(label: "node 13")
+    let node14 = graph.addNode(label: "node \n 14")
+    let node15 = graph.addNode(label: "node 15")
     _ = graph.addEdge(from: node1, to: node2)
     _ = graph.addEdge(from: node1, to: node5)
     _ = graph.addEdge(from: node3, to: node4)
@@ -236,14 +236,22 @@ func demoGraph() -> Graph {
     node3.fontSize = 24
     node3.textColor = UIColor.blue
     
-    e9_1.color = UIColor.red
-    e3_10.color = UIColor.green
     e1_8.weight = 10
     e1_8.width = 2
+    
+    e3_10.color = UIColor.green
     e3_10.weight = 50
     e3_10.width = 3
+    e3_10.setAttribute(GVEdgeParamDir.both.rawValue, forKey: .dir)
+    e3_10.arrowheadType = .dot
+    e3_10.arrowtailType = .diamond
+    
+    e9_1.color = UIColor.red
     e9_1.weight = 100
     e9_1.width = 4
+    e9_1.setAttribute(GVEdgeParamDir.both.rawValue, forKey: .dir)
+    e9_1.arrowheadType = .diamond
+    e9_1.arrowtailType = .dot
     
     return graph
 }

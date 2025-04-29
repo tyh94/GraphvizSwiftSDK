@@ -12,12 +12,6 @@ import OSLog
 
 public final class GVLUtils {
     
-    // MARK: - Graph Dimensions
-    
-    public static func getHeight(for graph: GVGraph) -> CGFloat {
-        graph.height
-    }
-    
     // MARK: - Polygon Conversion
     
     public static func toPolygon(_ poly: polygon_t, width: CGFloat, height: CGFloat) -> [CGPoint] {

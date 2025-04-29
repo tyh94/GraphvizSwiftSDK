@@ -12,7 +12,7 @@ import UIKit
 //fileprivate let logger = Logger(label: "com.vithanco.swiftgraphviz.NSBezierPath")
 
 //  from: https://gist.github.com/mwermuth/07825df27ea28f5fc89a
-extension UIBezierPath {
+extension CGPath {
 
     class func getAxisAlignedArrowPoints(forLength: CGFloat, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat ) -> [CGPoint] {
         
@@ -35,22 +35,20 @@ extension UIBezierPath {
         return CGAffineTransform(a: cosine, b: sine, c: -sine, d: cosine, tx: startPoint.x, ty: startPoint.y)
     }
 
-    public class func arrow(startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) -> UIBezierPath {
+    public class func arrow(startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) -> CGPath {
         let length = hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
         if length.isZero {
             Logger.graphviz.warning("length between start and end isZero. Why?")
         }
 
-        let points = UIBezierPath.getAxisAlignedArrowPoints(forLength: length, tailWidth: tailWidth, headWidth: headWidth, headLength: headLength)
+        let points = CGPath.getAxisAlignedArrowPoints(forLength: length, tailWidth: tailWidth, headWidth: headWidth, headLength: headLength)
 
-        let transform: CGAffineTransform = UIBezierPath.transformForStartPoint(startPoint: startPoint, endPoint: endPoint, length: length)
+        let transform: CGAffineTransform = CGPath.transformForStartPoint(startPoint: startPoint, endPoint: endPoint, length: length)
 
         let path = CGMutablePath()
         path.addLines(between: points, transform: transform)
         
-        let uiPath = UIBezierPath(cgPath: path)
-        uiPath.close()
-        return uiPath
+        return path
     }
 
 }

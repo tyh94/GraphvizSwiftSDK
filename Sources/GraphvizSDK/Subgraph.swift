@@ -5,41 +5,20 @@
 //  Created by Татьяна Макеева on 27.03.2025.
 //
 
+@preconcurrency import CGraphvizSDK
+import Foundation
+import CoreGraphics
+import OSLog
 
-import UIKit
-
-public class Subgraph {
-    var gvlSubgraph: GVLSubgraph
-    public private(set) var nodes = [Node]()
-    public private(set) var edges = [Edge]()
-    
-    public init(gvlSubgraph: GVLSubgraph) {
-        self.gvlSubgraph = gvlSubgraph
-    }
-    
-    public func getAttribute(name: String) -> String? {
-        gvlSubgraph.getAttribute(forKey: name)
-    }
-
-    public func setAttribute(name: String, value: String) {
-        gvlSubgraph.setAttribute(value, forKey: name)
+public class Subgraph: Graph {
+    public convenience init(
+        name: String,
+        parent: GVGraph
+    ) {
+        self.init(agsubg(parent, cString(name), 1))
     }
     
-    public func addNode(_ label: String) -> Node {
-        let gvlNode = gvlSubgraph.addNode(label: label)
-        let node = Node(gvlNode: gvlNode)
-        nodes.append(node)
-        return node
-    }
-
-    public func addEdge(from: Node, to: Node) -> Edge {
-        let gvlEdge = gvlSubgraph.addEdge(from: from.gvlNode, to: to.gvlNode)
-        let edge = Edge(gvlEdge: gvlEdge)
-        edges.append(edge)
-        return edge
-    }
-    
-    public func setRank(_ rank: RankType) {
-        gvlSubgraph.setRank(rank)
+    public func setRank(_ rank: GVRankType) {
+        setAttribute(rank.rawValue, forKey: .rank)
     }
 }

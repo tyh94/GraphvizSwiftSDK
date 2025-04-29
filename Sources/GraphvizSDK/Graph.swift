@@ -6,10 +6,14 @@
 //  MIT License
 //
 
-import UIKit
+@preconcurrency import CGraphvizSDK
+import Foundation
+import CoreGraphics
+import OSLog
 
-public class Graph {
-    var gvlGraph: GVLGraph
+open class Graph {
+    private var graph: GVGraph
+    private let context: GVGlobalContextPointer
     
     public var nodesDraw: [Node] {
         nodes + subgraphs.flatMap { $0.nodes }
@@ -23,58 +27,112 @@ public class Graph {
     private var edges = [Edge]()
     private var subgraphs = [Subgraph]()
     public var size: CGSize {
-        gvlGraph.size
-    }
-
-    public convenience init() {
-        self.init(GVLGraph())
-    }
-    
-    public init(_ gvlGraph: GVLGraph) {
-        self.gvlGraph = gvlGraph
+        let bb = graph.getBoundingBox()
+        return CGSize(width: CGFloat(bb.UR.x), height: CGFloat(bb.UR.y))
     }
     
     public func setBaseParameters(params: [GVGraphParameters: String]) {
-        params.forEach { gvlGraph.setAttribute($0.value, forKey: $0.key) }
+        params.forEach { setAttribute($0.value, forKey: $0.key) }
+    }
+    
+    public convenience init(type: GVGraphType = .nonStrictDirected) {
+        let name = "graph_\(arc4random())"
+        let cName = cString(name)
+        let graph = agopen(cName, type.graphvizValue, nil)!
+        self.init(graph)
     }
     
     public convenience init(str: String) {
-        self.init(GVLGraph(str: str))
+        let graph = agmemread(str)!
+        self.init(graph)
         fillNodesAndEdges()
     }
     
-    func fillNodesAndEdges() {
-        nodes = gvlGraph.nodes.map(Node.init(gvlNode:))
-        edges = gvlGraph.edges.map(Edge.init(gvlEdge:))
+    public init(_ graph: GVGraph) {
+        self.graph = graph
+        
+        // Инициализация контекста и графа
+        context = loadGraphvizLibraries()
     }
-
-    // TODO: Add name and label. if name nil, use label in both
-    public func addNode(_ label: String) -> Node {
-        let gvlNode = gvlGraph.addNode(label: label)
-        let node = Node(gvlNode: gvlNode)
+    
+    func fillNodesAndEdges() {
+        var currentNode: GVNode? = agfstnode(graph)
+        while currentNode != nil {
+            let node = Node(node: currentNode!)
+            nodes.append(node)
+            
+            var currentEdge: GVEdge? = agfstout(graph, currentNode!)
+            while currentEdge != nil {
+                let edge = Edge(edge: currentEdge!)
+                edges.append(edge)
+                currentEdge = agnxtout(graph, currentEdge!)
+            }
+            
+            currentNode = agnxtnode(graph, currentNode!)
+        }
+    }
+    
+    // MARK: - Attributes Management
+    public func setAttribute(_ value: String, forKey key: GVGraphParameters) {
+        agsafeset(graph, cString(key.rawValue), cString(value), "")
+    }
+    
+    public func getAttribute(forKey key: GVGraphParameters) -> String {
+        guard let cValue = agget(graph, cString(key.rawValue)) else {
+            return ""
+        }
+        return String(cString: cValue)
+    }
+    
+    // MARK: - Nodes & Edges Management
+    
+    public func addNode(label: String) -> Node {
+        let node = Node(parent: graph, label: label)
         nodes.append(node)
         return node
     }
-
-    public func addEdge(from: Node, to: Node) -> Edge {
-        let gvlEdge = gvlGraph.addEdge(from: from.gvlNode, to: to.gvlNode)
-        let edge = Edge(gvlEdge: gvlEdge)
+    
+    public func addEdge(from source: Node, to target: Node) -> Edge {
+        let edge = Edge(parent: graph, from: source, to: target)
         edges.append(edge)
         return edge
     }
     
-    public func createSubgraph(name: String) -> Subgraph {
-        let gvlSubgraph = gvlGraph.addSubgraph(name: name)
-        let subgraph = Subgraph(gvlSubgraph: gvlSubgraph)
+    public func addSubgraph(name: String) -> Subgraph {
+        let subgraph = Subgraph(name: name, parent: graph)
         subgraphs.append(subgraph)
         return subgraph
     }
     
     public func setSameRank(nodes: [String]) {
-        gvlGraph.setSameRank(nodes: nodes)
+        let nodesStr = nodes.joined(separator: "; ")
+        let sameNodes = "\(GVRank.same.rawValue); \(nodesStr)"
+        setAttribute(sameNodes, forKey: .rank)
     }
-
-    @MainActor public func applyLayout() {
-        gvlGraph.applyLayout()
+    
+    // MARK: - Layout Operations
+    
+    @discardableResult
+    @MainActor
+    public func applyLayout() -> Bool {
+        guard gvLayout(context, graph, "dot") == 0 else { return false }
+        
+        var data: CHAR?
+        var len: size_t = 0
+        gvRenderData(context, graph, "dot", &data, &len)
+        if let data {
+            Logger.graphviz.debug(message: "==========================")
+            Logger.graphviz.debug(message: String(cString: data))
+            Logger.graphviz.debug(message: "==========================")
+        }
+        let graphHeight = graph.height
+        nodes.forEach { $0.prepare(graphHeight: graphHeight) }
+        edges.forEach { $0.prepare(graphHeight: graphHeight) }
+        subgraphs.forEach { subgraph in
+            subgraph.nodes.forEach { $0.prepare(graphHeight: graphHeight) }
+            subgraph.edges.forEach { $0.prepare(graphHeight: graphHeight) }
+        }
+        
+        return true
     }
 }
