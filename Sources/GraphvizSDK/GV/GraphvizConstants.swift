@@ -17,9 +17,9 @@ enum GraphvizError: Error {
 ///To be set at program start and freed and progam end
 nonisolated(unsafe) let gblGVContext: GVGlobalContextPointer = loadGraphvizLibraries()
 
-public typealias CHAR = UnsafeMutablePointer<Int8>
-public typealias CHAR_ARRAY = UnsafeMutablePointer<UnsafeMutablePointer<Int8>>
-public typealias GVSplines = UnsafeMutablePointer<splines>
-public typealias GVBezier = UnsafeMutablePointer<bezier>
-public typealias GVPixel = CGFloat
-public typealias GVGlobalContextPointer = UnsafeMutablePointer<GVC_t>
+typealias CHAR = UnsafeMutablePointer<Int8>
+typealias CHAR_ARRAY = UnsafeMutablePointer<UnsafeMutablePointer<Int8>>
+typealias GVSplines = UnsafeMutablePointer<splines>
+typealias GVBezier = UnsafeMutablePointer<bezier>
+typealias GVPixel = CGFloat
+typealias GVGlobalContextPointer = UnsafeMutablePointer<GVC_t>

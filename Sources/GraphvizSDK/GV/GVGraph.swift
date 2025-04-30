@@ -1,9 +1,8 @@
 //
 //  GVGraph.swift
-//  SwiftGraphvizIOS
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 27/05/2019.
-//  Copyright © 2019 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 @preconcurrency import CGraphvizSDK

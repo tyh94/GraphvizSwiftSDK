@@ -5,8 +5,7 @@
 //  Created by Татьяна Макеева on 27.03.2025.
 //
 
-
-import UIKit
+import Foundation
 
 // https://graphviz.org/docs/attrs/splines/
 public enum GVParamValueSplines: String {

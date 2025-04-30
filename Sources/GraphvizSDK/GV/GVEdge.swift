@@ -1,17 +1,16 @@
 //
 //  GVEdge.swift
-//  SwiftGraphiz
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 13/01/2019.
-//  Copyright © 2019 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 @preconcurrency import CGraphvizSDK
-import UIKit
+import Foundation
 
-public typealias GVEdge = UnsafeMutablePointer<Agedge_t>
+typealias GVEdge = UnsafeMutablePointer<Agedge_t>
 
-public extension UnsafeMutablePointer where Pointee == Agedge_t {
+extension UnsafeMutablePointer where Pointee == Agedge_t {
     var labelPos: CGPoint? {
         if let lPos = ed_lp(self) {
             return convertZeroPointToNil(CGPoint(gvPoint: lPos.pointee))

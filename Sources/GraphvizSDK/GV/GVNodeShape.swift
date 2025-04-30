@@ -1,8 +1,8 @@
 //
-//  NodeShape.swift
+//  GVNodeShape.swift
 //  GraphvizSDK
 //
-//  Created by Татьяна Макеева on 27.03.2025.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 import Foundation

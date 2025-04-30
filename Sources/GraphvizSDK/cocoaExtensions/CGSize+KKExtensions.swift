@@ -1,17 +1,16 @@
 //
 //  CGSize+KKExtensions.swift
-//  SwiftGraphvizIOS
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 22/07/2019.
-//  Copyright © 2019 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 @preconcurrency import CGraphvizSDK
 import Foundation
 
-public extension CGSize {
+extension CGSize {
     var isFinite: Bool {
-        return width.isFinite && height.isFinite
+        width.isFinite && height.isFinite
     }
     
     init (gvPoint: pointf_s) {
@@ -27,20 +26,20 @@ public extension CGSize {
     }
     
     var area: CGFloat {
-        return width * height
+        width * height
     }
     
     func hasAtLeastSize (_ minSize: CGSize) -> Bool {
-        return self.width >= minSize.width && self.height >= minSize.height
+        self.width >= minSize.width && self.height >= minSize.height
     }
     
     func restrictTo (maxSize: CGSize) -> CGSize {
-        return CGSize(width: min(self.width, maxSize.width), height: min(self.height, maxSize.height))
+        CGSize(width: min(self.width, maxSize.width), height: min(self.height, maxSize.height))
     }
 }
 
 
 func convertZeroSizeToNil(_ gvSize: CGSize, precision: CGFloat = 0.1) -> CGSize? {
-    return gvSize.convertZeroSizeToNil(precision:precision)
+    gvSize.convertZeroSizeToNil(precision:precision)
 }
 

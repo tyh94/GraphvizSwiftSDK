@@ -1,8 +1,9 @@
 //
+//
 //  GVNodeStyle.swift
 //  GraphvizSDK
 //
-//  Created by Татьяна Макеева on 03.04.2025.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 // https://graphviz.org/docs/attr-types/style/

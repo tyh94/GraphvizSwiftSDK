@@ -1,22 +1,20 @@
 //
 //  Set+KKExtentions.swift
-//  Vithanco IBIS
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 11/08/2018.
-//  Copyright © 2018 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 import Foundation
 
-
-internal extension Set {
+extension Set {
     var asArray: [Element] {
-        return Array(self)
+        Array(self)
     }
 }
 
-internal extension Array where Element : Hashable {
+extension Array where Element : Hashable {
     var asSet: Set<Element> {
-        return Set<Element>(self)
+        Set<Element>(self)
     }
 }

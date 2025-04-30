@@ -1,33 +1,31 @@
 //
 //  Double+KKExtensions.swift
-//  Visual Thinking
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 22/1/17.
-//  Copyright © 2017 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 import Foundation
 
-
 func isDoubleEqual(_ left: Double, _ right: Double, delta: Double = 0.01) -> Bool {
-    return fabs(left - right) <= delta
+    fabs(left - right) <= delta
 }
 
 func isCGFloatEqual(_ left: CGFloat, _  right: CGFloat, delta: CGFloat = 0.01) -> Bool {
-    return abs(left - right) <= delta
+    abs(left - right) <= delta
 }
 
 extension CGFloat {
     var squared: CGFloat {
-        return self*self
+        self*self
     }
     var asDouble: Double {
-        return Double(self)
+        Double(self)
     }
 }
 
-  extension Double {
+extension Double {
     var asCGFloat: CGFloat {
-        return CGFloat(self)
+        CGFloat(self)
     }
 }

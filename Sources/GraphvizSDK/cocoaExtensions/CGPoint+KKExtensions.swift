@@ -1,9 +1,8 @@
 //
 //  CGPoint+KKExtensions.swift
-//  QVisual Thinking
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 19/9/16.
-//  Copyright © 2016 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 import Foundation

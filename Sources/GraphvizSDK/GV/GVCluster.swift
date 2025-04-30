@@ -1,19 +1,16 @@
 //
 //  GVCluster.swift
-//  Vithanco
+//  GraphvizSDK
 //
-//  Created by Klaus Kneupner on 15/01/2019.
-//  Copyright © 2019 Klaus Kneupner. All rights reserved.
+//  Created by Татьяна Макеева on 02.04.2025.
 //
 
 import Foundation
 @preconcurrency import CGraphvizSDK
 
+typealias GVCluster = GVGraph
 
-public typealias GVCluster = GVGraph
-
-
-public extension UnsafeMutablePointer where Pointee == Agraph_t {
+extension UnsafeMutablePointer where Pointee == Agraph_t {
     var labelPos: CGPoint? { //lp
         if let lPos = gd_lp(self) {
             return convertZeroPointToNil(CGPoint(gvPoint: lPos.pointee))
@@ -38,12 +35,6 @@ public extension UnsafeMutablePointer where Pointee == Agraph_t {
             return String(cString: text)
         }
         return nil
-    }
-}
-
-extension CGRect {
-    public init (box: boxf) {
-        self.init(x: box.LL.x, y: box.LL.y, width: box.UR.x - box.LL.x, height: box.UR.y - box.LL.y)
     }
 }
 
