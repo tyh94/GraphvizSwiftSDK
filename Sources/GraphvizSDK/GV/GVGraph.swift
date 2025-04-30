@@ -34,9 +34,20 @@ public extension UnsafeMutablePointer where Pointee == Agraph_t {
         }
     }
     
+    var boundingBox: boxf {
+        gd_bb(self)
+    }
+    
     var height: CGFloat {
-        let box = gd_bb(self)
-        return CGFloat(box.UR.y)
+        CGFloat(boundingBox.UR.y)
+    }
+    
+    var width: CGFloat {
+        CGFloat(boundingBox.UR.x)
+    }
+    
+    var size: CGSize {
+        CGSize(width: width, height: height)
     }
     
     func unflatten(doFan: Bool = false, maxMinlen : Int32 = 0, chainLimit : Int32 = 0) {

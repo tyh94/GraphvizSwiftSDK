@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics
 @preconcurrency import CGraphvizSDK
 
-public extension CGPoint {
+extension CGPoint {
     func shift(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
         CGPoint(x: self.x + x, y: self.y + y)
     }
@@ -87,12 +87,16 @@ public extension CGPoint {
         self.init(x: CGFloat(gvPoint.x), y: CGFloat(gvPoint.y))
         assert (isFinite)
     }
-//
-//    static var zero: CGPoint {
-//        return CGPoint(x: 0, y: 0)
-//    }
+    
     var rounded: CGPoint {
         CGPoint(x: self.x.rounded(), y: self.y.rounded())
+    }
+    
+    func centerToOrigin(width: CGFloat, height: CGFloat) -> CGPoint {
+        CGPoint(
+            x: x - width/2,
+            y: y - height/2
+        )
     }
 }
 
@@ -104,14 +108,7 @@ func pointTransformGraphvizToCGPoint(_ point: pointf_s) -> CGPoint {
 
 extension CGPoint {
     func convertFromGraphviz(graphHeight: CGFloat) -> CGPoint {
-        CGPoint(x: self.x, y: graphHeight - self.y)
-    }
-}
-
-// Вместо функции revertY
-extension Array where Element == CGPoint {
-    func convertedFromGraphviz(graphHeight: CGFloat) -> [CGPoint] {
-        self.map { $0.convertFromGraphviz(graphHeight: graphHeight) }
+        CGPoint(x: x, y: graphHeight - y)
     }
 }
 
@@ -136,4 +133,16 @@ func convertZeroPointToNil(_ gvPos: CGPoint, precision: CGFloat = 0.1) -> CGPoin
 
 public func midPoint(between: CGPoint, and: CGPoint) -> CGPoint{
     (between + and) / 2
+}
+
+extension point {
+    func toCGPoint(graphHeight: CGFloat) -> CGPoint {
+        CGPoint(x: CGFloat(x), y: graphHeight - CGFloat(y))
+    }
+}
+
+extension pointf {
+    func toCGPoint(graphHeight: CGFloat) -> CGPoint {
+        CGPoint(x: CGFloat(x), y: graphHeight - CGFloat(y))
+    }
 }

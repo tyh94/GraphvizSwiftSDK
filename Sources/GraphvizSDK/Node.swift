@@ -8,11 +8,12 @@
 @preconcurrency import CGraphvizSDK
 import UIKit
 import CoreGraphics
+import OSLog
 
 public class Node: Equatable {
     // TODO: add image https://graphviz.org/docs/attrs/image/
     let node: GVNode
-
+    
     public var label: String {
         get { getAttribute(forKey: .label) }
         set {
@@ -67,8 +68,8 @@ public class Node: Equatable {
     }
     
     public init(node: GVNode) {
-         self.node = node
-     }
+        self.node = node
+    }
     
     convenience init(parent: GVGraph, label: String) {
         let node = agnode(parent, cString(label), 1)
@@ -79,7 +80,7 @@ public class Node: Equatable {
     public func setBaseParameters(params: [GVNodeParameters: String]) {
         params.forEach { setAttribute($0.value, forKey: $0.key) }
     }
-
+    
     @MainActor public func prepare(graphHeight: CGFloat) {
         // Get node dimensions
         let width = node.width
@@ -87,10 +88,10 @@ public class Node: Equatable {
         
         // Get shape information
         if let nodeType = node.nodeType,
-            let poly = node.polygon {
+           let poly = node.polygon {
             
             // Create path
-            let cgPath = GVLUtils.toPath(
+            let cgPath = toPath(
                 type: nodeType,
                 poly: poly,
                 width: width,
@@ -102,18 +103,14 @@ public class Node: Equatable {
         
         // Calculate coordinates
         let coord = nd_coord(node)
-        let point = coord.toCGPoint(height: graphHeight)
+        let point = coord.toCGPoint(graphHeight: graphHeight)
         
-        origin = GVLUtils.centerToOrigin(
-            point,
-            width: width,
-            height: height
-        )
+        origin = point.centerToOrigin(width: width, height: height)
         
         bounds = CGRect(x: 0, y: 0, width: width, height: height)
         frame = CGRect(x: origin.x, y: origin.y, width: width, height: height)
     }
-
+    
     public static func == (lhs: Node, rhs: Node) -> Bool {
         lhs === rhs
     }
@@ -123,7 +120,7 @@ extension CGPath {
     fileprivate func rotate(degree: CGFloat) -> CGPath {
         let bounds: CGRect = self.boundingBox
         let center = CGPoint(x: bounds.midX, y: bounds.midY)
-
+        
         let radians = degree / 180.0 * .pi
         var transform: CGAffineTransform = .identity
         transform = transform.translatedBy(x: center.x, y: center.y)
@@ -131,4 +128,50 @@ extension CGPath {
         transform = transform.translatedBy(x: -center.x, y: -center.y)
         return self.copy(using: &transform)!
     }
+}
+
+
+private func toPolygon(_ poly: polygon_t, width: CGFloat, height: CGFloat) -> [CGPoint] {
+    guard poly.peripheries == 1 else {
+        Logger.graphviz.warning(message: "Unsupported number of peripheries \(poly.peripheries)")
+        return []
+    }
+    
+    return (0..<poly.sides).map { side in
+        let vertex = poly.vertices[side]
+        return CGPoint(
+            x: CGFloat(vertex.x) + width/2,
+            y: CGFloat(vertex.y) + height/2
+        )
+    }
+}
+
+// MARK: - Path Conversion
+
+private func toPath(type: GVNodeShape, poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath {
+    var points = toPolygon(poly, width: width, height: height)
+    if points.count == 2 {
+        let points = toPolygon(poly, width: width, height: height)
+        
+        let p1 = points[0]
+        let p2 = points[1]
+        let rect = CGRect(origin: p1, size: CGSize(width: p2.x, height: p2.y))
+        return CGPath(ellipseIn: rect, transform: nil)
+    }
+    
+    if let first = points.first {
+        points.append(first)
+    }
+    return toPath(points: points)
+}
+
+private func toPath(points: [CGPoint]) -> CGPath {
+    let path = CGMutablePath()
+    guard let first = points.first else { return path }
+    
+    path.move(to: first)
+    for point in points.dropFirst() {
+        path.addLine(to: point)
+    }
+    return path
 }

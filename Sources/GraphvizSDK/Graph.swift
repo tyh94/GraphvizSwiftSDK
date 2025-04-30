@@ -27,12 +27,7 @@ open class Graph {
     private var edges = [Edge]()
     private var subgraphs = [Subgraph]()
     public var size: CGSize {
-        let bb = graph.getBoundingBox()
-        return CGSize(width: CGFloat(bb.UR.x), height: CGFloat(bb.UR.y))
-    }
-    
-    public func setBaseParameters(params: [GVGraphParameters: String]) {
-        params.forEach { setAttribute($0.value, forKey: $0.key) }
+        graph.size
     }
     
     public convenience init(type: GVGraphType = .nonStrictDirected) {
@@ -53,6 +48,10 @@ open class Graph {
         
         // Инициализация контекста и графа
         context = loadGraphvizLibraries()
+    }
+    
+    public func setBaseParameters(params: [GVGraphParameters: String]) {
+        params.forEach { setAttribute($0.value, forKey: $0.key) }
     }
     
     func fillNodesAndEdges() {
