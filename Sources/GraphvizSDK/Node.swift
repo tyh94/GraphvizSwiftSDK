@@ -165,6 +165,7 @@ private func toPath(type: GVNodeShape, poly: polygon_t, width: CGFloat, height: 
     return toPath(points: points)
 }
 
+// TODO: corners https://github.com/DuncanMC/RoundedCornerPolygon
 private func toPath(points: [CGPoint]) -> CGPath {
     let path = CGMutablePath()
     guard let first = points.first else { return path }

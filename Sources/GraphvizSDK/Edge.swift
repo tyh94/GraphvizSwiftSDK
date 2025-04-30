@@ -8,6 +8,7 @@
 @preconcurrency import CGraphvizSDK
 import UIKit
 import CoreGraphics
+import OSLog
 
 public class Edge: Equatable {
     let edge: GVEdge
@@ -70,9 +71,9 @@ public class Edge: Equatable {
     // MARK: - Layout Preparation
     public func prepare(graphHeight: CGFloat) {
         guard let pathPoints = edge.getPath(),
-                  !pathPoints.isEmpty else {
-                return
-            }
+              !pathPoints.isEmpty else {
+            return
+        }
         
         let cgPath = pathPoints.map { $0.convertFromGraphviz(graphHeight: graphHeight) }
         let buildPath = CGMutablePath()
@@ -104,18 +105,87 @@ public class Edge: Equatable {
         case .normal :
             return CGPath.arrow(startPoint: otherPoint, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: otherPoint.distance(to: pos))
         case .dot:
-            return UIBezierPath(circleBetween: pos, and: otherPoint).cgPath
+            return CGPath.circleBetween(a: pos, and: otherPoint)
         case .none:
             let path = CGMutablePath()
             path.move(to: pos)
             path.addLine(to: otherPoint)
             return path
         case  .diamond:
-            return UIBezierPath(diamondBetween: pos, and: otherPoint).cgPath
+            return CGPath.diamondBetween(a: pos, and: otherPoint)
         }
     }
-
+    
     public static func == (lhs: Edge, rhs: Edge) -> Bool {
         return lhs === rhs
+    }
+}
+
+extension CGPath {
+    fileprivate class func arrow(startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) -> CGPath {
+        let length = hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
+        if length.isZero {
+            Logger.graphviz.warning("length between start and end isZero. Why?")
+        }
+        
+        let points = CGPath.getAxisAlignedArrowPoints(forLength: length, tailWidth: tailWidth, headWidth: headWidth, headLength: headLength)
+        
+        let transform: CGAffineTransform = CGPath.transformForStartPoint(startPoint: startPoint, endPoint: endPoint, length: length)
+        
+        let path = CGMutablePath()
+        path.addLines(between: points, transform: transform)
+        
+        return path
+    }
+    
+    private class func getAxisAlignedArrowPoints(forLength: CGFloat, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat ) -> [CGPoint] {
+        
+        let tailLength = forLength - headLength
+        return [
+            CGPoint(x: 0, y: tailWidth/2),
+            CGPoint(x: tailLength, y: tailWidth/2),
+            CGPoint(x: tailLength, y: headWidth/2),
+            CGPoint(x: forLength, y: 0),
+            CGPoint(x: tailLength, y: -headWidth/2),
+            CGPoint(x: tailLength, y: -tailWidth/2),
+            CGPoint(x: 0, y: -tailWidth/2),
+        ]
+    }
+    
+    private class func transformForStartPoint(startPoint: CGPoint, endPoint: CGPoint, length: CGFloat) -> CGAffineTransform {
+        let cosine: CGFloat = (endPoint.x - startPoint.x)/length
+        let sine: CGFloat = (endPoint.y - startPoint.y)/length
+        
+        return CGAffineTransform(a: cosine, b: sine, c: -sine, d: cosine, tx: startPoint.x, ty: startPoint.y)
+    }
+    
+    fileprivate class func circle(point: CGPoint, radius: CGFloat) -> CGPath {
+        let rect = CGRect(midPoint: point, size: CGSize(width: radius * 2, height: radius * 2))
+        return CGPath(ellipseIn: rect, transform: nil)
+    }
+    
+    fileprivate class func circleBetween(a: CGPoint, and b: CGPoint) -> CGPath {
+        let distance = a.distance(to: b)
+        let middle = midPoint(between: a, and: b)
+        let rect = CGRect(midPoint: middle, size: CGSize(width: distance, height: distance))
+        return CGPath(ellipseIn: rect, transform: nil)
+    }
+    
+    fileprivate class func diamondBetween(a: CGPoint, and b: CGPoint) -> CGPath {
+        let vector = CGVector(from: a, to: b)
+        let distance = a.distance(to: b)
+        let ortho = vector.orthogonalVector.normalized() * (distance / 3)
+        
+        let middle = midPoint(between: a, and: b)
+        
+        let c = middle + ortho
+        let d = middle + ortho.opposingVector
+        let path = CGMutablePath()
+        path.move(to: a)
+        path.addLine(to: c)
+        path.addLine(to: b)
+        path.addLine(to: d)
+        path.addLine(to: a)
+        return path
     }
 }
