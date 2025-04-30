@@ -31,7 +31,7 @@ public class Node: Equatable {
     @GVGraphvizProperty<GVNodeParameters, GVNodeShape> public var shape: GVNodeShape
     @GVGraphvizProperty<GVNodeParameters, GVNodeStyle> public var style: GVNodeStyle
     
-    public init(node: GVNode) {
+    init(node: GVNode) {
         self.node = node
         _label = GVGraphvizProperty(key: GVNodeParameters.label, defaultValue: "", container: node)
         _fontSize = GVGraphvizProperty(key: GVNodeParameters.fontsize, defaultValue: 14, container: node)

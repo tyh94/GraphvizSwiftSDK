@@ -8,37 +8,37 @@
 @preconcurrency import CGraphvizSDK
 import Foundation
 
-public typealias GVNode = UnsafeMutablePointer<Agnode_t>
+typealias GVNode = UnsafeMutablePointer<Agnode_t>
 
 extension UnsafeMutablePointer where Pointee == Agnode_t  {
 
-    public var pos: CGPoint {
+    var pos: CGPoint {
         let s = nd_coord(self)
         return CGPoint(gvPoint: s)
     }
     
-    public var width: CGFloat {
+    var width: CGFloat {
         let s = nd_width(self)
         return CGFloat(s) * pointsPerInch
     }
     
-    public var height: CGFloat {
+    var height: CGFloat {
         let s = nd_height(self)
         return CGFloat(s) * pointsPerInch
     }
     
-    public var size: CGSize {
+    var size: CGSize {
         CGSize(width: width, height: height)
     }
     
-    public var rect: CGRect {
+    var rect: CGRect {
         let mid = self.pos
         let w = self.width
         let h = self.height
         return CGRect(midPoint: mid, size: CGSize(width: w, height: h))
     }
     
-    public var nodeType: GVNodeShape? {
+    var nodeType: GVNodeShape? {
         guard let shape = nd_shape(self),
               let shapeName = shape.pointee.name else {
             return nil
@@ -49,7 +49,7 @@ extension UnsafeMutablePointer where Pointee == Agnode_t  {
         return GVNodeShape(rawValue: type)
     }
     
-    public var polygon: polygon_t? {
+    var polygon: polygon_t? {
         guard let shapeInfoPtr = nd_shape_info(self) else {
             return nil
         }

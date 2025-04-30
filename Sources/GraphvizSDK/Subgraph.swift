@@ -11,7 +11,7 @@ import CoreGraphics
 import OSLog
 
 public class Subgraph: Graph {
-    public convenience init(
+    convenience init(
         name: String,
         parent: GVGraph
     ) {

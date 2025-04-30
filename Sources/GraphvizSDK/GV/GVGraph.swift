@@ -8,13 +8,12 @@
 @preconcurrency import CGraphvizSDK
 import Foundation
 
+typealias GVGraph = UnsafeMutablePointer<Agraph_t>
 
-public typealias GVGraph = UnsafeMutablePointer<Agraph_t>
+struct AGWriteWrongEncoding: Error { }
+struct CannotOpenFileDescriptor: Error { }
 
-public struct AGWriteWrongEncoding: Error { }
-public struct CannotOpenFileDescriptor: Error { }
-
-public extension UnsafeMutablePointer where Pointee == Agraph_t {
+extension UnsafeMutablePointer where Pointee == Agraph_t {
     
     /// adapted from: https://stackoverflow.com/questions/59653517/how-to-use-file-descriptor-to-divert-write-to-file-in-swift/59654364#59654364
     var asString: String? {

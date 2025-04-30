@@ -21,12 +21,4 @@ public enum GVNodeStyle: String {
     case none = ""
 }
 
-public enum GVEdgeStyle: String {
-    case dashed
-    case dotted
-    case solid
-    case invis
-    case bold
-    case tapered
-    case none = ""
-}
+

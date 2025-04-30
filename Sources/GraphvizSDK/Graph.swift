@@ -43,7 +43,7 @@ open class Graph {
         fillNodesAndEdges()
     }
     
-    public init(_ graph: GVGraph) {
+    init(_ graph: GVGraph) {
         self.graph = graph
         
         // Инициализация контекста и графа
@@ -102,18 +102,10 @@ open class Graph {
         return subgraph
     }
     
-    public func setSameRank(nodes: [String]) {
-        let nodesStr = nodes.joined(separator: "; ")
-        let sameNodes = "\(GVRank.same.rawValue); \(nodesStr)"
-        setAttribute(sameNodes, forKey: .rank)
-    }
-    
     // MARK: - Layout Operations
     
-    @discardableResult
-    @MainActor
-    public func applyLayout() -> Bool {
-        guard gvLayout(context, graph, "dot") == 0 else { return false }
+    public func log() {
+        guard gvLayout(context, graph, "dot") == 0 else { return }
         
         var data: CHAR?
         var len: size_t = 0
@@ -123,6 +115,11 @@ open class Graph {
             Logger.graphviz.debug(message: String(cString: data))
             Logger.graphviz.debug(message: "==========================")
         }
+    }
+    
+    @MainActor
+    public func applyLayout() {
+        guard gvLayout(context, graph, "dot") == 0 else { return }
         let graphHeight = graph.height
         nodes.forEach { $0.prepare(graphHeight: graphHeight) }
         edges.forEach { $0.prepare(graphHeight: graphHeight) }
@@ -130,7 +127,5 @@ open class Graph {
             subgraph.nodes.forEach { $0.prepare(graphHeight: graphHeight) }
             subgraph.edges.forEach { $0.prepare(graphHeight: graphHeight) }
         }
-        
-        return true
     }
 }
