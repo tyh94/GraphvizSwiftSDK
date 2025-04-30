@@ -55,6 +55,18 @@ public struct GVGraphvizProperty<Key: RawRepresentable<String>, Value> {
         key: Key,
         defaultValue: Value,
         container: UnsafeMutableRawPointer
+    ) where Value == Bool {
+        self.key = key
+        self.defaultValue = defaultValue
+        self.converterToValue = { Value($0) ?? defaultValue }
+        self.converterFromValue = { $0.description }
+        self.container = container
+    }
+    
+    public init(
+        key: Key,
+        defaultValue: Value,
+        container: UnsafeMutableRawPointer
     ) where Value == Double {
         self.key = key
         self.defaultValue = defaultValue

@@ -18,7 +18,7 @@ public class Subgraph: Graph {
         self.init(agsubg(parent, cString(name), 1))
     }
     
-    public func setRank(_ rank: GVRankType) {
+    public func setRank(_ rank: GVRank) {
         setAttribute(rank.rawValue, forKey: .rank)
     }
 }

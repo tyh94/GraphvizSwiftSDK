@@ -11,13 +11,7 @@ import CoreGraphics
 let pointsPerInch: CGFloat = 72.0
 
 public func pixelToInchParameter(_ x: CGFloat) -> String {
-    return "\(x / pointsPerInch)"
-}
-
-public enum GVRankType: String {
-    case same
-    case min
-    case source
+    "\(x / pointsPerInch)"
 }
 
 public enum GVEdgeParameters : String {
@@ -84,7 +78,7 @@ public enum GVParameter: Hashable {
     case node(GVNodeParameters)
 }
 
-public enum GVEdgeParamDir: String, CaseIterable {
+public enum GVEdgeParamDir: String {
     case both
     case forward
     case back
@@ -118,7 +112,7 @@ public enum GVEdgeParamDir: String, CaseIterable {
     }
 }
 
-public enum GVParamValueOverlap : String {
+public enum GVParamValueOverlap: String {
     case retain = "true"
     case scale
     case prism1000
@@ -144,15 +138,6 @@ public enum GVEdgeEnding: String {
     ///diamond
     case diamond
 }
-
-//public enum GVEdgeStyle: String {
-//    case curved
-//    case lines
-//    case polyLines
-//    case orthogonal
-//    case splines
-//}
-
 
 public enum GVRank: String {
     case same
