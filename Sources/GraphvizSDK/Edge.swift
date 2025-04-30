@@ -21,28 +21,15 @@ public class Edge: Equatable {
     public var body: CGPath = .init(rect: .zero, transform: nil)
     public var headArrow: CGPath?
     public var tailArrow: CGPath?
-    public var weight: Float {
-        get { Float(getAttribute(forKey: .weight)) ?? 1 }
-        set {
-            setAttribute(newValue.description, forKey: .weight)
-        }
-    }
-    public var arrowheadType: GVEdgeEnding {
-        get { GVEdgeEnding(rawValue: getAttribute(forKey: .arrowhead)) ?? .normal }
-        set { setAttribute(newValue.rawValue, forKey: .arrowhead) }
-    }
+    @GVGraphvizProperty<GVEdgeParameters, Float> public var weight: Float
+    @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowheadType: GVEdgeEnding
+    @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowtailType: GVEdgeEnding
     
-    public var arrowtailType: GVEdgeEnding {
-        get { GVEdgeEnding(rawValue: getAttribute(forKey: .arrowtail)) ?? .normal }
-        set { setAttribute(newValue.rawValue, forKey: .arrowtail) }
-    }
-    
-    // MARK: - Attribute Management
-    public func setAttribute(_ value: String, forKey key: GVEdgeParameters) {
+    private func setAttribute(_ value: String, forKey key: GVEdgeParameters) {
         agsafeset(edge, cString(key.rawValue), cString(value), "")
     }
     
-    public func getAttribute(forKey key: GVEdgeParameters) -> String {
+    private func getAttribute(forKey key: GVEdgeParameters) -> String {
         guard let cValue = agget(edge, cString(key.rawValue)) else {
             return ""
         }
@@ -53,6 +40,9 @@ public class Edge: Equatable {
         edge: GVEdge
     ) {
         self.edge = edge
+        _weight = GVGraphvizProperty(key: GVEdgeParameters.weight, defaultValue: 1, container: edge)
+        _arrowheadType = GVGraphvizProperty(key: GVEdgeParameters.arrowhead, defaultValue: .normal, container: edge)
+        _arrowtailType = GVGraphvizProperty(key: GVEdgeParameters.arrowtail, defaultValue: .normal, container: edge)
     }
     
     convenience init(
@@ -66,6 +56,10 @@ public class Edge: Equatable {
     
     public func setNoDirection() {
         setAttribute(GVEdgeParamDir.none.rawValue, forKey: .dir)
+    }
+    
+    public func setBaseParameters(params: [GVEdgeParameters: String]) {
+        params.forEach { setAttribute($0.value, forKey: $0.key) }
     }
     
     // MARK: - Layout Preparation

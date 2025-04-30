@@ -71,12 +71,11 @@ open class Graph {
         }
     }
     
-    // MARK: - Attributes Management
-    public func setAttribute(_ value: String, forKey key: GVGraphParameters) {
+    func setAttribute(_ value: String, forKey key: GVGraphParameters) {
         agsafeset(graph, cString(key.rawValue), cString(value), "")
     }
     
-    public func getAttribute(forKey key: GVGraphParameters) -> String {
+    func getAttribute(forKey key: GVGraphParameters) -> String {
         guard let cValue = agget(graph, cString(key.rawValue)) else {
             return ""
         }

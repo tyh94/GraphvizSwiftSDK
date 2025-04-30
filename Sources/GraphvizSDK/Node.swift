@@ -14,12 +14,6 @@ public class Node: Equatable {
     // TODO: add image https://graphviz.org/docs/attrs/image/
     let node: GVNode
     
-    public var label: String {
-        get { getAttribute(forKey: .label) }
-        set {
-            setAttribute(newValue, forKey: .label)
-        }
-    }
     public private(set) var path: CGPath = .init(rect: .zero, transform: nil)
     public private(set) var frame: CGRect = .zero
     public private(set) var bounds: CGRect = .zero
@@ -29,52 +23,39 @@ public class Node: Equatable {
     public var borderColor: UIColor = UIColor.black // TODO: color https://graphviz.org/docs/attrs/color/
     public var borderWidth: Float = 1.0 // TODO: penwidth https://graphviz.org/docs/attrs/penwidth/
     public var textColor: UIColor = UIColor.black // TODO: fontcolor  https://graphviz.org/docs/attrs/fontcolor/
-    public var fontSize: Int = 14 {
-        didSet {
-            setAttribute(fontSize.description, forKey: .fontsize)
-        }
-    }
-    public var shape: GVNodeShape = .ellipse {
-        didSet {
-            setAttribute(shape.rawValue, forKey: .shape)
-        }
-    }
-    public var width: Double = 1.0 {
-        didSet {
-            setAttribute(width.description, forKey: .width)
-        }
-    }
-    public var height: Double = 1.0 {
-        didSet {
-            setAttribute(height.description, forKey: .height)
-        }
-    }
     
-    public var style: GVNodeStyle {
-        get { GVNodeStyle(rawValue: getAttribute(forKey: .style)) ?? .none }
-        set {
-            setAttribute(newValue.rawValue, forKey: .style)
-        }
-    }
-    public func setAttribute(_ value: String, forKey key: GVNodeParameters) {
-        agsafeset(node, cString(key.rawValue), cString(value), "")
-    }
-    
-    public func getAttribute(forKey key: GVNodeParameters) -> String {
-        guard let cValue = agget(node, cString(key.rawValue)) else {
-            return ""
-        }
-        return String(cString: cValue)
-    }
+    @GVGraphvizProperty<GVNodeParameters, String> public var label: String
+    @GVGraphvizProperty<GVNodeParameters, Int> public var fontSize: Int
+    @GVGraphvizProperty<GVNodeParameters, Double> public var width: Double
+    @GVGraphvizProperty<GVNodeParameters, Double> public var height: Double
+    @GVGraphvizProperty<GVNodeParameters, GVNodeShape> public var shape: GVNodeShape
+    @GVGraphvizProperty<GVNodeParameters, GVNodeStyle> public var style: GVNodeStyle
     
     public init(node: GVNode) {
         self.node = node
+        _label = GVGraphvizProperty(key: GVNodeParameters.label, defaultValue: "", container: node)
+        _fontSize = GVGraphvizProperty(key: GVNodeParameters.fontsize, defaultValue: 14, container: node)
+        _width = GVGraphvizProperty(key: GVNodeParameters.width, defaultValue: 1.0, container: node)
+        _height = GVGraphvizProperty(key: GVNodeParameters.height, defaultValue: 1.0, container: node)
+        _shape = GVGraphvizProperty(key: GVNodeParameters.shape, defaultValue: .ellipse, container: node)
+        _style = GVGraphvizProperty(key: GVNodeParameters.style, defaultValue: .none, container: node)
     }
     
     convenience init(parent: GVGraph, label: String) {
         let node = agnode(parent, cString(label), 1)
         self.init(node: node!)
         self.label = label
+    }
+    
+    private func setAttribute(_ value: String, forKey key: GVNodeParameters) {
+        agsafeset(node, cString(key.rawValue), cString(value), "")
+    }
+    
+    private func getAttribute(forKey key: GVNodeParameters) -> String {
+        guard let cValue = agget(node, cString(key.rawValue)) else {
+            return ""
+        }
+        return String(cString: cValue)
     }
     
     public func setBaseParameters(params: [GVNodeParameters: String]) {

@@ -242,14 +242,14 @@ func demoGraph() -> Graph {
     e3_10.color = UIColor.green
     e3_10.weight = 50
     e3_10.width = 3
-    e3_10.setAttribute(GVEdgeParamDir.both.rawValue, forKey: .dir)
+    e3_10.setBaseParameters(params: [.dir: GVEdgeParamDir.both.rawValue])
     e3_10.arrowheadType = .dot
     e3_10.arrowtailType = .diamond
     
     e9_1.color = UIColor.red
     e9_1.weight = 100
     e9_1.width = 4
-    e9_1.setAttribute(GVEdgeParamDir.both.rawValue, forKey: .dir)
+    e9_1.setBaseParameters(params: [.dir: GVEdgeParamDir.both.rawValue])
     e9_1.arrowheadType = .diamond
     e9_1.arrowtailType = .dot
     
