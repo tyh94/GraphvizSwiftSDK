@@ -24,17 +24,7 @@ public class Edge: Equatable {
     @GVGraphvizProperty<GVEdgeParameters, Float> public var weight: Float
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowheadType: GVEdgeEnding
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowtailType: GVEdgeEnding
-    
-    private func setAttribute(_ value: String, forKey key: GVEdgeParameters) {
-        agsafeset(edge, cString(key.rawValue), cString(value), "")
-    }
-    
-    private func getAttribute(forKey key: GVEdgeParameters) -> String {
-        guard let cValue = agget(edge, cString(key.rawValue)) else {
-            return ""
-        }
-        return String(cString: cValue)
-    }
+    @GVGraphvizProperty<GVEdgeParameters, GVEdgeParamDir> public var dir: GVEdgeParamDir
     
     init(
         edge: GVEdge
@@ -43,6 +33,7 @@ public class Edge: Equatable {
         _weight = GVGraphvizProperty(key: GVEdgeParameters.weight, defaultValue: 1, container: edge)
         _arrowheadType = GVGraphvizProperty(key: GVEdgeParameters.arrowhead, defaultValue: .normal, container: edge)
         _arrowtailType = GVGraphvizProperty(key: GVEdgeParameters.arrowtail, defaultValue: .normal, container: edge)
+        _dir = GVGraphvizProperty(key: GVEdgeParameters.dir, defaultValue: .forward, container: edge)
     }
     
     convenience init(
@@ -52,14 +43,6 @@ public class Edge: Equatable {
     ) {
         let edge = agedge(parent, source.node, target.node, nil, 1)
         self.init(edge: edge!)
-    }
-    
-    public func setNoDirection() {
-        setAttribute(GVEdgeParamDir.none.rawValue, forKey: .dir)
-    }
-    
-    public func setBaseParameters(params: [GVEdgeParameters: String]) {
-        params.forEach { setAttribute($0.value, forKey: $0.key) }
     }
     
     // MARK: - Layout Preparation

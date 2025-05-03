@@ -1,9 +1,8 @@
 //
 //  Graph.swift
-//  GraphLayout
+//  GraphvizSDK
 //
-//  Copyright © 2018 bakhtiyor.com.
-//  MIT License
+//  Created by Татьяна Макеева on 27.03.2025.
 //
 
 @preconcurrency import CGraphvizSDK
@@ -12,94 +11,41 @@ import CoreGraphics
 import OSLog
 
 open class Graph {
-    private var graph: GVGraph
+    private(set) var graph: GVGraph
     private let context: GVGlobalContextPointer
     
     public var nodesDraw: [Node] {
-        nodes + subgraphs.flatMap { $0.nodes }
+        nodes
     }
     
     public var edgesDraw: [Edge] {
-        edges + subgraphs.flatMap { $0.edges }
+        edges
     }
 
-    private var nodes = [Node]()
-    private var edges = [Edge]()
-    private var subgraphs = [Subgraph]()
+    private let nodes: [Node]
+    private let edges: [Edge]
     public var size: CGSize {
         graph.size
     }
     
-    public convenience init(type: GVGraphType = .nonStrictDirected) {
-        let name = "graph_\(arc4random())"
-        let cName = cString(name)
-        let graph = agopen(cName, type.graphvizValue, nil)!
-        self.init(graph)
-    }
+    @GVGraphvizProperty<GVGraphParameters, GVRank> public var rank: GVRank
+    @GVGraphvizProperty<GVGraphParameters, GVParamValueSplines> public var splines: GVParamValueSplines
+    @GVGraphvizProperty<GVGraphParameters, GVModelDirection> public var rankdir: GVModelDirection
     
-    public convenience init(str: String) {
-        let graph = agmemread(str)!
-        self.init(graph)
-        fillNodesAndEdges()
-    }
-    
-    init(_ graph: GVGraph) {
+    init(
+        _ graph: GVGraph,
+        nodes: [Node],
+        edges: [Edge]
+    ) {
         self.graph = graph
+        self.nodes = nodes
+        self.edges = edges
+        _rank = GVGraphvizProperty(key: GVGraphParameters.rank, defaultValue: .none, container: graph)
+        _splines = GVGraphvizProperty(key: GVGraphParameters.splines, defaultValue: .none, container: graph)
+        _rankdir = GVGraphvizProperty(key: GVGraphParameters.rankdir, defaultValue: .towardsTop, container: graph)
         
         // Инициализация контекста и графа
         context = loadGraphvizLibraries()
-    }
-    
-    public func setBaseParameters(params: [GVGraphParameters: String]) {
-        params.forEach { setAttribute($0.value, forKey: $0.key) }
-    }
-    
-    func fillNodesAndEdges() {
-        var currentNode: GVNode? = agfstnode(graph)
-        while currentNode != nil {
-            let node = Node(node: currentNode!)
-            nodes.append(node)
-            
-            var currentEdge: GVEdge? = agfstout(graph, currentNode!)
-            while currentEdge != nil {
-                let edge = Edge(edge: currentEdge!)
-                edges.append(edge)
-                currentEdge = agnxtout(graph, currentEdge!)
-            }
-            
-            currentNode = agnxtnode(graph, currentNode!)
-        }
-    }
-    
-    func setAttribute(_ value: String, forKey key: GVGraphParameters) {
-        agsafeset(graph, cString(key.rawValue), cString(value), "")
-    }
-    
-    func getAttribute(forKey key: GVGraphParameters) -> String {
-        guard let cValue = agget(graph, cString(key.rawValue)) else {
-            return ""
-        }
-        return String(cString: cValue)
-    }
-    
-    // MARK: - Nodes & Edges Management
-    
-    public func addNode(label: String) -> Node {
-        let node = Node(parent: graph, label: label)
-        nodes.append(node)
-        return node
-    }
-    
-    public func addEdge(from source: Node, to target: Node) -> Edge {
-        let edge = Edge(parent: graph, from: source, to: target)
-        edges.append(edge)
-        return edge
-    }
-    
-    public func addSubgraph(name: String) -> Subgraph {
-        let subgraph = Subgraph(name: name, parent: graph)
-        subgraphs.append(subgraph)
-        return subgraph
     }
     
     // MARK: - Layout Operations
@@ -123,9 +69,5 @@ open class Graph {
         let graphHeight = graph.height
         nodes.forEach { $0.prepare(graphHeight: graphHeight) }
         edges.forEach { $0.prepare(graphHeight: graphHeight) }
-        subgraphs.forEach { subgraph in
-            subgraph.nodes.forEach { $0.prepare(graphHeight: graphHeight) }
-            subgraph.edges.forEach { $0.prepare(graphHeight: graphHeight) }
-        }
     }
 }

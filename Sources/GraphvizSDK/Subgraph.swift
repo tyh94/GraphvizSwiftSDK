@@ -15,10 +15,7 @@ public class Subgraph: Graph {
         name: String,
         parent: GVGraph
     ) {
-        self.init(agsubg(parent, cString(name), 1))
-    }
-    
-    public func setRank(_ rank: GVRank) {
-        setAttribute(rank.rawValue, forKey: .rank)
+        let subgraph = agsubg(parent, cString(name), 1)!
+        self.init(subgraph, nodes: [], edges: [])
     }
 }

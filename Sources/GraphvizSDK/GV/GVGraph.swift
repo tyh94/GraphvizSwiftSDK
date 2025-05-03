@@ -8,7 +8,7 @@
 @preconcurrency import CGraphvizSDK
 import Foundation
 
-typealias GVGraph = UnsafeMutablePointer<Agraph_t>
+public typealias GVGraph = UnsafeMutablePointer<Agraph_t>
 
 struct AGWriteWrongEncoding: Error { }
 struct CannotOpenFileDescriptor: Error { }

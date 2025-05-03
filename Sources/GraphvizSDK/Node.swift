@@ -21,7 +21,9 @@ public class Node: Equatable {
     public var color: UIColor = UIColor.white
     public var highlihtedColor: UIColor = UIColor.lightGray
     public var borderColor: UIColor = UIColor.black // TODO: color https://graphviz.org/docs/attrs/color/
-    public var borderWidth: Float = 1.0 // TODO: penwidth https://graphviz.org/docs/attrs/penwidth/
+    public var borderWidth: Double {
+        penwidth
+    }
     public var textColor: UIColor = UIColor.black // TODO: fontcolor  https://graphviz.org/docs/attrs/fontcolor/
     
     @GVGraphvizProperty<GVNodeParameters, String> public var label: String
@@ -30,6 +32,12 @@ public class Node: Equatable {
     @GVGraphvizProperty<GVNodeParameters, Double> public var height: Double
     @GVGraphvizProperty<GVNodeParameters, GVNodeShape> public var shape: GVNodeShape
     @GVGraphvizProperty<GVNodeParameters, GVNodeStyle> public var style: GVNodeStyle
+    @GVGraphvizProperty<GVNodeParameters, Bool> public var fixedsize: Bool
+    @GVGraphvizProperty<GVNodeParameters, Double> public var fontsize: Double
+    @GVGraphvizProperty<GVNodeParameters, String> public var fontname: String
+    @GVGraphvizProperty<GVNodeParameters, GVLabelLocation> public var labelloc: GVLabelLocation
+    @GVGraphvizProperty<GVNodeParameters, Double> public var margin: Double
+    @GVGraphvizProperty<GVNodeParameters, Double> public var penwidth: Double
     
     init(node: GVNode) {
         self.node = node
@@ -39,6 +47,12 @@ public class Node: Equatable {
         _height = GVGraphvizProperty(key: GVNodeParameters.height, defaultValue: 1.0, container: node)
         _shape = GVGraphvizProperty(key: GVNodeParameters.shape, defaultValue: .ellipse, container: node)
         _style = GVGraphvizProperty(key: GVNodeParameters.style, defaultValue: .none, container: node)
+        _fixedsize = GVGraphvizProperty(key: GVNodeParameters.fixedsize, defaultValue: false, container: node)
+        _fontsize = GVGraphvizProperty(key: GVNodeParameters.fontsize, defaultValue: 14.0, container: node)
+        _fontname = GVGraphvizProperty(key: GVNodeParameters.fontname, defaultValue: "Times-Roman", container: node)
+        _labelloc = GVGraphvizProperty(key: GVNodeParameters.labelloc, defaultValue: .c, container: node)
+        _margin = GVGraphvizProperty(key: GVNodeParameters.margin, defaultValue: 0.0, container: node)
+        _penwidth = GVGraphvizProperty(key: GVNodeParameters.penwidth, defaultValue: 1.0, container: node)
     }
     
     convenience init(parent: GVGraph, label: String) {
@@ -47,20 +61,6 @@ public class Node: Equatable {
         self.label = label
     }
     
-    private func setAttribute(_ value: String, forKey key: GVNodeParameters) {
-        agsafeset(node, cString(key.rawValue), cString(value), "")
-    }
-    
-    private func getAttribute(forKey key: GVNodeParameters) -> String {
-        guard let cValue = agget(node, cString(key.rawValue)) else {
-            return ""
-        }
-        return String(cString: cValue)
-    }
-    
-    public func setBaseParameters(params: [GVNodeParameters: String]) {
-        params.forEach { setAttribute($0.value, forKey: $0.key) }
-    }
     
     @MainActor public func prepare(graphHeight: CGFloat) {
         // Get node dimensions

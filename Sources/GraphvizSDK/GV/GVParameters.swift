@@ -59,7 +59,13 @@ public enum GVGraphParameters: String {
     case newrank
 }
 
-public enum GVNodeParameters: String, CaseIterable {
+public enum GVLabelLocation: String {
+    case t
+    case b
+    case c
+}
+
+public enum GVNodeParameters: String {
     case width
     case height
     case shape
@@ -70,6 +76,7 @@ public enum GVNodeParameters: String, CaseIterable {
     case fontname
     case labelloc
     case margin
+    case penwidth
 }
 
 public enum GVParameter: Hashable {
@@ -145,5 +152,6 @@ public enum GVRank: String {
     case source
     case max
     case sink
+    case none = ""
 }
 
