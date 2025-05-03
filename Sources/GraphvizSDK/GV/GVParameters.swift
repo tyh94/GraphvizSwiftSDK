@@ -38,6 +38,7 @@ public enum GVEdgeParameters : String {
     case len
     case fontname
     case fontsize
+    case minlen
 }
 
 public enum GVGraphParameters: String {

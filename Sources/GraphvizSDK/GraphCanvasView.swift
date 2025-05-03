@@ -115,6 +115,7 @@ public struct GraphCanvasView: View {
         }
         .onAppear {
             graph.applyLayout()
+            graph.log()
             // Центрируем график при старте
             // TODO: не работает
 //            if let firstNode = graph.nodes.first?.frame() {

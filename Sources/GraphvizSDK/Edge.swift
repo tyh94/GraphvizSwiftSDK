@@ -25,6 +25,7 @@ public class Edge: Equatable {
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowheadType: GVEdgeEnding
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowtailType: GVEdgeEnding
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeParamDir> public var dir: GVEdgeParamDir
+    @GVGraphvizProperty<GVEdgeParameters, Int> public var minlen: Int
     
     init(
         edge: GVEdge
@@ -34,6 +35,7 @@ public class Edge: Equatable {
         _arrowheadType = GVGraphvizProperty(key: GVEdgeParameters.arrowhead, defaultValue: .normal, container: edge)
         _arrowtailType = GVGraphvizProperty(key: GVEdgeParameters.arrowtail, defaultValue: .normal, container: edge)
         _dir = GVGraphvizProperty(key: GVEdgeParameters.dir, defaultValue: .forward, container: edge)
+        _minlen = GVGraphvizProperty(key: .minlen, defaultValue: 1, container: edge)
     }
     
     convenience init(

@@ -11,7 +11,11 @@ public final class EdgeBuilder {
     let source: NodeBuilder
     let targer: NodeBuilder
     
-    var dir: GVEdgeParamDir?
+    private var dir: GVEdgeParamDir?
+    private var arrowheadType: GVEdgeEnding?
+    private var arrowtailType: GVEdgeEnding?
+    private var weight: Float?
+    private var minlen: Int?
     
     init(
         source: NodeBuilder,
@@ -28,6 +32,9 @@ public final class EdgeBuilder {
         if let dir {
             edge.dir = dir
         }
+        if let minlen {
+            edge.minlen = minlen
+        }
         return edge
     }
 }
@@ -38,4 +45,29 @@ extension EdgeBuilder {
         self.dir = dir
         return self
     }
+    
+    @discardableResult
+    public func with(minlen: Int) -> Self {
+        self.minlen = minlen
+        return self
+    }
+    
+    @discardableResult
+    public func with(arrowheadType: GVEdgeEnding) -> Self {
+        self.arrowheadType = arrowheadType
+        return self
+    }
+    
+    @discardableResult
+    public func with(arrowtailType: GVEdgeEnding) -> Self {
+        self.arrowtailType = arrowtailType
+        return self
+    }
+    
+    @discardableResult
+    public func with(weight: Float) -> Self {
+        self.weight = weight
+        return self
+    }
+    
 }
