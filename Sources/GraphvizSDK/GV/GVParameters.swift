@@ -39,6 +39,20 @@ public enum GVEdgeParameters : String {
     case fontname
     case fontsize
     case minlen
+    case penwidth
+}
+
+public enum GVLayout: String {
+    case dot
+    case neato
+    case fdp
+    case sfdp
+    case circo
+    case twopi
+    case nop
+    case nop2
+    case osage
+    case patchwork
 }
 
 public enum GVGraphParameters: String {

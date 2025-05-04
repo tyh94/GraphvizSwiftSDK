@@ -10,8 +10,9 @@ import SwiftUI
 
 public struct GraphCanvasView: View {
     let graph: Graph
-    let onTapNode: ((Node) -> ())?
+    let onTapNode: ((NodeUI) -> ())?
     
+    private let graphUI: GraphUI
     @State private var location = CGPoint.zero
     @GestureState private var startLocation: CGPoint? = nil
     @State private var currentZoom = 0.0
@@ -19,11 +20,12 @@ public struct GraphCanvasView: View {
     
     public init(
         graph: Graph,
-        tapNode: ((Node) -> ())? = nil
+        tapNode: ((NodeUI) -> ())? = nil
     ) {
         self.graph = graph
         self.onTapNode = tapNode
-        if let firstNode = graph.nodesDraw.first?.frame {
+        graphUI = (try? graph.render(using: .dot)) ?? GraphUI(nodes: [], edges: [])
+        if let firstNode = graphUI.nodes.first?.frame {
             location = CGPoint(
                 x: -firstNode.midX,
                 y: -firstNode.midY
@@ -35,10 +37,8 @@ public struct GraphCanvasView: View {
         Canvas { context, size in
             context.translateBy(x: location.x, y: location.y)
             context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
-            if graph.nodesDraw.first?.frame.size == .zero {
-                graph.applyLayout()
-            }
-            for node in graph.nodesDraw {
+ 
+            for node in graphUI.nodes {
                 let frame = node.frame
                 
                 context.translateBy(
@@ -46,37 +46,28 @@ public struct GraphCanvasView: View {
                     y: frame.origin.y
                 )
                 let path = Path(node.path)
-                context.stroke(path, with: .color(Color(node.borderColor)), lineWidth: CGFloat(node.borderWidth))
+                context.stroke(path, with: .color(node.borderColor), lineWidth: node.borderWidth)
                 context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
                 context.draw(
                     Text(node.label)
-                        .font(Font.system(size: CGFloat(node.fontSize)))
-                        .foregroundStyle(Color(node.textColor)),
+                        .font(Font.system(size: node.fontSize))
+                        .foregroundStyle(node.textColor),
                     at: frame.center
                 )
             }
             
-            for edge in graph.edgesDraw {
-                let frame = edge.frame
-                let edgeWidth = CGFloat(edge.width)
-                context.translateBy(
-                    x: frame.origin.x,
-                    y: frame.origin.y
-                )
+            for edge in graphUI.edges {
+                let edgeWidth = edge.width
                 
                 let path = edge.body
-                context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
+                context.stroke(Path(path), with: .color(edge.color), lineWidth: edgeWidth)
                 
                 if let path = edge.headArrow {
-                    context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
+                    context.stroke(Path(path), with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
                 }
                 if let path = edge.tailArrow {
-                    context.stroke(Path(path), with: .color(Color(edge.color)), lineWidth: CGFloat(edgeWidth))
+                    context.stroke(Path(path), with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
                 }
-                context.translateBy(
-                    x: -frame.origin.x,
-                    y: -frame.origin.y
-                )
             }
         }
         .gesture(
@@ -106,7 +97,7 @@ public struct GraphCanvasView: View {
         )
         .onTapGesture { tapLocation in
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
-            for node in graph.nodesDraw {
+            for node in graphUI.nodes {
                 let frame = node.frame.applying(globalOffset)
                 if frame.contains(tapLocation) {
                     self.onTapNode?(node)
@@ -114,8 +105,19 @@ public struct GraphCanvasView: View {
             }
         }
         .onAppear {
-            graph.applyLayout()
-            graph.log()
+//            do {
+//                let graphUI = try graph.layout(using: .dot)
+//                if let firstNode = graphUI.nodes.first?.frame {
+//                    location = CGPoint(
+//                        x: -firstNode.midX,
+//                        y: -firstNode.midY
+//                    )
+//                }
+//                self.graphUI = graphUI
+//                graph.log()
+//            } catch {
+//                print(error)
+//            }
             // Центрируем график при старте
             // TODO: не работает
 //            if let firstNode = graph.nodes.first?.frame() {

@@ -12,18 +12,8 @@ import OSLog
 
 open class Graph {
     private(set) var graph: GVGraph
-    private let context: GVGlobalContextPointer
-    
-    public var nodesDraw: [Node] {
-        nodes
-    }
-    
-    public var edgesDraw: [Edge] {
-        edges
-    }
-
-    private let nodes: [Node]
-    private let edges: [Edge]
+    let nodes: [Node]
+    let edges: [Edge]
     public var size: CGSize {
         graph.size
     }
@@ -31,6 +21,7 @@ open class Graph {
     @GVGraphvizProperty<GVGraphParameters, GVRank> public var rank: GVRank
     @GVGraphvizProperty<GVGraphParameters, GVParamValueSplines> public var splines: GVParamValueSplines
     @GVGraphvizProperty<GVGraphParameters, GVModelDirection> public var rankdir: GVModelDirection
+    @GVGraphvizProperty<GVGraphParameters, GVParamValueOverlap> public var overlap: GVParamValueOverlap
     
     init(
         _ graph: GVGraph,
@@ -43,31 +34,21 @@ open class Graph {
         _rank = GVGraphvizProperty(key: GVGraphParameters.rank, defaultValue: .none, container: graph)
         _splines = GVGraphvizProperty(key: GVGraphParameters.splines, defaultValue: .none, container: graph)
         _rankdir = GVGraphvizProperty(key: GVGraphParameters.rankdir, defaultValue: .towardsTop, container: graph)
-        
-        // Инициализация контекста и графа
-        context = loadGraphvizLibraries()
+        _overlap = GVGraphvizProperty(key: .overlap, defaultValue: .retain, container: graph)
     }
     
     // MARK: - Layout Operations
     
     public func log() {
-        guard gvLayout(context, graph, "dot") == 0 else { return }
-        
-        var data: CHAR?
-        var len: size_t = 0
-        gvRenderData(context, graph, "dot", &data, &len)
-        if let data {
-            Logger.graphviz.debug(message: "==========================")
-            Logger.graphviz.debug(message: String(cString: data))
-            Logger.graphviz.debug(message: "==========================")
-        }
-    }
-    
-    @MainActor
-    public func applyLayout() {
-        guard gvLayout(context, graph, "dot") == 0 else { return }
-        let graphHeight = graph.height
-        nodes.forEach { $0.prepare(graphHeight: graphHeight) }
-        edges.forEach { $0.prepare(graphHeight: graphHeight) }
+//        guard gvLayout(context, graph, "dot") == 0 else { return }
+//        
+//        var data: CHAR?
+//        var len: size_t = 0
+//        gvRenderData(context, graph, "dot", &data, &len)
+//        if let data {
+//            Logger.graphviz.debug(message: "==========================")
+//            Logger.graphviz.debug(message: String(cString: data))
+//            Logger.graphviz.debug(message: "==========================")
+//        }
     }
 }

@@ -16,6 +16,7 @@ public final class GraphBuilder {
     private var type: GVGraphType = .nonStrictDirected
     private var splines: GVParamValueSplines?
     private var rankdir: GVModelDirection?
+    private var overlap: GVParamValueOverlap?
     
     public init() {}
     
@@ -98,6 +99,12 @@ extension GraphBuilder {
     @discardableResult
     public func with(rankdir: GVModelDirection) -> Self {
         self.rankdir = rankdir
+        return self
+    }
+    
+    @discardableResult
+    public func with(overlap: GVParamValueOverlap) -> Self {
+        self.overlap = overlap
         return self
     }
 }

@@ -16,6 +16,7 @@ public final class EdgeBuilder {
     private var arrowtailType: GVEdgeEnding?
     private var weight: Float?
     private var minlen: Int?
+    private var penwidth: Double?
     
     init(
         source: NodeBuilder,
@@ -34,6 +35,9 @@ public final class EdgeBuilder {
         }
         if let minlen {
             edge.minlen = minlen
+        }
+        if let penwidth {
+            edge.penwidth = penwidth
         }
         return edge
     }
@@ -70,4 +74,9 @@ extension EdgeBuilder {
         return self
     }
     
+    @discardableResult
+    public func with(penwidth: Double) -> Self {
+        self.penwidth = penwidth
+        return self
+    }
 }
