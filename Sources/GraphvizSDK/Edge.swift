@@ -20,6 +20,8 @@ public class Edge {
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeParamDir> public var dir: GVEdgeParamDir
     @GVGraphvizProperty<GVEdgeParameters, Int> public var minlen: Int
     @GVGraphvizProperty<GVEdgeParameters, Double> public var penwidth: Double
+    @GVGraphvizProperty<GVEdgeParameters, Double> public var fontsize: Double
+    @GVGraphvizProperty<GVEdgeParameters, String> public var fontname: String
     
     init(
         edge: GVEdge
@@ -31,6 +33,8 @@ public class Edge {
         _dir = GVGraphvizProperty(key: .dir, defaultValue: .forward, container: edge)
         _minlen = GVGraphvizProperty(key: .minlen, defaultValue: 1, container: edge)
         _penwidth = GVGraphvizProperty(key: .penwidth, defaultValue: 1.0, container: edge)
+        _fontsize = GVGraphvizProperty(key: .fontsize, defaultValue: 14.0, container: edge)
+        _fontname = GVGraphvizProperty(key: .fontname, defaultValue: "Times-Roman", container: edge)
     }
     
     convenience init(
@@ -40,9 +44,5 @@ public class Edge {
     ) {
         let edge = agedge(parent, source.node, target.node, nil, 1)
         self.init(edge: edge!)
-    }
-    
-    public static func == (lhs: Edge, rhs: Edge) -> Bool {
-        return lhs === rhs
     }
 }

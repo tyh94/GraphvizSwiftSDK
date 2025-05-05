@@ -5,7 +5,6 @@
 //  Created by Татьяна Макеева on 04.05.2025.
 //
 
-
 import Foundation
 import SwiftUI
 @preconcurrency import CGraphvizSDK
@@ -19,7 +18,7 @@ public struct NodeUI {
     public let path: CGPath
     public let borderWidth: CGFloat
     public let borderColor: Color
-    public let fontSize: CGFloat
+    public let textFont: Font
     public let textColor: Color
 }
 
@@ -63,13 +62,11 @@ extension Node {
             path: path,
             borderWidth: penwidth,
             borderColor: Color(borderColor),
-            fontSize: CGFloat(fontsize),
+            textFont: Font.custom(fontname, size: CGFloat(fontSize)),
             textColor: Color(textColor)
         )
     }
 }
-
-
 
 extension CGPath {
     fileprivate func rotate(degree: CGFloat) -> CGPath {

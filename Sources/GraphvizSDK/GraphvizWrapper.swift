@@ -9,22 +9,6 @@
 @preconcurrency import CGraphvizSDK
 import Foundation
 
-public let stdFontName = "Verdana"
-public let stdFontNameBold = "Verdana-Bold"
-
-public enum GVLayoutEngine: String {
-    case dot
-    case neato
-    case fdp
-    case nop
-    case nop2
-    case twopi
-    
-    public var supportsLayers: Bool {
-        return self != .neato
-    }
-}
-
 public enum GVModelDirection: String {
     case towardsLeft = "RL"
     case towardsRight = "LR"

@@ -9,23 +9,21 @@
 import SwiftUI
 
 public struct GraphCanvasView: View {
-    let graph: Graph
+    let graph: GraphUI
     let onTapNode: ((NodeUI) -> ())?
     
-    private let graphUI: GraphUI
     @State private var location = CGPoint.zero
     @GestureState private var startLocation: CGPoint? = nil
     @State private var currentZoom = 0.0
     @State private var totalZoom = 1.0
     
     public init(
-        graph: Graph,
+        graph: GraphUI,
         tapNode: ((NodeUI) -> ())? = nil
     ) {
         self.graph = graph
         self.onTapNode = tapNode
-        graphUI = (try? graph.render(using: .dot)) ?? GraphUI(nodes: [], edges: [])
-        if let firstNode = graphUI.nodes.first?.frame {
+        if let firstNode = graph.nodes.first?.frame {
             location = CGPoint(
                 x: -firstNode.midX,
                 y: -firstNode.midY
@@ -38,7 +36,7 @@ public struct GraphCanvasView: View {
             context.translateBy(x: location.x, y: location.y)
             context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
  
-            for node in graphUI.nodes {
+            for node in graph.nodes {
                 let frame = node.frame
                 
                 context.translateBy(
@@ -50,13 +48,13 @@ public struct GraphCanvasView: View {
                 context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
                 context.draw(
                     Text(node.label)
-                        .font(Font.system(size: node.fontSize))
+                        .font(node.textFont)
                         .foregroundStyle(node.textColor),
                     at: frame.center
                 )
             }
             
-            for edge in graphUI.edges {
+            for edge in graph.edges {
                 let edgeWidth = edge.width
                 
                 let path = edge.body
@@ -97,35 +95,12 @@ public struct GraphCanvasView: View {
         )
         .onTapGesture { tapLocation in
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
-            for node in graphUI.nodes {
+            for node in graph.nodes {
                 let frame = node.frame.applying(globalOffset)
                 if frame.contains(tapLocation) {
                     self.onTapNode?(node)
                 }
             }
-        }
-        .onAppear {
-//            do {
-//                let graphUI = try graph.layout(using: .dot)
-//                if let firstNode = graphUI.nodes.first?.frame {
-//                    location = CGPoint(
-//                        x: -firstNode.midX,
-//                        y: -firstNode.midY
-//                    )
-//                }
-//                self.graphUI = graphUI
-//                graph.log()
-//            } catch {
-//                print(error)
-//            }
-            // Центрируем график при старте
-            // TODO: не работает
-//            if let firstNode = graph.nodes.first?.frame() {
-//                location = CGPoint(
-//                    x: -firstNode.midX,
-//                    y: -firstNode.midY
-//                )
-//            }
         }
     }
 }
@@ -145,7 +120,9 @@ extension CGRect {
 }
 
 #Preview {
-    GraphCanvasView(graph: rankStrGraph())
+    let graph = rankStrGraph()
+    let graphUI = (try? graph.render(using: .dot)) ?? GraphUI(nodes: [], edges: [])
+    GraphCanvasView(graph: graphUI)
 }
 
 func graphBuilder() -> Graph {

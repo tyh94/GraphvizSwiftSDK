@@ -17,6 +17,8 @@ public final class GraphBuilder {
     private var splines: GVParamValueSplines?
     private var rankdir: GVModelDirection?
     private var overlap: GVParamValueOverlap?
+    private var fontsize: Double?
+    private var fontname: String?
     
     public init() {}
     
@@ -52,6 +54,12 @@ public final class GraphBuilder {
         }
         if let rankdir {
             graph.rankdir = rankdir
+        }
+        if let fontname {
+            graph.fontname = fontname
+        }
+        if let fontsize {
+            graph.fontsize = fontsize
         }
         
         return graph
@@ -105,6 +113,18 @@ extension GraphBuilder {
     @discardableResult
     public func with(overlap: GVParamValueOverlap) -> Self {
         self.overlap = overlap
+        return self
+    }
+    
+    @discardableResult
+    public func with(fontname: String) -> Self {
+        self.fontname = fontname
+        return self
+    }
+    
+    @discardableResult
+    public func with(fontsize: Double) -> Self {
+        self.fontsize = fontsize
         return self
     }
 }

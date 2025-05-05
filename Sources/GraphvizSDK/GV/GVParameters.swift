@@ -64,11 +64,11 @@ public enum GVGraphParameters: String {
     case rankdir
     case splines
     case fontname
+    case fontsize
     case label
     case pad
     case labelloc
     case labeljust
-    case fontsize
     case epsilon
     case rank
     case newrank

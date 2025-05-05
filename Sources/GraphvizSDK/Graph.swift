@@ -22,6 +22,8 @@ open class Graph {
     @GVGraphvizProperty<GVGraphParameters, GVParamValueSplines> public var splines: GVParamValueSplines
     @GVGraphvizProperty<GVGraphParameters, GVModelDirection> public var rankdir: GVModelDirection
     @GVGraphvizProperty<GVGraphParameters, GVParamValueOverlap> public var overlap: GVParamValueOverlap
+    @GVGraphvizProperty<GVGraphParameters, String> public var fontname: String
+    @GVGraphvizProperty<GVGraphParameters, Double> public var fontsize: Double
     
     init(
         _ graph: GVGraph,
@@ -31,24 +33,11 @@ open class Graph {
         self.graph = graph
         self.nodes = nodes
         self.edges = edges
-        _rank = GVGraphvizProperty(key: GVGraphParameters.rank, defaultValue: .none, container: graph)
-        _splines = GVGraphvizProperty(key: GVGraphParameters.splines, defaultValue: .none, container: graph)
-        _rankdir = GVGraphvizProperty(key: GVGraphParameters.rankdir, defaultValue: .towardsTop, container: graph)
+        _rank = GVGraphvizProperty(key: .rank, defaultValue: .none, container: graph)
+        _splines = GVGraphvizProperty(key: .splines, defaultValue: .none, container: graph)
+        _rankdir = GVGraphvizProperty(key: .rankdir, defaultValue: .towardsTop, container: graph)
         _overlap = GVGraphvizProperty(key: .overlap, defaultValue: .retain, container: graph)
-    }
-    
-    // MARK: - Layout Operations
-    
-    public func log() {
-//        guard gvLayout(context, graph, "dot") == 0 else { return }
-//        
-//        var data: CHAR?
-//        var len: size_t = 0
-//        gvRenderData(context, graph, "dot", &data, &len)
-//        if let data {
-//            Logger.graphviz.debug(message: "==========================")
-//            Logger.graphviz.debug(message: String(cString: data))
-//            Logger.graphviz.debug(message: "==========================")
-//        }
+        _fontname = GVGraphvizProperty(key: .fontname, defaultValue: "Times-Roman", container: graph)
+        _fontsize = GVGraphvizProperty(key: .fontsize, defaultValue: 14.0, container: graph)
     }
 }

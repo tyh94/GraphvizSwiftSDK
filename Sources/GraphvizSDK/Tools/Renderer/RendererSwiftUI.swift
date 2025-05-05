@@ -1,5 +1,5 @@
 //
-//  Renderer.swift
+//  RendererSwiftUI.swift
 //  GraphvizSDK
 //
 //  Created by Татьяна Макеева on 04.05.2025.
@@ -8,14 +8,13 @@
 import Foundation
 import SwiftUI
 @preconcurrency import CGraphvizSDK
-import OSLog
 
 enum RendererError: Error {
     case edgeError
     case createLayoutError
-    
 }
-public final class Renderer {
+
+public final class RendererSwiftUI {
     public let layout: GVLayout
     private let context: GVGlobalContextPointer
     
@@ -34,16 +33,9 @@ public final class Renderer {
         let nodes = graph.nodes.map {
             $0.create(graphHeight: graphHeight)
         }
-        let edges = graph.edges.compactMap {
-            try? $0.create(graphHeight: graphHeight)
+        let edges = try graph.edges.map {
+            try $0.create(graphHeight: graphHeight)
         }
         return GraphUI(nodes: nodes, edges: edges)
     }
 }
-
-
-
-
-
-
-

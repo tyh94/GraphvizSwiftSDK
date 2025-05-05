@@ -17,6 +17,8 @@ public final class EdgeBuilder {
     private var weight: Float?
     private var minlen: Int?
     private var penwidth: Double?
+    private var fontsize: Double?
+    private var fontname: String? 
     
     init(
         source: NodeBuilder,
@@ -38,6 +40,12 @@ public final class EdgeBuilder {
         }
         if let penwidth {
             edge.penwidth = penwidth
+        }
+        if let fontsize {
+            edge.fontsize = fontsize
+        }
+        if let fontname {
+            edge.fontname = fontname
         }
         return edge
     }
@@ -77,6 +85,18 @@ extension EdgeBuilder {
     @discardableResult
     public func with(penwidth: Double) -> Self {
         self.penwidth = penwidth
+        return self
+    }
+    
+    @discardableResult
+    public func with(fontsize: Double) -> Self {
+        self.fontsize = fontsize
+        return self
+    }
+    
+    @discardableResult
+    public func with(fontname: String) -> Self {
+        self.fontname = fontname
         return self
     }
 }
