@@ -103,3 +103,17 @@ extension GVGraphvizProperty where Value: RawRepresentable, Value.RawValue == St
         self.container = container
     }
 }
+
+extension GVGraphvizProperty where Value == GVColor {
+    public init(
+        key: Key,
+        defaultValue: Value,
+        container: UnsafeMutableRawPointer
+    ) {
+        self.key = key
+        self.defaultValue = defaultValue
+        self.converterToValue = { Value.fromString($0) }
+        self.converterFromValue = { $0.toString }
+        self.container = container
+    }
+}

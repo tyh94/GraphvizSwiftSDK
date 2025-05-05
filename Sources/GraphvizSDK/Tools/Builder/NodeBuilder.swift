@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 public final class NodeBuilder {
     private var name: String?
@@ -21,6 +22,8 @@ public final class NodeBuilder {
     private var labelloc: GVLabelLocation? // https://graphviz.org/docs/attrs/labelloc/
     private var margin: Double? //https://graphviz.org/docs/attrs/margin/
     private var penwidth: Double?
+    private var borderColor: Color?
+    private var textColor: Color?
     
     public func build(graph: GVGraph) -> Node {
         let node = Node(parent: graph, label: name ?? label ?? "node_\(arc4random())")
@@ -57,6 +60,12 @@ public final class NodeBuilder {
         if let penwidth {
             node.penwidth = penwidth
         }
+        if let borderColor {
+            node.borderColor = borderColor
+        }
+            if let textColor {
+                node.textColor = textColor
+            }
         return node
     }
 }
@@ -133,4 +142,17 @@ extension NodeBuilder {
         self.penwidth = penwidth
         return self
     }
+    
+    @discardableResult
+    public func with(borderColor: Color) -> Self {
+        self.borderColor = borderColor
+        return self
+    }
+    
+    @discardableResult
+    public func with(textColor: Color) -> Self {
+        self.textColor = textColor
+        return self
+    }
+    
 }

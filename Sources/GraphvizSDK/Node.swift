@@ -6,7 +6,7 @@
 //
 
 @preconcurrency import CGraphvizSDK
-import UIKit
+import SwiftUI
 import CoreGraphics
 import OSLog
 
@@ -14,8 +14,8 @@ public class Node {
     // TODO: add image https://graphviz.org/docs/attrs/image/
     let node: GVNode
     
-    public var borderColor: UIColor = UIColor.black // TODO: color https://graphviz.org/docs/attrs/color/
-    public var textColor: UIColor = UIColor.black // TODO: fontcolor  https://graphviz.org/docs/attrs/fontcolor/
+    public var borderColor: Color = .black
+    public var textColor: Color = .black
     
     @GVGraphvizProperty<GVNodeParameters, String> public var label: String
     @GVGraphvizProperty<GVNodeParameters, Double> public var fontSize: Double
@@ -29,6 +29,8 @@ public class Node {
     @GVGraphvizProperty<GVNodeParameters, GVLabelLocation> public var labelloc: GVLabelLocation
     @GVGraphvizProperty<GVNodeParameters, Double> public var margin: Double
     @GVGraphvizProperty<GVNodeParameters, Double> public var penwidth: Double
+    @GVGraphvizProperty<GVNodeParameters, GVColor> public var color: GVColor
+    @GVGraphvizProperty<GVNodeParameters, GVColor> public var fontcolor: GVColor
     
     init(node: GVNode) {
         self.node = node
@@ -44,11 +46,32 @@ public class Node {
         _labelloc = GVGraphvizProperty(key: .labelloc, defaultValue: .c, container: node)
         _margin = GVGraphvizProperty(key: .margin, defaultValue: 0.0, container: node)
         _penwidth = GVGraphvizProperty(key: .penwidth, defaultValue: 1.0, container: node)
+        _color = GVGraphvizProperty(key: .color, defaultValue: .named(.black), container: node)
+        _fontcolor = GVGraphvizProperty(key: .fontcolor, defaultValue: .named(.black), container: node)
     }
     
     convenience init(parent: GVGraph, label: String) {
         let node = agnode(parent, cString(label), 1)
         self.init(node: node!)
         self.label = label
+    }
+}
+
+extension GVColor {
+    var toColor: Color {
+        switch self {
+        case .transparent:
+            return .black
+        case .named(let name):
+            return .black
+        case .rgb(red: let red, green: let green, blue: let blue):
+            return Color(red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255)
+        case .rgba(red: let red, green: let green, blue: let blue, alpha: let alpha):
+            return Color(red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255, opacity: Double(alpha) / 255)
+        case .hsv(hue: let hue, saturation: let saturation, value: let value):
+            return Color(hue: hue, saturation: saturation, brightness: value)
+        case .custom(_):
+            return .black
+        }
     }
 }

@@ -92,6 +92,8 @@ public enum GVNodeParameters: String {
     case labelloc
     case margin
     case penwidth
+    case color
+    case fontcolor
 }
 
 public enum GVParameter: Hashable {
