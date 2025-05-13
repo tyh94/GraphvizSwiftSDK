@@ -9,28 +9,23 @@ import Foundation
 @preconcurrency import CGraphvizSDK
 
 public final class GraphBuilderFromString {
-    
-    
     public func build(str: String) -> Graph {
         let gvGraph = agmemread(str)!
-        
-        var nodes: [Node] = []
-        var edges: [Edge] = []
-        
+        var graph = Graph(gvGraph)
         var currentNode: GVNode? = agfstnode(gvGraph)
         while currentNode != nil {
             let node = Node(node: currentNode!)
-            nodes.append(node)
+            graph.append(node)
             
             var currentEdge: GVEdge? = agfstout(gvGraph, currentNode!)
             while currentEdge != nil {
                 let edge = Edge(edge: currentEdge!)
-                edges.append(edge)
+                graph.append(edge)
                 currentEdge = agnxtout(gvGraph, currentEdge!)
             }
             
             currentNode = agnxtnode(gvGraph, currentNode!)
         }
-        return Graph(gvGraph, nodes: nodes, edges: edges)
+        return graph
     }
 }

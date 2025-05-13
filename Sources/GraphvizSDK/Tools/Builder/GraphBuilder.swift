@@ -8,7 +8,7 @@
 import Foundation
 @preconcurrency import CGraphvizSDK
 
-public final class GraphBuilder {
+public final class GraphBuilder: GraphBuilderProtocol {
     private var nodeBuilders: [NodeBuilder] = []
     private var edgeBuilders: [EdgeBuilder] = []
     private var subgraphBuilders: [SubgraphBuilder] = []
@@ -23,31 +23,19 @@ public final class GraphBuilder {
     public init() {}
     
     public func build() -> Graph {
-        let name = "graph_\(arc4random())"
-        let cName = cString(name)
-        let gvGraph = agopen(cName, type.graphvizValue, nil)!
-        
-        var nodes: [Node] = []
-        var edges: [Edge] = []
+        var graph = Graph(name: "graph_\(arc4random())", type: type)
+        let gvGraph = graph.graph
         
         nodeBuilders.forEach { builder in
-            nodes.append(builder.build(graph: gvGraph))
+            graph.append(builder.build(graph: gvGraph))
         }
         edgeBuilders.forEach { builder in
-            edges.append(builder.build(graph: gvGraph))
+            graph.append(builder.build(graph: gvGraph))
         }
         
         subgraphBuilders.forEach { builder in
-            let subgraph = builder.build(graph: gvGraph)
-            builder.nodeBuilders.forEach { builder in
-                nodes.append(builder.build(graph: subgraph.graph))
-            }
-            builder.edgeBuilders.forEach { builder in
-                edges.append(builder.build(graph: subgraph.graph))
-            }
+            graph.append(builder.build(graph: gvGraph))
         }
-        
-        let graph = Graph(gvGraph, nodes: nodes, edges: edges)
         
         if let splines {
             graph.splines = splines

@@ -36,6 +36,16 @@ public final class RendererSwiftUI {
         let edges = try graph.edges.map {
             try $0.create(graphHeight: graphHeight)
         }
-        return GraphUI(nodes: nodes, edges: edges)
+        let subgraphsNodes = graph.subgraphs.flatMap { subgraph in
+            subgraph.nodes.map {
+                $0.create(graphHeight: graphHeight)
+            }
+        }
+        let subgraphsEdges = try graph.subgraphs.flatMap { subgraph in
+            try subgraph.edges.map {
+                try $0.create(graphHeight: graphHeight)
+            }
+        }
+        return GraphUI(nodes: nodes + subgraphsNodes, edges: edges + subgraphsEdges)
     }
 }

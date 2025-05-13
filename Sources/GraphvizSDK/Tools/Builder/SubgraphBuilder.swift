@@ -7,14 +7,21 @@
 
 import Foundation
 
-public final class SubgraphBuilder {
+public final class SubgraphBuilder: GraphBuilderProtocol {
     private(set) var nodeBuilders: [NodeBuilder] = []
     private(set) var edgeBuilders: [EdgeBuilder] = []
     private var name: String?
     private var rank: GVRank?
     
     public func build(graph: GVGraph) -> Subgraph {
-        let graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
+        var graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
+        let gvGraph = graph.graph
+        nodeBuilders.forEach { builder in
+            graph.append(builder.build(graph: gvGraph))
+        }
+        edgeBuilders.forEach { builder in
+            graph.append(builder.build(graph: gvGraph))
+        }
         if let rank {
             graph.rank = rank
         }
