@@ -95,6 +95,7 @@ public struct GraphCanvasView: View {
         )
         .onTapGesture { tapLocation in
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
+                .scaledBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
             for node in graph.nodes {
                 let frame = node.frame.applying(globalOffset)
                 if frame.contains(tapLocation) {
