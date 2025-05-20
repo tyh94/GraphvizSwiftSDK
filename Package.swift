@@ -7,21 +7,41 @@ let package = Package(
     name: "GraphvizSDK",
     platforms: [.iOS(.v18)],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "GraphvizSDK",
-            targets: ["GraphvizSDK", "CGraphvizSDK"]
+            type: .static,
+            targets: ["GraphvizSDK"]
+        ),
+        .library(
+            name: "CGraphvizSDK",
+            type: .static,
+            targets: ["CGraphvizSDK"]
         ),
     ],
     targets: [
-        .target(name: "CGraphvizSDK"),
+        // C/C++ Target
+        .target(
+            name: "CGraphvizSDK",
+            path: "Sources/CGraphvizSDK",
+            sources: ["src"],
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("include"), // Путь к заголовкам
+                .unsafeFlags(["-Wno-deprecated-declarations"]), // При необходимости
+            ],
+            cxxSettings: [
+                .headerSearchPath("include"),
+            ]
+        ),
+
         .target(
             name: "GraphvizSDK",
-            dependencies: ["CGraphvizSDK"]
+            dependencies: ["CGraphvizSDK"],
+            path: "Sources/GraphvizSDK"
         ),
         .testTarget(
             name: "GraphvizSDKTests",
             dependencies: ["GraphvizSDK"]
-        ),
+        )
     ]
 )
