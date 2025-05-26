@@ -33,6 +33,10 @@ public struct GraphCanvasView: View {
     @GestureState private var startLocation: CGPoint? = nil
     @State private var currentZoom = 0.0
     @State private var totalZoom = 1.0
+    @State private var isZooming: Bool = false
+    @State private var zoomInitialLocation: CGPoint = .zero
+    @State private var zoomInitialScale: CGFloat = 1.0
+    @State private var zoomAnchor: CGPoint? = nil
     
     public init(
         graph: GraphUI,
@@ -112,29 +116,55 @@ public struct GraphCanvasView: View {
             }
         }
         .gesture(
-            DragGesture()
-                .onChanged { value in
-                    var newLocation = startLocation ?? location
-                    newLocation.x += value.translation.width
-                    newLocation.y += value.translation.height
-                    self.location = newLocation
-                    if value.startLocation == value.location {
-                        
+            SimultaneousGesture(
+                DragGesture()
+                    .updating($startLocation) { value, state, _ in
+                        state = state ?? location
                     }
-                }
-                .updating($startLocation) { (value, startLocation, transaction) in
-                    startLocation = startLocation ?? location
-                }
-        )
-        .gesture(
-            MagnifyGesture()
-                .onChanged { value in
-                    currentZoom = value.magnification - 1
-                }
-                .onEnded { value in
-                    totalZoom += currentZoom
-                    currentZoom = 0
-                }
+                    .onChanged { value in
+                        // Пан, когда нет зума
+                        if !isZooming {
+                            let start = startLocation ?? location
+                            location = CGPoint(
+                                x: start.x + value.translation.width,
+                                y: start.y + value.translation.height
+                            )
+                        } else if let anchor = zoomAnchor {
+                            // Если идёт зум и пальцы двигаются
+                            zoomAnchor = anchor.applying(CGAffineTransform(translationX: value.translation.width, y: value.translation.height))
+                        }
+                    },
+                MagnifyGesture()
+                    .onChanged { value in
+                        if !isZooming {
+                            isZooming = true
+                            zoomInitialLocation = location
+                            zoomInitialScale = totalZoom
+                            zoomAnchor = zoomAnchor ?? .zero
+                        }
+
+                        guard let anchor = zoomAnchor else { return }
+
+                        let newScale = value.magnification
+                        let currentScale = zoomInitialScale * newScale
+
+                        let anchorInContent = CGPoint(
+                            x: (anchor.x - zoomInitialLocation.x) / zoomInitialScale,
+                            y: (anchor.y - zoomInitialLocation.y) / zoomInitialScale
+                        )
+
+                        location.x = anchor.x - anchorInContent.x * currentScale
+                        location.y = anchor.y - anchorInContent.y * currentScale
+
+                        currentZoom = currentScale - totalZoom
+                    }
+                    .onEnded { _ in
+                        totalZoom += currentZoom
+                        currentZoom = 0
+                        isZooming = false
+                        zoomAnchor = nil
+                    }
+            )
         )
         .task {
             for index in graph.nodes.indices {
