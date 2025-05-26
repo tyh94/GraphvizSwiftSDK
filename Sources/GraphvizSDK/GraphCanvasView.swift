@@ -8,8 +8,25 @@
 
 import SwiftUI
 
+actor ImageCache {
+    static let shared = ImageCache()
+    private var cache: [String: UIImage] = [:]
+
+    func load(path: String) -> UIImage? {
+        if let cached = cache[path] {
+            return cached
+        }
+        if let image = UIImage(contentsOfFile: path) {
+            cache[path] = image
+            return image
+        }
+        return nil
+    }
+}
+
 public struct GraphCanvasView: View {
-    let graph: GraphUI
+    @State var graph: GraphUI
+    let nodeView: ((NodeUI) -> AnyView?)?
     let onTapNode: ((NodeUI) -> ())?
     
     @State private var location = CGPoint.zero
@@ -19,9 +36,11 @@ public struct GraphCanvasView: View {
     
     public init(
         graph: GraphUI,
+        nodeView: ((NodeUI) -> AnyView?)? = nil,
         tapNode: ((NodeUI) -> ())? = nil
     ) {
         self.graph = graph
+        self.nodeView = nodeView
         self.onTapNode = tapNode
         if let firstNode = graph.nodes.first?.frame {
             location = CGPoint(
@@ -38,34 +57,58 @@ public struct GraphCanvasView: View {
  
             for node in graph.nodes {
                 let frame = node.frame
-                
-                context.translateBy(
-                    x: frame.origin.x,
-                    y: frame.origin.y
-                )
-                let path = Path(node.path)
-                context.stroke(path, with: .color(node.borderColor), lineWidth: node.borderWidth)
-                context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
-                context.draw(
-                    Text(node.label)
-                        .font(node.textFont)
-                        .foregroundStyle(node.textColor),
-                    at: frame.center
-                )
+                let resolved = context.resolveSymbol(id: node.id)
+                if let resolved {
+                    context.draw(resolved, at: frame.center)
+                } else {
+                    context.translateBy(
+                        x: frame.origin.x,
+                        y: frame.origin.y
+                    )
+                    if let uiImage = node.image {
+                        let swiftUIImage = Image(uiImage: uiImage)
+                        
+                        // Размер — минимальная сторона из frame
+                        let side = min(frame.width, frame.height)
+                        let imageSize = CGSize(width: side, height: side)
+                        
+                        // Центрируем в node.frame
+                        let dx = (frame.width - side) / 2
+                        let dy = (frame.height - side) / 2
+                        
+                        let imageRect = CGRect(origin: CGPoint(x: dx, y: dy), size: imageSize)
+                        
+                        context.draw(swiftUIImage, in: imageRect)
+                    }
+                    context.stroke(node.path, with: .color(node.borderColor), lineWidth: node.borderWidth)
+                    context.translateBy(x: -frame.origin.x, y: -frame.origin.y)
+                    context.draw(
+                        Text(node.label)
+                            .font(node.textFont)
+                            .foregroundStyle(node.textColor),
+                        at: frame.center
+                    )
+                }
             }
             
             for edge in graph.edges {
                 let edgeWidth = edge.width
                 
                 let path = edge.body
-                context.stroke(Path(path), with: .color(edge.color), lineWidth: edgeWidth)
+                context.stroke(path, with: .color(edge.color), lineWidth: edgeWidth)
                 
                 if let path = edge.headArrow {
-                    context.stroke(Path(path), with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
+                    context.stroke(path, with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
                 }
                 if let path = edge.tailArrow {
-                    context.stroke(Path(path), with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
+                    context.stroke(path, with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
                 }
+            }
+        } symbols: {
+            ForEach(graph.nodes, id: \.id) { node in
+                nodeView?(node)
+                    .frame(width: node.frame.width, height: node.frame.height)
+                    .tag(node.id)
             }
         }
         .gesture(
@@ -93,6 +136,14 @@ public struct GraphCanvasView: View {
                     currentZoom = 0
                 }
         )
+        .task {
+            for index in graph.nodes.indices {
+                var node = graph.nodes[index]
+                guard let imagePath = node.imagePath else { continue }
+                node.image = await ImageCache.shared.load(path: imagePath)
+                graph.nodes[index] = node
+            }
+        }
         .onTapGesture { tapLocation in
             let globalOffset = CGAffineTransform(translationX: location.x, y: location.y)
                 .scaledBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)

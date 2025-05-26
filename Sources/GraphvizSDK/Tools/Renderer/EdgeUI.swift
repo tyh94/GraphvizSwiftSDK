@@ -11,9 +11,9 @@ import SwiftUI
 import OSLog
 
 public struct EdgeUI {
-    public let body: CGPath
-    public let headArrow: CGPath?
-    public let tailArrow: CGPath?
+    public let body: Path
+    public let headArrow: Path?
+    public let tailArrow: Path?
     public let width: CGFloat
     public let color: Color
 }
@@ -56,9 +56,9 @@ extension Edge {
         }
         
         return EdgeUI(
-            body: body,
-            headArrow: headArrow,
-            tailArrow: tailArrow,
+            body: Path(body),
+            headArrow: headArrow.map { Path($0) },
+            tailArrow: tailArrow.map { Path($0) },
             width: CGFloat(penwidth),
             color: Color(color)
         )

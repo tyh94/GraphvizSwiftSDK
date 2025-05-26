@@ -10,6 +10,6 @@ import SwiftUI
 @preconcurrency import CGraphvizSDK
 
 public struct GraphUI {
-    let nodes: [NodeUI]
-    let edges: [EdgeUI]
+    var nodes: [NodeUI]
+    var edges: [EdgeUI]
 }

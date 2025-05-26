@@ -31,6 +31,7 @@ public class Node {
     @GVGraphvizProperty<GVNodeParameters, Double> public var penwidth: Double
     @GVGraphvizProperty<GVNodeParameters, GVColor> public var color: GVColor
     @GVGraphvizProperty<GVNodeParameters, GVColor> public var fontcolor: GVColor
+    @GVGraphvizProperty<GVNodeParameters, String> public var image: String
     
     init(node: GVNode) {
         self.node = node
@@ -48,6 +49,7 @@ public class Node {
         _penwidth = GVGraphvizProperty(key: .penwidth, defaultValue: 1.0, container: node)
         _color = GVGraphvizProperty(key: .color, defaultValue: .named(.black), container: node)
         _fontcolor = GVGraphvizProperty(key: .fontcolor, defaultValue: .named(.black), container: node)
+        _image = GVGraphvizProperty(key: .image, defaultValue: "", container: node)
     }
     
     convenience init(parent: GVGraph, label: String) {

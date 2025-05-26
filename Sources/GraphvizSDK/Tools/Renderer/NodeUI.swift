@@ -10,16 +10,21 @@ import SwiftUI
 @preconcurrency import CGraphvizSDK
 import OSLog
 
-public struct NodeUI {
+public struct NodeUI: Sendable {
+    public let id: UUID
     public let label: String
     public let frame: CGRect
     public let bounds: CGRect
     public let origin: CGPoint
-    public let path: CGPath
+    public let path: Path
     public let borderWidth: CGFloat
     public let borderColor: Color
     public let textFont: Font
     public let textColor: Color
+    public let imagePath: String?
+
+    // Новый кэшированный UIImage (опционально)
+    public var image: UIImage? = nil
 }
 
 extension Node {
@@ -55,15 +60,17 @@ extension Node {
         let frame = CGRect(x: origin.x, y: origin.y, width: width, height: height)
         
         return NodeUI(
+            id: UUID(),
             label: label,
             frame: frame,
             bounds: bounds,
             origin: origin,
-            path: path,
+            path: Path(path),
             borderWidth: penwidth,
             borderColor: Color(borderColor),
             textFont: Font.custom(fontname, size: CGFloat(fontSize)),
-            textColor: Color(textColor)
+            textColor: Color(textColor),
+            imagePath: image.isEmpty ? nil : image
         )
     }
 }

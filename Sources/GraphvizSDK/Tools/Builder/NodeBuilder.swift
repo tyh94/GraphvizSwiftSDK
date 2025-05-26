@@ -24,6 +24,7 @@ public final class NodeBuilder {
     private var penwidth: Double?
     private var borderColor: Color?
     private var textColor: Color?
+    private var image: String?
     
     public func build(graph: GVGraph) -> Node {
         let node = Node(parent: graph, label: name ?? label ?? "node_\(arc4random())")
@@ -63,9 +64,12 @@ public final class NodeBuilder {
         if let borderColor {
             node.borderColor = borderColor
         }
-            if let textColor {
-                node.textColor = textColor
-            }
+        if let textColor {
+            node.textColor = textColor
+        }
+        if let image {
+            node.image = image
+        }
         return node
     }
 }
@@ -155,4 +159,9 @@ extension NodeBuilder {
         return self
     }
     
+    @discardableResult
+    public func with(image: String?) -> Self {
+        self.image = image
+        return self
+    }
 }
