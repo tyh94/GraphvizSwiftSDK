@@ -95,6 +95,8 @@ public enum GVNodeParameters: String {
     case color
     case fontcolor
     case image
+    case imagepos
+    case imagescale
 }
 
 public enum GVParameter: Hashable {
@@ -171,5 +173,25 @@ public enum GVRank: String {
     case max
     case sink
     case none = ""
+}
+
+public enum GVImagePosition: String {
+    case topLeft = "tl"
+    case topCentered = "tc"
+    case topRight = "tr"
+    case middleLeft = "ml"
+    case middleCentered = "mc" // default
+    case middleRight = "mr"
+    case bottomLeft = "bl"
+    case bottomCentered = "bc"
+    case bottomRight = "br"
+}
+
+public enum GVImageScale: String {
+    case on = "true"
+    case off = "false"
+    case width
+    case height
+    case both
 }
 

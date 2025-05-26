@@ -32,6 +32,8 @@ public class Node {
     @GVGraphvizProperty<GVNodeParameters, GVColor> public var color: GVColor
     @GVGraphvizProperty<GVNodeParameters, GVColor> public var fontcolor: GVColor
     @GVGraphvizProperty<GVNodeParameters, String> public var image: String
+    @GVGraphvizProperty<GVNodeParameters, GVImagePosition> public var imagePosition: GVImagePosition
+    @GVGraphvizProperty<GVNodeParameters, GVImageScale> public var imageScale: GVImageScale
     
     init(node: GVNode) {
         self.node = node
@@ -50,6 +52,8 @@ public class Node {
         _color = GVGraphvizProperty(key: .color, defaultValue: .named(.black), container: node)
         _fontcolor = GVGraphvizProperty(key: .fontcolor, defaultValue: .named(.black), container: node)
         _image = GVGraphvizProperty(key: .image, defaultValue: "", container: node)
+        _imagePosition = GVGraphvizProperty(key: .imagepos, defaultValue: .middleCentered, container: node)
+        _imageScale = GVGraphvizProperty(key: .imagescale, defaultValue: .off, container: node)
     }
     
     convenience init(parent: GVGraph, label: String) {

@@ -25,6 +25,8 @@ public final class NodeBuilder {
     private var borderColor: Color?
     private var textColor: Color?
     private var image: String?
+    private var imagePosition: GVImagePosition?
+    private var imageScale: GVImageScale?
     
     public func build(graph: GVGraph) -> Node {
         let node = Node(parent: graph, label: name ?? label ?? "node_\(arc4random())")
@@ -69,6 +71,12 @@ public final class NodeBuilder {
         }
         if let image {
             node.image = image
+        }
+        if let imagePosition {
+            node.imagePosition = imagePosition
+        }
+        if let imageScale {
+            node.imageScale = imageScale
         }
         return node
     }
@@ -162,6 +170,18 @@ extension NodeBuilder {
     @discardableResult
     public func with(image: String?) -> Self {
         self.image = image
+        return self
+    }
+    
+    @discardableResult
+    public func with(imagePosition: GVImagePosition) -> Self {
+        self.imagePosition = imagePosition
+        return self
+    }
+    
+    @discardableResult
+    public func with(imageScale: GVImageScale) -> Self {
+        self.imageScale = imageScale
         return self
     }
 }
