@@ -9,9 +9,9 @@ import Foundation
 @preconcurrency import CGraphvizSDK
 
 public final class GraphBuilder: GraphBuilderProtocol {
-    private var nodeBuilders: [NodeBuilder] = []
-    private var edgeBuilders: [EdgeBuilder] = []
-    private var subgraphBuilders: [SubgraphBuilder] = []
+    private(set) var nodeBuilders: [NodeBuilder] = []
+    private(set) var edgeBuilders: [EdgeBuilder] = []
+    private(set) var subgraphBuilders: [SubgraphBuilder] = []
     
     private var type: GVGraphType = .nonStrictDirected
     private var splines: GVParamValueSplines?

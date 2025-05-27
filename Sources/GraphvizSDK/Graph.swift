@@ -44,7 +44,6 @@ public struct Graph {
     }
     
     init(name: String, type: GVGraphType) {
-        let name = "graph_\(arc4random())"
         let cName = cString(name)
         let gvGraph = agopen(cName, type.graphvizValue, nil)!
         self.init(gvGraph)
@@ -56,7 +55,7 @@ public struct Graph {
 
     public mutating func append<S>(contentsOf subgraphs: S) where S.Element == Subgraph, S: Sequence {
         for subgraph in subgraphs {
-            self.subgraphs.append(subgraph)
+            append(subgraph)
         }
     }
 
@@ -66,7 +65,7 @@ public struct Graph {
 
     public mutating func append<S>(contentsOf nodes: S) where S.Element == Node, S: Sequence {
         for node in nodes {
-            self.nodes.append(node)
+            append(node)
         }
     }
 
@@ -76,7 +75,7 @@ public struct Graph {
 
     public mutating func append<S>(contentsOf edges: S) where S.Element == Edge, S: Sequence {
         for edge in edges {
-            self.edges.append(edge)
+            append(edge)
         }
     }
 }

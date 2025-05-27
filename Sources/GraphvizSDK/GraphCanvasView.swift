@@ -11,7 +11,7 @@ import SwiftUI
 actor ImageCache {
     static let shared = ImageCache()
     private var cache: [String: UIImage] = [:]
-
+    
     func load(path: String) -> UIImage? {
         if let cached = cache[path] {
             return cached
@@ -26,7 +26,6 @@ actor ImageCache {
 
 public struct GraphCanvasView: View {
     @State var graph: GraphUI
-    let nodeView: ((NodeUI) -> AnyView?)?
     let onTapNode: ((NodeUI) -> ())?
     
     @State private var location = CGPoint.zero
@@ -40,31 +39,20 @@ public struct GraphCanvasView: View {
     
     public init(
         graph: GraphUI,
-        nodeView: ((NodeUI) -> AnyView?)? = nil,
         tapNode: ((NodeUI) -> ())? = nil
     ) {
         self.graph = graph
-        self.nodeView = nodeView
         self.onTapNode = tapNode
-        if let firstNode = graph.nodes.first?.frame {
-            location = CGPoint(
-                x: -firstNode.midX,
-                y: -firstNode.midY
-            )
-        }
     }
     
     public var body: some View {
-        Canvas { context, size in
-            context.translateBy(x: location.x, y: location.y)
-            context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
- 
-            for node in graph.nodes {
-                let frame = node.frame
-                let resolved = context.resolveSymbol(id: node.id)
-                if let resolved {
-                    context.draw(resolved, at: frame.center)
-                } else {
+        ZStack {
+            Canvas { context, size in
+                context.translateBy(x: location.x, y: location.y)
+                context.scaleBy(x: currentZoom + totalZoom, y: currentZoom + totalZoom)
+                
+                for node in graph.nodes {
+                    let frame = node.frame
                     context.translateBy(
                         x: frame.origin.x,
                         y: frame.origin.y
@@ -93,26 +81,20 @@ public struct GraphCanvasView: View {
                         at: frame.center
                     )
                 }
-            }
-            
-            for edge in graph.edges {
-                let edgeWidth = edge.width
                 
-                let path = edge.body
-                context.stroke(path, with: .color(edge.color), lineWidth: edgeWidth)
-                
-                if let path = edge.headArrow {
-                    context.stroke(path, with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
+                for edge in graph.edges {
+                    let edgeWidth = edge.width
+                    
+                    let path = edge.body
+                    context.stroke(path, with: .color(edge.color), lineWidth: edgeWidth)
+                    
+                    if let path = edge.headArrow {
+                        context.stroke(path, with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
+                    }
+                    if let path = edge.tailArrow {
+                        context.stroke(path, with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
+                    }
                 }
-                if let path = edge.tailArrow {
-                    context.stroke(path, with: .color(edge.color), lineWidth: CGFloat(edgeWidth))
-                }
-            }
-        } symbols: {
-            ForEach(graph.nodes, id: \.id) { node in
-                nodeView?(node)
-                    .frame(width: node.frame.width, height: node.frame.height)
-                    .tag(node.id)
             }
         }
         .gesture(
@@ -142,20 +124,20 @@ public struct GraphCanvasView: View {
                             zoomInitialScale = totalZoom
                             zoomAnchor = zoomAnchor ?? .zero
                         }
-
+                        
                         guard let anchor = zoomAnchor else { return }
-
+                        
                         let newScale = value.magnification
                         let currentScale = zoomInitialScale * newScale
-
+                        
                         let anchorInContent = CGPoint(
                             x: (anchor.x - zoomInitialLocation.x) / zoomInitialScale,
                             y: (anchor.y - zoomInitialLocation.y) / zoomInitialScale
                         )
-
+                        
                         location.x = anchor.x - anchorInContent.x * currentScale
                         location.y = anchor.y - anchorInContent.y * currentScale
-
+                        
                         currentZoom = currentScale - totalZoom
                     }
                     .onEnded { _ in
@@ -167,6 +149,7 @@ public struct GraphCanvasView: View {
             )
         )
         .task {
+            // Подгрузка картинок
             for index in graph.nodes.indices {
                 var node = graph.nodes[index]
                 guard let imagePath = node.imagePath else { continue }
@@ -184,6 +167,33 @@ public struct GraphCanvasView: View {
                 }
             }
         }
+    }
+}
+
+struct CenterOnNodeModifier: ViewModifier {
+    let node: NodeUI?
+    @Binding var location: CGPoint
+    let zoom: CGFloat
+    
+    func body(content: Content) -> some View {
+        GeometryReader { geometry in
+            content
+                .onAppear {
+                    guard let node = node else { return }
+                    let canvasCenter = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                    // Центрируем выбранную ноду по центру экрана
+                    location = CGPoint(
+                        x: canvasCenter.x - node.frame.midX * zoom,
+                        y: canvasCenter.y - node.frame.midY * zoom
+                    )
+                }
+        }
+    }
+}
+
+extension View {
+    func centerOnNode(_ node: NodeUI?, location: Binding<CGPoint>, zoom: CGFloat = 1.0) -> some View {
+        modifier(CenterOnNodeModifier(node: node, location: location, zoom: zoom))
     }
 }
 
@@ -260,7 +270,7 @@ func rankStrGraph() -> Graph {
                   edge [dir=none];
                   node [shape=box];
                   graph [splines=ortho];
-
+        
                   "Herb"      [shape=parallelogram, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
                   "Homer"     [shape=parallelogram, regular=0, color="blue", style="bold, filled" fillcolor="lightblue"] ;
                   "Abraham"   [shape=parallelogram, regular=0, color="blue", style="filled" fillcolor="lightblue"] ;
@@ -305,7 +315,7 @@ func demoGraph() -> Graph {
     let node1 = graph.node {
         $0.with(label: "The quick\nbrown fox jumps\nover the lazy\ndog")
             .with(shape: .egg)
-//        node1.color = UIColor.yellow
+        //        node1.color = UIColor.yellow
     }
     let node2 = graph.node {
         $0.with(label: "node 2")
@@ -313,8 +323,8 @@ func demoGraph() -> Graph {
     }
     let node3 = graph.node {
         $0.with(label: "node 3")
-//        node3.fontSize = 24
-//        node3.textColor = UIColor.blue
+        //        node3.fontSize = 24
+        //        node3.textColor = UIColor.blue
     }
     let node4 = graph.node {
         $0.with(label: "node\n4")
@@ -371,19 +381,19 @@ func demoGraph() -> Graph {
     graph.edge(source: node6, targer: node5, { $0 })
     graph.edge(source: node1, targer: node8, {
         $0
-//        e1_8.weight = 10
-//        e1_8.width = 2
+        //        e1_8.weight = 10
+        //        e1_8.width = 2
     })
     
     graph.edge(source: node8, targer: node1, { $0 })
     graph.edge(source: node3, targer: node10, {
         $0
-//        e3_10.color = UIColor.green
-//        e3_10.weight = 50
-//        e3_10.width = 3
-//        e3_10.setBaseParameters(params: [.dir: GVEdgeParamDir.both.rawValue])
-//        e3_10.arrowheadType = .dot
-//        e3_10.arrowtailType = .diamond
+        //        e3_10.color = UIColor.green
+        //        e3_10.weight = 50
+        //        e3_10.width = 3
+        //        e3_10.setBaseParameters(params: [.dir: GVEdgeParamDir.both.rawValue])
+        //        e3_10.arrowheadType = .dot
+        //        e3_10.arrowtailType = .diamond
     })
     graph.edge(source: node4, targer: node9, { $0 })
     graph.edge(source: node3, targer: node7, { $0 })
@@ -403,16 +413,16 @@ func demoGraph() -> Graph {
     graph.edge(source: node13, targer: node6, { $0 })
     graph.edge(source: node9, targer: node1, {
         $0
-//        e9_1.color = UIColor.red
-//        e9_1.weight = 100
-//        e9_1.width = 4
-//        e9_1.setBaseParameters(params: [.dir: GVEdgeParamDir.both.rawValue])
-//        e9_1.arrowheadType = .diamond
-//        e9_1.arrowtailType = .dot
+        //        e9_1.color = UIColor.red
+        //        e9_1.weight = 100
+        //        e9_1.width = 4
+        //        e9_1.setBaseParameters(params: [.dir: GVEdgeParamDir.both.rawValue])
+        //        e9_1.arrowheadType = .diamond
+        //        e9_1.arrowtailType = .dot
     })
     graph.edge(source: node9, targer: node11, { $0 })
     graph.edge(source: node13, targer: node3, { $0 })
-
+    
     
     return graph.build()
 }
