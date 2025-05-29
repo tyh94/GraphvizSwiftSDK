@@ -29,7 +29,7 @@ public final class NodeBuilder {
     private var imageScale: GVImageScale?
     
     public func build(graph: GVGraph) -> Node {
-        let node = Node(parent: graph, label: name ?? label ?? "node_\(arc4random())")
+        let node = Node(parent: graph, name: name ?? label ?? "node_\(arc4random())")
         if let width {
             node.width = width
         }

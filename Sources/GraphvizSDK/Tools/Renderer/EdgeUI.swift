@@ -10,7 +10,8 @@ import SwiftUI
 @preconcurrency import CGraphvizSDK
 import OSLog
 
-public struct EdgeUI {
+public struct EdgeUI: Sendable, Identifiable {
+    public let id: UUID
     public let body: Path
     public let headArrow: Path?
     public let tailArrow: Path?
@@ -56,6 +57,7 @@ extension Edge {
         }
         
         return EdgeUI(
+            id: UUID(),
             body: Path(body),
             headArrow: headArrow.map { Path($0) },
             tailArrow: tailArrow.map { Path($0) },

@@ -10,7 +10,7 @@ import SwiftUI
 @preconcurrency import CGraphvizSDK
 import OSLog
 
-public struct NodeUI: Sendable {
+public struct NodeUI: Sendable, Identifiable {
     public let id: UUID
     public let label: String
     public let frame: CGRect

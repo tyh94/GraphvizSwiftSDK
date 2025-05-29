@@ -46,6 +46,10 @@ public final class RendererSwiftUI {
                 try $0.create(graphHeight: graphHeight)
             }
         }
-        return GraphUI(nodes: nodes + subgraphsNodes, edges: edges + subgraphsEdges)
+        return GraphUI(
+            size: graph.size,
+            nodes: nodes + subgraphsNodes,
+            edges: edges + subgraphsEdges
+        )
     }
 }

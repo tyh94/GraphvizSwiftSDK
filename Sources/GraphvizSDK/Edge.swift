@@ -6,13 +6,13 @@
 //
 
 @preconcurrency import CGraphvizSDK
-import UIKit
+import SwiftUI
 import CoreGraphics
 import OSLog
 
 public class Edge {
     let edge: GVEdge
-    public var color: UIColor = UIColor.black
+    public var color: Color = .black
     
     @GVGraphvizProperty<GVEdgeParameters, Float> public var weight: Float
     @GVGraphvizProperty<GVEdgeParameters, GVEdgeEnding> public var arrowheadType: GVEdgeEnding

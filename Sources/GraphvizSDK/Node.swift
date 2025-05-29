@@ -56,10 +56,9 @@ public class Node {
         _imageScale = GVGraphvizProperty(key: .imagescale, defaultValue: .off, container: node)
     }
     
-    convenience init(parent: GVGraph, label: String) {
-        let node = agnode(parent, cString(label), 1)
+    convenience init(parent: GVGraph, name: String) {
+        let node = agnode(parent, cString(name), 1)
         self.init(node: node!)
-        self.label = label
     }
 }
 

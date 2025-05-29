@@ -213,7 +213,7 @@ extension CGRect {
 
 #Preview {
     let graph = rankStrGraph()
-    let graphUI = (try? graph.render(using: .dot)) ?? GraphUI(nodes: [], edges: [])
+    let graphUI = try! graph.render(using: .dot)
     GraphCanvasView(graph: graphUI)
 }
 
@@ -264,7 +264,7 @@ func graphBuilder() -> Graph {
 }
 
 func rankStrGraph() -> Graph {
-    GraphBuilderFromString().build(str:
+    GraphBuilderFromString.build(str:
         """
         digraph G {
                   edge [dir=none];

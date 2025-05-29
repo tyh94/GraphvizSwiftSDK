@@ -9,7 +9,7 @@ import Foundation
 @preconcurrency import CGraphvizSDK
 
 public final class GraphBuilderFromString {
-    public func build(str: String) -> Graph {
+    public static func build(str: String) -> Graph {
         let gvGraph = agmemread(str)!
         var graph = Graph(gvGraph)
         var currentNode: GVNode? = agfstnode(gvGraph)

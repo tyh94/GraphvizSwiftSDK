@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 public final class EdgeBuilder {
     let source: NodeBuilder
@@ -18,7 +19,8 @@ public final class EdgeBuilder {
     private var minlen: Int?
     private var penwidth: Double?
     private var fontsize: Double?
-    private var fontname: String? 
+    private var fontname: String?
+    private var color: Color?
     
     init(
         source: NodeBuilder,
@@ -46,6 +48,9 @@ public final class EdgeBuilder {
         }
         if let fontname {
             edge.fontname = fontname
+        }
+        if let color {
+            edge.color = color
         }
         return edge
     }
@@ -97,6 +102,12 @@ extension EdgeBuilder {
     @discardableResult
     public func with(fontname: String) -> Self {
         self.fontname = fontname
+        return self
+    }
+    
+    @discardableResult
+    public func with(color: Color) -> Self {
+        self.color = color
         return self
     }
 }
