@@ -11,7 +11,7 @@ import SwiftUI
 import OSLog
 
 public struct NodeUI: Sendable, Identifiable {
-    public let id: UUID
+    public let id: String
     public let label: String
     public let frame: CGRect
     public let bounds: CGRect
@@ -60,7 +60,7 @@ extension Node {
         let frame = CGRect(x: origin.x, y: origin.y, width: width, height: height)
         
         return NodeUI(
-            id: UUID(),
+            id: name,
             label: label,
             frame: frame,
             bounds: bounds,

@@ -14,7 +14,7 @@ public final class GraphBuilderFromString {
         var graph = Graph(gvGraph)
         var currentNode: GVNode? = agfstnode(gvGraph)
         while currentNode != nil {
-            let node = Node(node: currentNode!)
+            let node = Node(node: currentNode!, name: "node_\(arc4random())")
             graph.append(node)
             
             var currentEdge: GVEdge? = agfstout(gvGraph, currentNode!)

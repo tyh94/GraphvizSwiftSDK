@@ -13,6 +13,7 @@ import OSLog
 public class Node {
     // TODO: add image https://graphviz.org/docs/attrs/image/
     let node: GVNode
+    let name: String
     
     public var borderColor: Color = .black
     public var textColor: Color = .black
@@ -35,8 +36,9 @@ public class Node {
     @GVGraphvizProperty<GVNodeParameters, GVImagePosition> public var imagePosition: GVImagePosition
     @GVGraphvizProperty<GVNodeParameters, GVImageScale> public var imageScale: GVImageScale
     
-    init(node: GVNode) {
+    init(node: GVNode, name: String) {
         self.node = node
+        self.name = name
         _label = GVGraphvizProperty(key: .label, defaultValue: "", container: node)
         _fontSize = GVGraphvizProperty(key: .fontsize, defaultValue: 14, container: node)
         _width = GVGraphvizProperty(key: .width, defaultValue: 1.0, container: node)
@@ -58,7 +60,7 @@ public class Node {
     
     convenience init(parent: GVGraph, name: String) {
         let node = agnode(parent, cString(name), 1)
-        self.init(node: node!)
+        self.init(node: node!, name: name)
     }
 }
 
