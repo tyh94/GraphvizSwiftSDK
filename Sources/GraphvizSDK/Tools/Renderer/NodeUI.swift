@@ -22,9 +22,6 @@ public struct NodeUI: Sendable, Identifiable {
     public let textFont: Font
     public let textColor: Color
     public let imagePath: String?
-
-    // Новый кэшированный UIImage (опционально)
-    public var image: UIImage? = nil
 }
 
 extension Node {

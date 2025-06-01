@@ -25,9 +25,10 @@ actor ImageCache {
 }
 
 public struct GraphCanvasView: View {
-    @State var graph: GraphUI
+    let graph: GraphUI
     let onTapNode: ((NodeUI) -> ())?
     
+    @State private var images: [String: Image] = [:]
     @State private var location = CGPoint.zero
     @GestureState private var startLocation: CGPoint? = nil
     @State private var currentZoom = 0.0
@@ -57,9 +58,7 @@ public struct GraphCanvasView: View {
                         x: frame.origin.x,
                         y: frame.origin.y
                     )
-                    if let uiImage = node.image {
-                        let swiftUIImage = Image(uiImage: uiImage)
-                        
+                    if let swiftUIImage = images[node.id] {
                         // Размер — минимальная сторона из frame
                         let side = min(frame.width, frame.height)
                         let imageSize = CGSize(width: side, height: side)
@@ -150,11 +149,14 @@ public struct GraphCanvasView: View {
         )
         .task {
             // Подгрузка картинок
-            for index in graph.nodes.indices {
-                var node = graph.nodes[index]
-                guard let imagePath = node.imagePath else { continue }
-                node.image = await ImageCache.shared.load(path: imagePath)
-                graph.nodes[index] = node
+            for node in graph.nodes {
+                if images[node.id] != nil { continue }
+                guard
+                    let imagePath = node.imagePath,
+                    let image = await ImageCache.shared.load(path: imagePath) else {
+                    continue
+                }
+                images[node.id] = Image(uiImage: image)
             }
         }
         .onTapGesture { tapLocation in
