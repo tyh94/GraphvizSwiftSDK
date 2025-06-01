@@ -10,7 +10,7 @@ import SwiftUI
 @preconcurrency import CGraphvizSDK
 import OSLog
 
-public struct EdgeUI: Sendable, Identifiable {
+public struct EdgeUI: Sendable, Identifiable, Equatable {
     public let id: UUID
     public let body: Path
     public let headArrow: Path?
