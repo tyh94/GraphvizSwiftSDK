@@ -1,9 +1,8 @@
 import Testing
 @testable import GraphvizSDK
-
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-}
+#if canImport(SwiftUI)
+import SwiftUI
+#endif
 
 // Тест: создание пустого графа
 @Test func testCreateEmptyGraph() async throws {
@@ -40,7 +39,7 @@ import Testing
 // Тест: добавление подграфа
 @Test func testAddSubgraph() async throws {
     var graph = Graph(name: "TestGraph", type: .nonStrictDirected)
-    var subgraph = Subgraph(name: "sub1", parent: graph.graph)
+    let subgraph = Subgraph(name: "sub1", parent: graph.graph)
     graph.append(subgraph)
     #expect(graph.subgraphs.count == 1)
 }

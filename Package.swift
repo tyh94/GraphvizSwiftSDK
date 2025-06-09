@@ -18,6 +18,9 @@ let package = Package(
             targets: ["CGraphvizSDK"]
         ),
     ],
+    dependencies: [
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.13.0"),
+    ],
     targets: [
         // C/C++ Target
         .target(
@@ -41,7 +44,10 @@ let package = Package(
         ),
         .testTarget(
             name: "GraphvizSDKTests",
-            dependencies: ["GraphvizSDK"]
+            dependencies: [
+                "GraphvizSDK",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
         )
     ]
 )
