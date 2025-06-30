@@ -1,0 +1,15 @@
+{
+  "originHash" : "5a46c75352cc7f350835bb2df936e257ccd3d1d569f071065510b1dc10c295c8",
+  "pins" : [
+    {
+      "identity" : "snapshotskit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyh94/SnapshotsKit.git",
+      "state" : {
+        "revision" : "2099c1f521deaef0a431ce6945960196678954b6",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

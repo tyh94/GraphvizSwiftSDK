@@ -7,63 +7,46 @@
 
 import Testing
 @testable import GraphvizSDK
-#if canImport(SwiftUI)
 import SwiftUI
-#endif
-#if canImport(SnapshotTesting)
-import SnapshotTesting
-#endif
+import SnapshotsKit
 
-#if canImport(SnapshotTesting)
-// Снепшот-тест: graphBuilder
-@Test @MainActor func testGraphCanvasViewSnapshot_graphBuilder() async throws {
-    #if os(iOS)
-    let graph = graphBuilder()
-    let renderer = RendererSwiftUI(layout: .dot)
-    let graphUI = try renderer.layout(graph: graph)
-    let view = GraphCanvasView(graph: graphUI)
-    let vc = UIHostingController(rootView: view)
-    vc.view.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-    assertSnapshot(of: vc, as: .image)
-    #endif
+@MainActor
+@Suite(.snapshots(record: .all))
+struct GraphvizSnapshotTests {
+    // Снепшот-тест: graphBuilder
+    @Test func testGraphCanvasViewSnapshot_graphBuilder() async throws {
+        let graph = graphBuilder()
+        let renderer = RendererSwiftUI(layout: .dot)
+        let graphUI = try renderer.layout(graph: graph)
+        let view = GraphCanvasView(graph: graphUI).frame(width: 300, height: 300)
+        assertSnapshot(of: view, named: #function)
+    }
+    
+    // Снепшот-тест: rankStrGraph
+    @Test func testGraphCanvasViewSnapshot_rankStrGraph() async throws {
+        let graph = rankStrGraph()
+        let renderer = RendererSwiftUI(layout: .dot)
+        let graphUI = try renderer.layout(graph: graph)
+        let view = GraphCanvasView(graph: graphUI)
+            .frame(width: 400, height: 400)
+        assertSnapshot(of: view, named: #function)
+    }
+    
+    // Снепшот-тест: rankGraph
+    @Test func testGraphCanvasViewSnapshot_rankGraph() async throws {
+        let graph = rankGraph()
+        let renderer = RendererSwiftUI(layout: .dot)
+        let graphUI = try renderer.layout(graph: graph)
+        let view = GraphCanvasView(graph: graphUI).frame(width: 300, height: 200)
+        assertSnapshot(of: view, named: #function)
+    }
+    
+    // Снепшот-тест: demoGraph
+    @Test func testGraphCanvasViewSnapshot_demoGraph() async throws {
+        let graph = demoGraph()
+        let renderer = RendererSwiftUI(layout: .dot)
+        let graphUI = try renderer.layout(graph: graph)
+        let view = GraphCanvasView(graph: graphUI).frame(width: 700, height: 1200)
+        assertSnapshot(of: view, named: #function)
+    }
 }
-
-// Снепшот-тест: rankStrGraph
-@Test @MainActor func testGraphCanvasViewSnapshot_rankStrGraph() async throws {
-    #if os(iOS)
-    let graph = rankStrGraph()
-    let renderer = RendererSwiftUI(layout: .dot)
-    let graphUI = try renderer.layout(graph: graph)
-    let view = GraphCanvasView(graph: graphUI)
-    let vc = UIHostingController(rootView: view)
-    vc.view.frame = CGRect(x: 0, y: 0, width: 400, height: 300)
-    assertSnapshot(of: vc, as: .image)
-    #endif
-}
-
-// Снепшот-тест: rankGraph
-@Test @MainActor func testGraphCanvasViewSnapshot_rankGraph() async throws {
-    #if os(iOS)
-    let graph = rankGraph()
-    let renderer = RendererSwiftUI(layout: .dot)
-    let graphUI = try renderer.layout(graph: graph)
-    let view = GraphCanvasView(graph: graphUI)
-    let vc = UIHostingController(rootView: view)
-    vc.view.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
-    assertSnapshot(of: vc, as: .image)
-    #endif
-}
-
-// Снепшот-тест: demoGraph
-@Test @MainActor func testGraphCanvasViewSnapshot_demoGraph() async throws {
-    #if os(iOS)
-    let graph = demoGraph()
-    let renderer = RendererSwiftUI(layout: .dot)
-    let graphUI = try renderer.layout(graph: graph)
-    let view = GraphCanvasView(graph: graphUI)
-    let vc = UIHostingController(rootView: view)
-    vc.view.frame = CGRect(x: 0, y: 0, width: 700, height: 1200)
-    assertSnapshot(of: vc, as: .image)
-    #endif
-}
-#endif
