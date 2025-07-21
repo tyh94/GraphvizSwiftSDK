@@ -31,6 +31,8 @@ public struct Graph {
     @GVGraphvizProperty<GVGraphParameters, GVParamValueOverlap> public var overlap: GVParamValueOverlap
     @GVGraphvizProperty<GVGraphParameters, String> public var fontname: String
     @GVGraphvizProperty<GVGraphParameters, Double> public var fontsize: Double
+    @GVGraphvizProperty<GVGraphParameters, Double> public var ranksep: Double
+    @GVGraphvizProperty<GVGraphParameters, Double> public var nodesep: Double
     
     init(
         _ graph: GVGraph
@@ -41,6 +43,8 @@ public struct Graph {
         _overlap = GVGraphvizProperty(key: .overlap, defaultValue: .retain, container: graph)
         _fontname = GVGraphvizProperty(key: .fontname, defaultValue: "Times-Roman", container: graph)
         _fontsize = GVGraphvizProperty(key: .fontsize, defaultValue: 14.0, container: graph)
+        _ranksep = GVGraphvizProperty(key: .ranksep, defaultValue: 0.5, container: graph)
+        _nodesep = GVGraphvizProperty(key: .nodesep, defaultValue: 0.25, container: graph)
     }
     
     init(name: String, type: GVGraphType) {

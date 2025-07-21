@@ -21,6 +21,8 @@ public final class EdgeBuilder {
     private var fontsize: Double?
     private var fontname: String?
     private var color: Color?
+    private var style: GVEdgeStyle?
+    private var constraint: Bool?
     
     init(
         source: NodeBuilder,
@@ -51,6 +53,12 @@ public final class EdgeBuilder {
         }
         if let color {
             edge.color = color
+        }
+        if let style {
+            edge.style = style
+        }
+        if let constraint {
+            edge.constraint = constraint
         }
         return edge
     }
@@ -108,6 +116,18 @@ extension EdgeBuilder {
     @discardableResult
     public func with(color: Color) -> Self {
         self.color = color
+        return self
+    }
+    
+    @discardableResult
+    public func with(style: GVEdgeStyle) -> Self {
+        self.style = style
+        return self
+    }
+    
+    @discardableResult
+    public func with(constraint: Bool) -> Self {
+        self.constraint = constraint
         return self
     }
 }

@@ -22,6 +22,8 @@ public class Edge {
     @GVGraphvizProperty<GVEdgeParameters, Double> public var penwidth: Double
     @GVGraphvizProperty<GVEdgeParameters, Double> public var fontsize: Double
     @GVGraphvizProperty<GVEdgeParameters, String> public var fontname: String
+    @GVGraphvizProperty<GVEdgeParameters, GVEdgeStyle> public var style: GVEdgeStyle
+    @GVGraphvizProperty<GVEdgeParameters, Bool> public var constraint: Bool
     
     init(
         edge: GVEdge
@@ -35,6 +37,8 @@ public class Edge {
         _penwidth = GVGraphvizProperty(key: .penwidth, defaultValue: 1.0, container: edge)
         _fontsize = GVGraphvizProperty(key: .fontsize, defaultValue: 14.0, container: edge)
         _fontname = GVGraphvizProperty(key: .fontname, defaultValue: "Times-Roman", container: edge)
+        _style = GVGraphvizProperty(key: .style, defaultValue: .solid, container: edge)
+        _constraint = GVGraphvizProperty(key: .constraint, defaultValue: true, container: edge)
     }
     
     convenience init(

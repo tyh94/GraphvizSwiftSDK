@@ -17,6 +17,7 @@ public struct EdgeUI: Sendable, Identifiable, Equatable {
     public let tailArrow: Path?
     public let width: CGFloat
     public let color: Color
+    public let style: GVEdgeStyle
 }
 
 extension Edge {
@@ -62,7 +63,8 @@ extension Edge {
             headArrow: headArrow.map { Path($0) },
             tailArrow: tailArrow.map { Path($0) },
             width: CGFloat(penwidth),
-            color: Color(color)
+            color: Color(color),
+            style: style
         )
     }
 }

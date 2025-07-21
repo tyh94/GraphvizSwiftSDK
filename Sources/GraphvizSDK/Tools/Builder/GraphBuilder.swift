@@ -19,6 +19,8 @@ public final class GraphBuilder: GraphBuilderProtocol {
     private var overlap: GVParamValueOverlap?
     private var fontsize: Double?
     private var fontname: String?
+    private var ranksep: Double?
+    private var nodesep: Double?
     
     public init() {}
     
@@ -48,6 +50,12 @@ public final class GraphBuilder: GraphBuilderProtocol {
         }
         if let fontsize {
             graph.fontsize = fontsize
+        }
+        if let ranksep {
+            graph.ranksep = ranksep
+        }
+        if let nodesep {
+            graph.nodesep = nodesep
         }
         
         return graph
@@ -113,6 +121,18 @@ extension GraphBuilder {
     @discardableResult
     public func with(fontsize: Double) -> Self {
         self.fontsize = fontsize
+        return self
+    }
+    
+    @discardableResult
+    public func with(ranksep: Double) -> Self {
+        self.ranksep = ranksep
+        return self
+    }
+    
+    @discardableResult
+    public func with(nodesep: Double) -> Self {
+        self.nodesep = nodesep
         return self
     }
 }

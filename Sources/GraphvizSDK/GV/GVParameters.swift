@@ -150,6 +150,7 @@ public enum GVParamValueOverlap: String {
     case vpsc
     case ipsep // requires neato and mode=ipsep
     case fdpDefault = "9:prism"
+    case `false` = "false"
 }
 
 public enum GVEdgeEnding: String {
