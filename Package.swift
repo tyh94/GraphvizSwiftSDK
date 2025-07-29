@@ -19,7 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/tyh94/SnapshotsKit.git", from: "1.0.0"),
+        .package(url: "git@github.com:tyh94/SnapshotsKit.git", from: "1.0.0"),
     ],
     targets: [
         // C/C++ Target
