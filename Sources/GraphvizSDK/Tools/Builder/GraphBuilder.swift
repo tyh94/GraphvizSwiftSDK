@@ -64,7 +64,7 @@ public final class GraphBuilder: GraphBuilderProtocol {
 
 extension GraphBuilder {
     @discardableResult
-    public func node(_ builder: @escaping (NodeBuilder) -> NodeBuilder) -> NodeBuilder {
+    public func node(_ builder: (NodeBuilder) -> NodeBuilder) -> NodeBuilder {
         let nodeBuilder = NodeBuilder()
         nodeBuilders.append(builder(nodeBuilder))
         return nodeBuilder
@@ -74,7 +74,7 @@ extension GraphBuilder {
     public func edge(
         source: NodeBuilder,
         targer: NodeBuilder,
-        _ builder: @escaping (EdgeBuilder) -> EdgeBuilder
+        _ builder: (EdgeBuilder) -> EdgeBuilder
     ) -> EdgeBuilder {
         let edgeBuilder = EdgeBuilder(source: source, targer: targer)
         edgeBuilders.append(builder(edgeBuilder))
@@ -82,7 +82,7 @@ extension GraphBuilder {
     }
     
     @discardableResult
-    public func subgraph(_ builder: @escaping (SubgraphBuilder) -> SubgraphBuilder) -> SubgraphBuilder {
+    public func subgraph(_ builder: (SubgraphBuilder) -> SubgraphBuilder) -> SubgraphBuilder {
         let subgraphBuilder = SubgraphBuilder()
         subgraphBuilders.append(builder(subgraphBuilder))
         return subgraphBuilder

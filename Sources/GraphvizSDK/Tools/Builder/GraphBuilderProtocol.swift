@@ -7,12 +7,12 @@
 
 public protocol GraphBuilderProtocol {
     @discardableResult
-    func node(_ builder: @escaping (NodeBuilder) -> NodeBuilder) -> NodeBuilder
+    func node(_ builder: (NodeBuilder) -> NodeBuilder) -> NodeBuilder
     
     @discardableResult
     func edge(
         source: NodeBuilder,
         targer: NodeBuilder,
-        _ builder: @escaping (EdgeBuilder) -> EdgeBuilder
+        _ builder: (EdgeBuilder) -> EdgeBuilder
     ) -> EdgeBuilder
 }

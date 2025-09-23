@@ -31,7 +31,7 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
 
 extension SubgraphBuilder {
     @discardableResult
-    public func node(_ builder: @escaping (NodeBuilder) -> NodeBuilder) -> NodeBuilder {
+    public func node(_ builder: (NodeBuilder) -> NodeBuilder) -> NodeBuilder {
         let nodeBuilder = NodeBuilder()
         nodeBuilders.append(builder(nodeBuilder))
         return nodeBuilder
@@ -41,7 +41,7 @@ extension SubgraphBuilder {
     public func edge(
         source: NodeBuilder,
         targer: NodeBuilder,
-        _ builder: @escaping (EdgeBuilder) -> EdgeBuilder
+        _ builder: (EdgeBuilder) -> EdgeBuilder
     ) -> EdgeBuilder {
         let edgeBuilder = EdgeBuilder(source: source, targer: targer)
         edgeBuilders.append(builder(edgeBuilder))

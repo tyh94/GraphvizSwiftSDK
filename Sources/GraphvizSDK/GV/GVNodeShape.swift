@@ -23,6 +23,7 @@ public enum GVNodeShape: String {
     case mSquare = "Msquare"
     case egg
     case parallelogram
+    case point
 //    case doublecircle // TODO: add peripheries
     
     case none
