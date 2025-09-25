@@ -12,6 +12,7 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
     private(set) var edgeBuilders: [EdgeBuilder] = []
     private var name: String?
     private var rank: GVRank?
+    private var nodesep: Double?
     
     public func build(graph: GVGraph) -> Subgraph {
         var graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
@@ -24,6 +25,9 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
         }
         if let rank {
             graph.rank = rank
+        }
+        if let nodesep {
+            graph.nodesep = nodesep
         }
         return graph
     }
@@ -57,6 +61,12 @@ extension SubgraphBuilder {
     @discardableResult
     public func with(rank: GVRank) -> Self {
         self.rank = rank
+        return self
+    }
+    
+    @discardableResult
+    public func with(nodesep: Double) -> Self {
+        self.nodesep = nodesep
         return self
     }
 }

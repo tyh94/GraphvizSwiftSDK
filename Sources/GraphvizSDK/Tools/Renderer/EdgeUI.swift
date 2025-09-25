@@ -38,7 +38,7 @@ extension Edge {
         
         let body = buildPath
         
-        // Create arrows
+        // Create arrows only if style is not .none
         let headArrow: CGPath?
         if let arrowHead = edge.arrowHead?.convertFromGraphviz(graphHeight: graphHeight) {
             let arrowHead2 = cgPath[cgPath.count - 1]
@@ -71,7 +71,7 @@ extension Edge {
 
 private func definePath(pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -> CGPath {
     switch type {
-    case .normal :
+    case .normal:
         return CGPath.arrow(startPoint: otherPoint, endPoint: pos, tailWidth: 2, headWidth: 8, headLength: otherPoint.distance(to: pos))
     case .dot:
         return CGPath.circleBetween(a: pos, and: otherPoint)
@@ -80,12 +80,10 @@ private func definePath(pos: CGPoint, type: GVEdgeEnding, otherPoint: CGPoint) -
         path.move(to: pos)
         path.addLine(to: otherPoint)
         return path
-    case  .diamond:
+    case .diamond:
         return CGPath.diamondBetween(a: pos, and: otherPoint)
     }
 }
-
-
 
 extension CGPath {
     fileprivate class func arrow(startPoint: CGPoint, endPoint: CGPoint, tailWidth: CGFloat, headWidth: CGFloat, headLength: CGFloat) -> CGPath {

@@ -21,6 +21,7 @@ public final class GraphBuilder: GraphBuilderProtocol {
     private var fontname: String?
     private var ranksep: Double?
     private var nodesep: Double?
+    private var ordering: GVOrdering?
     
     public init() {}
     
@@ -56,6 +57,9 @@ public final class GraphBuilder: GraphBuilderProtocol {
         }
         if let nodesep {
             graph.nodesep = nodesep
+        }
+        if let ordering {
+            graph.ordering = ordering
         }
         
         return graph
@@ -133,6 +137,12 @@ extension GraphBuilder {
     @discardableResult
     public func with(nodesep: Double) -> Self {
         self.nodesep = nodesep
+        return self
+    }
+    
+    @discardableResult
+    public func with(ordering: GVOrdering) -> Self {
+        self.ordering = ordering
         return self
     }
 }

@@ -33,6 +33,7 @@ public struct Graph {
     @GVGraphvizProperty<GVGraphParameters, Double> public var fontsize: Double
     @GVGraphvizProperty<GVGraphParameters, Double> public var ranksep: Double
     @GVGraphvizProperty<GVGraphParameters, Double> public var nodesep: Double
+    @GVGraphvizProperty<GVGraphParameters, GVOrdering> public var ordering: GVOrdering
     
     init(
         _ graph: GVGraph
@@ -45,6 +46,7 @@ public struct Graph {
         _fontsize = GVGraphvizProperty(key: .fontsize, defaultValue: 14.0, container: graph)
         _ranksep = GVGraphvizProperty(key: .ranksep, defaultValue: 0.5, container: graph)
         _nodesep = GVGraphvizProperty(key: .nodesep, defaultValue: 0.25, container: graph)
+        _ordering = GVGraphvizProperty(key: .ordering, defaultValue: .none, container: graph)
     }
     
     init(name: String, type: GVGraphType) {

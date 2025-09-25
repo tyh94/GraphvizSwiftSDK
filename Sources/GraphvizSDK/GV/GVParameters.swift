@@ -72,6 +72,7 @@ public enum GVGraphParameters: String {
     case epsilon
     case rank
     case newrank
+    case ordering
 }
 
 public enum GVLabelLocation: String {
@@ -97,6 +98,7 @@ public enum GVNodeParameters: String {
     case image
     case imagepos
     case imagescale
+    case ordering
 }
 
 public enum GVParameter: Hashable {
@@ -196,3 +198,8 @@ public enum GVImageScale: String {
     case both
 }
 
+public enum GVOrdering: String {
+    case out
+    case `in`
+    case none = ""
+}

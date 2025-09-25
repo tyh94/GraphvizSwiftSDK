@@ -37,7 +37,7 @@ public class Edge {
         _penwidth = GVGraphvizProperty(key: .penwidth, defaultValue: 1.0, container: edge)
         _fontsize = GVGraphvizProperty(key: .fontsize, defaultValue: 14.0, container: edge)
         _fontname = GVGraphvizProperty(key: .fontname, defaultValue: "Times-Roman", container: edge)
-        _style = GVGraphvizProperty(key: .style, defaultValue: .solid, container: edge)
+        _style = GVGraphvizProperty(key: .style, defaultValue: .none, container: edge)
         _constraint = GVGraphvizProperty(key: .constraint, defaultValue: true, container: edge)
     }
     
