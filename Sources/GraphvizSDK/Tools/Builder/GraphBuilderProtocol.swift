@@ -15,4 +15,7 @@ public protocol GraphBuilderProtocol {
         targer: NodeBuilder,
         _ builder: (EdgeBuilder) -> EdgeBuilder
     ) -> EdgeBuilder
+    
+    @discardableResult
+    func subgraph(_ builder: (SubgraphBuilder) -> SubgraphBuilder) -> SubgraphBuilder 
 }

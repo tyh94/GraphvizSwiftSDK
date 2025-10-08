@@ -13,6 +13,9 @@ import OSLog
 public struct Subgraph {
     private(set) var graph: GVGraph
     
+    /// Subgraphs contained by the graph.
+    public private(set) var subgraphs: [Subgraph] = []
+    
     /// Nodes contained by the graph.
     public private(set) var nodes: [Node] = []
 
@@ -29,6 +32,10 @@ public struct Subgraph {
         self.graph = agsubg(parent, cString(name), 1)!
         _rank = GVGraphvizProperty(key: .rank, defaultValue: .none, container: graph)
         _nodesep = GVGraphvizProperty(key: .nodesep, defaultValue: 0.25, container: graph)
+    }
+    
+    public mutating func append(_ subgraph: Subgraph) {
+        subgraphs.append(subgraph)
     }
     
     public mutating func append(_ node: @autoclosure () -> Node) {

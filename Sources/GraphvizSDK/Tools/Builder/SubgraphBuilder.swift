@@ -10,6 +10,7 @@ import Foundation
 public final class SubgraphBuilder: GraphBuilderProtocol {
     private(set) var nodeBuilders: [NodeBuilder] = []
     private(set) var edgeBuilders: [EdgeBuilder] = []
+    private(set) var subgraphBuilders: [SubgraphBuilder] = []
     private var name: String?
     private var rank: GVRank?
     private var nodesep: Double?
@@ -21,6 +22,9 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
             graph.append(builder.build(graph: gvGraph))
         }
         edgeBuilders.forEach { builder in
+            graph.append(builder.build(graph: gvGraph))
+        }
+        subgraphBuilders.forEach { builder in
             graph.append(builder.build(graph: gvGraph))
         }
         if let rank {
@@ -50,6 +54,13 @@ extension SubgraphBuilder {
         let edgeBuilder = EdgeBuilder(source: source, targer: targer)
         edgeBuilders.append(builder(edgeBuilder))
         return edgeBuilder
+    }
+    
+    @discardableResult
+    public func subgraph(_ builder: (SubgraphBuilder) -> SubgraphBuilder) -> SubgraphBuilder {
+        let subgraphBuilder = SubgraphBuilder()
+        subgraphBuilders.append(builder(subgraphBuilder))
+        return subgraphBuilder
     }
     
     @discardableResult
