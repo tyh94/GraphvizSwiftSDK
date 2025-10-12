@@ -51,20 +51,9 @@ extension CGPoint {
     var makeNegative: CGPoint {
         CGPoint(x: -1.0 * self.x, y: -1.0 * self.y)
     }
+    
     var asVector: CGVector {
         CGVector(dx: x, dy: y)
-    }
-    
-    func orderByDistance(set: Set<CGPoint>) -> [CGPoint] {
-        self.orderByDistance(points: set.asArray)
-    }
-    
-    func orderByDistance(points: [CGPoint]) -> [CGPoint] {
-        points.sorted(by: {a, b in return self.distance(to: a) > self.distance(to: b)})
-    }
-    
-    func orderByDistance(_ a : CGPoint, _ b: CGPoint) -> (CGPoint, CGPoint) {
-        self.distance(to: a) > self.distance(to: b) ? (b, a) : (a, b)
     }
 
     static func / (left: CGPoint, right: CGFloat) -> CGPoint {
