@@ -24,6 +24,7 @@ actor ImageCache {
     }
 }
 
+@available(iOS 17.0, *)
 public struct GraphCanvasView: View {
     let graph: GraphUI
     let onTapNode: ((NodeUI) -> ())?
@@ -76,7 +77,7 @@ public struct GraphCanvasView: View {
                     context.draw(
                         Text(node.label)
                             .font(node.textFont)
-                            .foregroundStyle(node.textColor),
+                            .foregroundColor(node.textColor),
                         at: frame.center
                     )
                 }
@@ -213,8 +214,9 @@ extension CGRect {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    let graph = rankStrGraph()
+    let graph = demoGraph()
     let graphUI = try! graph.render(using: .dot)
     GraphCanvasView(graph: graphUI)
 }

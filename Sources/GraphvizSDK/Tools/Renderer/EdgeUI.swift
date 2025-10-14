@@ -63,7 +63,7 @@ extension Edge {
             headArrow: headArrow.map { Path($0) },
             tailArrow: tailArrow.map { Path($0) },
             width: CGFloat(penwidth),
-            color: Color(color),
+            color: color,
             style: style
         )
     }

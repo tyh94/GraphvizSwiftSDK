@@ -129,7 +129,7 @@ public func demoGraph() -> Graph {
         $0.with(label: "node 11")
     }
     let node12 = graph.node {
-        $0.with(label: "node \n 12")
+        $0.with(label: "node \n 12").with(textColor: .red)
     }
     let node13 = graph.node {
         $0.with(label: "node 13")

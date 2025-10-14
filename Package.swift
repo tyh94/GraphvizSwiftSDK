@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "GraphvizSDK",
-    platforms: [.iOS(.v17)],
+    platforms: [.iOS(.v16)],
     products: [
         .library(
             name: "GraphvizSDK",
@@ -19,7 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "git@github.com:tyh94/SnapshotsKit.git", from: "1.0.1"),
+        .package(url: "git@github.com:tyh94/SnapshotsKit.git", from: "1.0.2"),
     ],
     targets: [
         // C/C++ Target

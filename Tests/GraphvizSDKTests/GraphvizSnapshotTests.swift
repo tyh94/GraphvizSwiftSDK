@@ -14,6 +14,7 @@ import SnapshotsKit
 @Suite(.snapshots(record: .all))
 struct GraphvizSnapshotTests {
     // Снепшот-тест: graphBuilder
+    @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_graphBuilder() async throws {
         let graph = graphBuilder()
         let renderer = RendererSwiftUI(layout: .dot)
@@ -23,6 +24,7 @@ struct GraphvizSnapshotTests {
     }
     
     // Снепшот-тест: rankStrGraph
+    @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_rankStrGraph() async throws {
         let graph = rankStrGraph()
         let renderer = RendererSwiftUI(layout: .dot)
@@ -33,6 +35,7 @@ struct GraphvizSnapshotTests {
     }
     
     // Снепшот-тест: rankGraph
+    @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_rankGraph() async throws {
         let graph = rankGraph()
         let renderer = RendererSwiftUI(layout: .dot)
@@ -42,6 +45,7 @@ struct GraphvizSnapshotTests {
     }
     
     // Снепшот-тест: demoGraph
+    @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_demoGraph() async throws {
         let graph = demoGraph()
         let renderer = RendererSwiftUI(layout: .dot)

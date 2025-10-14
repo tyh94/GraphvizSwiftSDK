@@ -64,9 +64,9 @@ extension Node {
             origin: origin,
             path: Path(path),
             borderWidth: penwidth,
-            borderColor: Color(borderColor),
+            borderColor: borderColor,
             textFont: Font.custom(fontname, size: CGFloat(fontSize)),
-            textColor: Color(textColor),
+            textColor: textColor,
             imagePath: image.isEmpty ? nil : image
         )
     }
