@@ -16,16 +16,19 @@ enum RendererError: Error {
 
 public final class RendererSwiftUI {
     public let layout: GVLayout
-    private let context: GVGlobalContextPointer
     
     init(layout: GVLayout) {
         self.layout = layout
-        
-        // Инициализация контекста и графа
-        context = loadGraphvizLibraries()
     }
     
     public func layout(graph: Graph) throws -> GraphUI {
+        guard let context = loadGraphvizLibraries() else {
+            throw RendererError.createLayoutError
+        }
+        defer {
+            gvFreeLayout(context, graph.graph)
+            gvFreeContext(context)
+        }
         guard gvLayout(context, graph.graph, layout.rawValue) == 0 else {
             throw RendererError.createLayoutError
         }

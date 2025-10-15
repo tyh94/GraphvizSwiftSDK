@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics
 import OSLog
 
-public struct Graph {
+public class Graph {
     private(set) var graph: GVGraph
     
     /// Subgraphs contained by the graph.
@@ -49,37 +49,41 @@ public struct Graph {
         _ordering = GVGraphvizProperty(key: .ordering, defaultValue: .none, container: graph)
     }
     
-    init(name: String, type: GVGraphType) {
+    convenience init(name: String, type: GVGraphType) {
         let cName = cString(name)
         let gvGraph = agopen(cName, type.graphvizValue, nil)!
         self.init(gvGraph)
     }
     
-    public mutating func append(_ subgraph: Subgraph) {
+    deinit {
+        agclose(graph)
+    }
+    
+    public func append(_ subgraph: Subgraph) {
         subgraphs.append(subgraph)
     }
 
-    public mutating func append<S>(contentsOf subgraphs: S) where S.Element == Subgraph, S: Sequence {
+    public func append<S>(contentsOf subgraphs: S) where S.Element == Subgraph, S: Sequence {
         for subgraph in subgraphs {
             append(subgraph)
         }
     }
 
-    public mutating func append(_ node: Node) {
+    public func append(_ node: Node) {
         nodes.append(node)
     }
 
-    public mutating func append<S>(contentsOf nodes: S) where S.Element == Node, S: Sequence {
+    public func append<S>(contentsOf nodes: S) where S.Element == Node, S: Sequence {
         for node in nodes {
             append(node)
         }
     }
 
-    public mutating func append(_ edge:Edge) {
+    public func append(_ edge:Edge) {
         edges.append(edge)
     }
 
-    public mutating func append<S>(contentsOf edges: S) where S.Element == Edge, S: Sequence {
+    public func append<S>(contentsOf edges: S) where S.Element == Edge, S: Sequence {
         for edge in edges {
             append(edge)
         }

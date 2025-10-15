@@ -12,19 +12,23 @@ public final class RendererString {
     enum Error: Swift.Error {
         case failedCreateContext
         case failedRenderData
+        case createLayoutError
     }
     
     public let layout: GVLayout
-    private let context: GVGlobalContextPointer
     
     init(layout: GVLayout) {
         self.layout = layout
-        
-        // Инициализация контекста и графа
-        context = loadGraphvizLibraries()
     }
     
     public func layout(graph: Graph) throws -> String {
+        guard let context = loadGraphvizLibraries() else {
+            throw RendererError.createLayoutError
+        }
+        defer {
+            gvFreeLayout(context, graph.graph)
+            gvFreeContext(context)
+        }
         guard gvLayout(context, graph.graph, layout.rawValue) == 0 else {
             throw Error.failedCreateContext
         }

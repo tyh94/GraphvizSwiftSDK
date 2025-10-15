@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics
 import OSLog
 
-public struct Subgraph {
+public class Subgraph {
     private(set) var graph: GVGraph
     
     /// Subgraphs contained by the graph.
@@ -34,15 +34,15 @@ public struct Subgraph {
         _nodesep = GVGraphvizProperty(key: .nodesep, defaultValue: 0.25, container: graph)
     }
     
-    public mutating func append(_ subgraph: Subgraph) {
+    public func append(_ subgraph: Subgraph) {
         subgraphs.append(subgraph)
     }
     
-    public mutating func append(_ node: @autoclosure () -> Node) {
+    public func append(_ node: @autoclosure () -> Node) {
         nodes.append(node())
     }
 
-    public mutating func append(_ edge: @autoclosure () -> Edge) {
+    public func append(_ edge: @autoclosure () -> Edge) {
         edges.append(edge())
     }
 }
