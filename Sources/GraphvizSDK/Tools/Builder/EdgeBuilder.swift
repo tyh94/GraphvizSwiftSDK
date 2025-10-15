@@ -17,12 +17,15 @@ public final class EdgeBuilder {
     private var arrowtailType: GVEdgeEnding?
     private var weight: Float?
     private var minlen: Int?
+    private var len: Double?
     private var penwidth: Double?
     private var fontsize: Double?
     private var fontname: String?
     private var color: Color?
     private var style: GVEdgeStyle?
     private var constraint: Bool?
+    private var tailport: GVEdgePortPos?
+    private var headport: GVEdgePortPos?
     
     init(
         source: NodeBuilder,
@@ -38,6 +41,18 @@ public final class EdgeBuilder {
         let edge = Edge(parent: graph, from: source.build(graph: graph), to: targer.build(graph: graph))
         if let dir {
             edge.dir = dir
+        }
+        if let arrowheadType {
+            edge.arrowheadType = arrowheadType
+        }
+        if let arrowtailType {
+            edge.arrowtailType = arrowtailType
+        }
+        if let weight {
+            edge.weight = weight
+        }
+        if let len {
+            edge.len = len
         }
         if let minlen {
             edge.minlen = minlen
@@ -60,6 +75,12 @@ public final class EdgeBuilder {
         if let constraint {
             edge.constraint = constraint
         }
+        if let tailport {
+            edge.tailport = tailport
+        }
+        if let headport {
+            edge.headport = headport
+        }
         return edge
     }
 }
@@ -68,6 +89,12 @@ extension EdgeBuilder {
     @discardableResult
     public func with(dir: GVEdgeParamDir) -> Self {
         self.dir = dir
+        return self
+    }
+    
+    @discardableResult
+    public func with(len: Double) -> Self {
+        self.len = len
         return self
     }
     
@@ -128,6 +155,18 @@ extension EdgeBuilder {
     @discardableResult
     public func with(constraint: Bool) -> Self {
         self.constraint = constraint
+        return self
+    }
+    
+    @discardableResult
+    public func with(tailport: GVEdgePortPos) -> Self {
+        self.tailport = tailport
+        return self
+    }
+    
+    @discardableResult
+    public func with(headport: GVEdgePortPos) -> Self {
+        self.headport = headport
         return self
     }
 }

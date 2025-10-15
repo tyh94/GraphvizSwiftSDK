@@ -169,6 +169,19 @@ public enum GVEdgeEnding: String {
     case diamond
 }
 
+public enum GVEdgePortPos: String {
+    case top = "n" // north (top)
+    case topRight = "ne" // north-east (top-right)
+    case right = "e" // east (right)
+    case bottomRight = "se" // south-east (bottom-right)
+    case bottom = "s" // south (bottom)
+    case bottomLeft = "sw" // south-west (bottom-left)
+    case left = "w" // west (left)
+    case topLeft = "nw" // north-west (top-left)
+    case center = "c" // center
+    case `default` = "_" // default
+}
+
 public enum GVRank: String {
     case same
     case min
