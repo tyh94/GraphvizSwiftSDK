@@ -23,7 +23,6 @@ extension Graph {
     public func log() {
         do {
             let str = try RendererString(layout: .dot).layout(graph: self)
-            
 #if targetEnvironment(simulator)
             let folderPath = "/\(userPath)/Desktop/FamilyBookLogs/"
             let filePath = folderPath + "tree.txt"
@@ -40,7 +39,6 @@ extension Graph {
             Logger.graphviz.debug(message: str)
             Logger.graphviz.debug(message: "==========================")
 #endif
-            
         } catch {
             Logger.graphviz.error(error: error)
         }

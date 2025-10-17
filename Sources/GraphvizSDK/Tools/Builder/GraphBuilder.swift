@@ -22,6 +22,7 @@ public final class GraphBuilder: GraphBuilderProtocol {
     private var ranksep: Double?
     private var nodesep: Double?
     private var ordering: GVOrdering?
+    private var concentrate: Bool?
     
     public init() {}
     
@@ -60,6 +61,9 @@ public final class GraphBuilder: GraphBuilderProtocol {
         }
         if let ordering {
             graph.ordering = ordering
+        }
+        if let concentrate {
+            graph.concentrate = concentrate
         }
         
         return graph
@@ -143,6 +147,12 @@ extension GraphBuilder {
     @discardableResult
     public func with(ordering: GVOrdering) -> Self {
         self.ordering = ordering
+        return self
+    }
+    
+    @discardableResult
+    public func with(concentrate: Bool) -> Self {
+        self.concentrate = concentrate
         return self
     }
 }

@@ -34,6 +34,7 @@ public class Graph {
     @GVGraphvizProperty<GVGraphParameters, Double> public var ranksep: Double
     @GVGraphvizProperty<GVGraphParameters, Double> public var nodesep: Double
     @GVGraphvizProperty<GVGraphParameters, GVOrdering> public var ordering: GVOrdering
+    @GVGraphvizProperty<GVGraphParameters, Bool> public var concentrate: Bool
     
     init(
         _ graph: GVGraph
@@ -47,6 +48,7 @@ public class Graph {
         _ranksep = GVGraphvizProperty(key: .ranksep, defaultValue: 0.5, container: graph)
         _nodesep = GVGraphvizProperty(key: .nodesep, defaultValue: 0.25, container: graph)
         _ordering = GVGraphvizProperty(key: .ordering, defaultValue: .none, container: graph)
+        _concentrate = GVGraphvizProperty(key: .concentrate, defaultValue: false, container: graph)
     }
     
     convenience init(name: String, type: GVGraphType) {

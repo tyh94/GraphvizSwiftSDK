@@ -73,6 +73,7 @@ public enum GVGraphParameters: String {
     case rank
     case newrank
     case ordering
+    case concentrate
 }
 
 public enum GVLabelLocation: String {

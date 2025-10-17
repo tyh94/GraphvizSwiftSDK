@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 public final class NodeBuilder {
-    private var name: String?
+    public var name: String!
     
     private var width: Double?
     private var height: Double?
