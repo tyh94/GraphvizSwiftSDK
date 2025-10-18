@@ -16,7 +16,7 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
     private var nodesep: Double?
     
     public func build(graph: GVGraph) -> Subgraph {
-        var graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
+        let graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
         let gvGraph = graph.graph
         nodeBuilders.forEach { builder in
             graph.append(builder.build(graph: gvGraph))
