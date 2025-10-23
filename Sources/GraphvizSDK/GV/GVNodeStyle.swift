@@ -20,5 +20,3 @@ public enum GVNodeStyle: String {
     case rounded
     case none = ""
 }
-
-

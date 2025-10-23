@@ -13,6 +13,7 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
     private(set) var subgraphBuilders: [SubgraphBuilder] = []
     private var name: String?
     private var rank: GVRank?
+    private var style: GVNodeStyle?
     
     public func build(graph: GVGraph) -> Subgraph {
         let graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
@@ -28,6 +29,9 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
         }
         if let rank {
             graph.rank = rank
+        }
+        if let style {
+            graph.style = style
         }
         return graph
     }
@@ -68,6 +72,12 @@ extension SubgraphBuilder {
     @discardableResult
     public func with(rank: GVRank) -> Self {
         self.rank = rank
+        return self
+    }
+    
+    @discardableResult
+    public func with(style: GVNodeStyle) -> Self {
+        self.style = style
         return self
     }
 }

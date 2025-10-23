@@ -23,6 +23,7 @@ public class Subgraph {
     public private(set) var edges: [Edge] = []
     
     @GVGraphvizProperty<GVGraphParameters, GVRank> public var rank: GVRank
+    @GVGraphvizProperty<GVNodeParameters, GVNodeStyle> public var style: GVNodeStyle
     
     public init(
         name: String,
@@ -30,6 +31,7 @@ public class Subgraph {
     ) {
         self.graph = agsubg(parent, cString(name), 1)!
         _rank = GVGraphvizProperty(key: .rank, defaultValue: .none, container: graph)
+        _style = GVGraphvizProperty(key: .style, defaultValue: .none, container: graph)
     }
     
     public func append(_ subgraph: Subgraph) {
