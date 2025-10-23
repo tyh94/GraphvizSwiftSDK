@@ -27,7 +27,7 @@ public final class GraphBuilder: GraphBuilderProtocol {
     public init() {}
     
     public func build() -> Graph {
-        var graph = Graph(name: "graph_\(arc4random())", type: type)
+        let graph = Graph(name: "graph_\(arc4random())", type: type)
         let gvGraph = graph.graph
         
         nodeBuilders.forEach { builder in
