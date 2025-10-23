@@ -31,7 +31,7 @@ import SwiftUI
     let node2 = try Node(parent: graph.graph, name: "B")
     graph.append(node1)
     graph.append(node2)
-    let edge = Edge(parent: graph.graph, from: node1, to: node2)
+    let edge = try Edge(parent: graph.graph, from: node1, to: node2)
     graph.append(edge)
     #expect(graph.edges.count == 1)
 }
