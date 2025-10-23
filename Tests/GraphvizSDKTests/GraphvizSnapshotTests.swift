@@ -16,7 +16,7 @@ struct GraphvizSnapshotTests {
     // Снепшот-тест: graphBuilder
     @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_graphBuilder() async throws {
-        let graph = graphBuilder()
+        let graph = try graphBuilder()
         let renderer = RendererSwiftUI(layout: .dot)
         let graphUI = try renderer.layout(graph: graph)
         let view = GraphCanvasView(graph: graphUI).frame(width: 300, height: 300)
@@ -26,7 +26,7 @@ struct GraphvizSnapshotTests {
     // Снепшот-тест: rankStrGraph
     @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_rankStrGraph() async throws {
-        let graph = rankStrGraph()
+        let graph = try rankStrGraph()
         let renderer = RendererSwiftUI(layout: .dot)
         let graphUI = try renderer.layout(graph: graph)
         let view = GraphCanvasView(graph: graphUI)
@@ -37,7 +37,7 @@ struct GraphvizSnapshotTests {
     // Снепшот-тест: rankGraph
     @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_rankGraph() async throws {
-        let graph = rankGraph()
+        let graph = try rankGraph()
         let renderer = RendererSwiftUI(layout: .dot)
         let graphUI = try renderer.layout(graph: graph)
         let view = GraphCanvasView(graph: graphUI).frame(width: 300, height: 200)
@@ -47,7 +47,7 @@ struct GraphvizSnapshotTests {
     // Снепшот-тест: demoGraph
     @available(iOS 17.0, *)
     @Test func testGraphCanvasViewSnapshot_demoGraph() async throws {
-        let graph = demoGraph()
+        let graph = try demoGraph()
         let renderer = RendererSwiftUI(layout: .dot)
         let graphUI = try renderer.layout(graph: graph)
         let view = GraphCanvasView(graph: graphUI).frame(width: 700, height: 1200)

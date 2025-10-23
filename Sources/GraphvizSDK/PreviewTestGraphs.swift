@@ -1,6 +1,6 @@
 import Foundation
 
-public func graphBuilder() -> Graph {
+public func graphBuilder() throws -> Graph {
     let builder = GraphBuilder()
     let node1 = builder.node { node in
         node.with(shape: .box)
@@ -41,11 +41,11 @@ public func graphBuilder() -> Graph {
                 edgeBuilder
             }
     builder.edge(source: node2, targer: nodeDiamond) { $0 }
-    return builder.build()
+    return try builder.build()
 }
 
-public func rankStrGraph() -> Graph {
-    GraphBuilderFromString.build(str:
+public func rankStrGraph() throws -> Graph {
+    try GraphBuilderFromString.build(str:
         """
         digraph G {
                   edge [dir=none];
@@ -72,7 +72,7 @@ public func rankStrGraph() -> Graph {
     )
 }
 
-public func rankGraph() -> Graph {
+public func rankGraph() throws -> Graph {
     let graph = GraphBuilder()
     let subgraph = graph.subgraph { $0.with(name: "sub").with(rank: .same) }
     let abraham = subgraph.node {
@@ -87,10 +87,10 @@ public func rankGraph() -> Graph {
     }
     subgraph.edge(source: abraham, targer: diamond, { $0 })
     subgraph.edge(source: diamond, targer: mona, { $0 })
-    return graph.build()
+    return try graph.build()
 }
 
-public func demoGraph() -> Graph {
+public func demoGraph() throws -> Graph {
     let graph = GraphBuilder()
     let node1 = graph.node {
         $0.with(label: "The quick\nbrown fox jumps\nover the lazy\ndog")
@@ -182,5 +182,5 @@ public func demoGraph() -> Graph {
     })
     graph.edge(source: node9, targer: node11, { $0 })
     graph.edge(source: node13, targer: node3, { $0 })
-    return graph.build()
+    return try graph.build()
 }

@@ -11,6 +11,10 @@ import CoreGraphics
 import OSLog
 
 public class Graph {
+    public enum Error: Swift.Error {
+        case invalidGVGraph
+    }
+    
     private(set) var graph: GVGraph
     
     /// Subgraphs contained by the graph.
@@ -53,9 +57,11 @@ public class Graph {
         _style = GVGraphvizProperty(key: .style, defaultValue: .none, container: graph)
     }
     
-    convenience init(name: String, type: GVGraphType) {
+    convenience init(name: String, type: GVGraphType) throws {
         let cName = cString(name)
-        let gvGraph = agopen(cName, type.graphvizValue, nil)!
+        guard let gvGraph = agopen(cName, type.graphvizValue, nil) else {
+            throw Error.invalidGVGraph
+        }
         self.init(gvGraph)
     }
     

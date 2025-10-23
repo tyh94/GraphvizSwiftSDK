@@ -11,6 +11,10 @@ import CoreGraphics
 import OSLog
 
 public class Edge {
+    public enum Error: Swift.Error {
+        case invalidGVEdge
+    }
+    
     let edge: GVEdge
     public var color: Color = .black
     
@@ -51,8 +55,10 @@ public class Edge {
         parent: GVGraph,
         from source: Node,
         to target: Node
-    ) {
-        let edge = agedge(parent, source.node, target.node, nil, 1)
-        self.init(edge: edge!)
+    ) throws {
+        guard let edge = agedge(parent, source.node, target.node, nil, 1) else {
+            throw Error.invalidGVEdge
+        }
+        self.init(edge: edge)
     }
 }

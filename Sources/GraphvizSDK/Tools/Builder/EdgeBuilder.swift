@@ -37,8 +37,8 @@ public final class EdgeBuilder {
     
     public func build(
         graph: GVGraph
-    ) -> Edge {
-        let edge = Edge(parent: graph, from: source.build(graph: graph), to: targer.build(graph: graph))
+    ) throws -> Edge {
+        let edge = try Edge(parent: graph, from: source.build(graph: graph), to: targer.build(graph: graph))
         if let dir {
             edge.dir = dir
         }

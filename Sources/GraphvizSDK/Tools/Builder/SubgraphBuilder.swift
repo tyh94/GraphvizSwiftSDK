@@ -15,17 +15,20 @@ public final class SubgraphBuilder: GraphBuilderProtocol {
     private var rank: GVRank?
     private var style: GVNodeStyle?
     
-    public func build(graph: GVGraph) -> Subgraph {
-        let graph = Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
+    public func build(graph: GVGraph) throws -> Subgraph {
+        let graph = try Subgraph(name: name ?? "subgraph_\(arc4random())", parent: graph)
         let gvGraph = graph.graph
-        nodeBuilders.forEach { builder in
-            graph.append(builder.build(graph: gvGraph))
+        for builder in nodeBuilders {
+            let node = try builder.build(graph: gvGraph)
+            graph.append(node)
         }
-        edgeBuilders.forEach { builder in
-            graph.append(builder.build(graph: gvGraph))
+        for builder in edgeBuilders {
+            let edge = try builder.build(graph: gvGraph)
+            graph.append(edge)
         }
-        subgraphBuilders.forEach { builder in
-            graph.append(builder.build(graph: gvGraph))
+        for builder in subgraphBuilders {
+            let subgraph = try builder.build(graph: gvGraph)
+            graph.append(subgraph)
         }
         if let rank {
             graph.rank = rank

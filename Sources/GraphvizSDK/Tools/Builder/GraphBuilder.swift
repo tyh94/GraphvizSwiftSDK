@@ -27,19 +27,19 @@ public final class GraphBuilder: GraphBuilderProtocol {
     
     public init() {}
     
-    public func build() -> Graph {
-        let graph = Graph(name: "graph_\(arc4random())", type: type)
+    public func build() throws -> Graph {
+        let graph = try Graph(name: "graph_\(arc4random())", type: type)
         let gvGraph = graph.graph
         
-        nodeBuilders.forEach { builder in
-            graph.append(builder.build(graph: gvGraph))
+        try nodeBuilders.forEach { builder in
+            try graph.append(builder.build(graph: gvGraph))
         }
-        edgeBuilders.forEach { builder in
-            graph.append(builder.build(graph: gvGraph))
+        try edgeBuilders.forEach { builder in
+            try graph.append(builder.build(graph: gvGraph))
         }
         
-        subgraphBuilders.forEach { builder in
-            graph.append(builder.build(graph: gvGraph))
+        try subgraphBuilders.forEach { builder in
+            try graph.append(builder.build(graph: gvGraph))
         }
         
         if let splines {

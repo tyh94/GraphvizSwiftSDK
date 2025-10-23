@@ -11,6 +11,9 @@ import CoreGraphics
 import OSLog
 
 public class Subgraph {
+    public enum Error: Swift.Error {
+        case invalidGVSubgraph
+    }
     private(set) var graph: GVGraph
     
     /// Subgraphs contained by the graph.
@@ -25,13 +28,20 @@ public class Subgraph {
     @GVGraphvizProperty<GVGraphParameters, GVRank> public var rank: GVRank
     @GVGraphvizProperty<GVNodeParameters, GVNodeStyle> public var style: GVNodeStyle
     
-    public init(
-        name: String,
-        parent: GVGraph
-    ) {
-        self.graph = agsubg(parent, cString(name), 1)!
+    init(graph: GVGraph) {
+        self.graph = graph
         _rank = GVGraphvizProperty(key: .rank, defaultValue: .none, container: graph)
         _style = GVGraphvizProperty(key: .style, defaultValue: .none, container: graph)
+    }
+    
+    public convenience init(
+        name: String,
+        parent: GVGraph
+    ) throws {
+        guard let subgraph = agsubg(parent, cString(name), 1) else {
+            throw Error.invalidGVSubgraph
+        }
+        self.init(graph: subgraph)
     }
     
     public func append(_ subgraph: Subgraph) {

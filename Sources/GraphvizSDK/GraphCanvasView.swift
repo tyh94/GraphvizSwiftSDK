@@ -216,7 +216,7 @@ extension CGRect {
 
 @available(iOS 17.0, *)
 #Preview {
-    let graph = demoGraph()
+    let graph = try! demoGraph()
     let graphUI = try! graph.render(using: .dot)
     GraphCanvasView(graph: graphUI)
 }

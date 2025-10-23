@@ -11,6 +11,9 @@ import CoreGraphics
 import OSLog
 
 public class Node {
+    public enum Error: Swift.Error {
+        case invalidGVNode
+    }
     // TODO: add image https://graphviz.org/docs/attrs/image/
     let node: GVNode
     let name: String
@@ -58,9 +61,11 @@ public class Node {
         _imageScale = GVGraphvizProperty(key: .imagescale, defaultValue: .off, container: node)
     }
     
-    convenience init(parent: GVGraph, name: String) {
-        let node = agnode(parent, cString(name), 1)
-        self.init(node: node!, name: name)
+    convenience init(parent: GVGraph, name: String) throws {
+        guard let node = agnode(parent, cString(name), 1) else {
+            throw Error.invalidGVNode
+        }
+        self.init(node: node, name: name)
     }
 }
 
