@@ -74,7 +74,7 @@ extension GVColor {
         switch self {
         case .transparent:
             return .black
-        case .named(let name):
+        case .named:
             return .black
         case .rgb(red: let red, green: let green, blue: let blue):
             return Color(red: Double(red) / 255, green: Double(green) / 255, blue: Double(blue) / 255)

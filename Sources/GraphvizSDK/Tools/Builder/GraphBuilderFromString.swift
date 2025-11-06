@@ -25,20 +25,15 @@ public final class GraphBuilderFromString {
         
         var currentNode: GVNode? = agfstnode(gvGraph)
         while let node = currentNode {
-            do {
-                let nodeName = "node_\(arc4random())"
-                let graphNode = try Node(node: node, name: nodeName)
-                graph.append(graphNode)
-                
-                var currentEdge: GVEdge? = agfstout(gvGraph, node)
-                while let edge = currentEdge {
-                    let graphEdge = try Edge(edge: edge)
-                    graph.append(graphEdge)
-                    currentEdge = agnxtout(gvGraph, edge)
-                }
-                
-            } catch {
-                throw GraphBuilderError.nodeProcessingFailed
+            let nodeName = "node_\(arc4random())"
+            let graphNode = Node(node: node, name: nodeName)
+            graph.append(graphNode)
+            
+            var currentEdge: GVEdge? = agfstout(gvGraph, node)
+            while let edge = currentEdge {
+                let graphEdge = Edge(edge: edge)
+                graph.append(graphEdge)
+                currentEdge = agnxtout(gvGraph, edge)
             }
             
             currentNode = agnxtnode(gvGraph, node)
