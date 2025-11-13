@@ -27,7 +27,7 @@ extension Graph {
             let folderPath = "/\(userPath)/Desktop/FamilyBookLogs/"
             let filePath = folderPath + "tree.txt"
             let data = str.data(using: .utf8)
-            try? FileManager.default.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: folderPath, withIntermediateDirectories: true, attributes: nil)
             FileManager.default.createFile(
                 atPath: filePath,
                 contents: data,
