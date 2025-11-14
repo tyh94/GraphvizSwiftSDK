@@ -32,6 +32,7 @@ public class Graph {
     
     @GVGraphvizProperty<GVGraphParameters, GVParamValueSplines> public var splines: GVParamValueSplines
     @GVGraphvizProperty<GVGraphParameters, GVModelDirection> public var rankdir: GVModelDirection
+    // Note: fdp, neato, sfdp, circo, twopi only.
     @GVGraphvizProperty<GVGraphParameters, GVParamValueOverlap> public var overlap: GVParamValueOverlap
     @GVGraphvizProperty<GVGraphParameters, String> public var fontname: String
     @GVGraphvizProperty<GVGraphParameters, Double> public var fontsize: Double

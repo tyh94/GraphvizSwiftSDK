@@ -310,7 +310,7 @@
 /* #undef NEED_USCORE */
 
 /* Define if you want ORTHO */
-//#define ORTHO 1
+#define ORTHO 1
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "https://gitlab.com/graphviz/graphviz/-/issues"
