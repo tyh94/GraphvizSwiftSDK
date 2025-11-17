@@ -100,6 +100,7 @@ public enum GVNodeParameters: String {
     case imagepos
     case imagescale
     case ordering
+    case newrank
 }
 
 public enum GVParameter: Hashable {

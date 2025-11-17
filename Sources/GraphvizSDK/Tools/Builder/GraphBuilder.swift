@@ -24,6 +24,7 @@ public final class GraphBuilder: GraphBuilderProtocol {
     private var ordering: GVOrdering?
     private var concentrate: Bool?
     private var style: GVNodeStyle?
+    private var newrank: Bool?
     
     public init() {}
     
@@ -68,6 +69,9 @@ public final class GraphBuilder: GraphBuilderProtocol {
         }
         if let style {
             graph.style = style
+        }
+        if let newrank {
+            graph.newrank = newrank
         }
         
         return graph
@@ -163,6 +167,12 @@ extension GraphBuilder {
     @discardableResult
     public func with(style: GVNodeStyle) -> Self {
         self.style = style
+        return self
+    }
+    
+    @discardableResult
+    public func with(newrank: Bool) -> Self {
+        self.newrank = newrank
         return self
     }
 }
