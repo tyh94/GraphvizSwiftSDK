@@ -21,10 +21,10 @@ public struct EdgeUI: Sendable, Identifiable, Equatable {
 }
 
 extension Edge {
-    func create(graphHeight: CGFloat) throws -> EdgeUI {
+    func create(graphHeight: CGFloat) throws -> EdgeUI? {
         guard let pathPoints = edge.getPath(),
               !pathPoints.isEmpty else {
-            throw RendererError.edgeError
+            return nil
         }
         
         let cgPath = pathPoints.map { $0.convertFromGraphviz(graphHeight: graphHeight) }

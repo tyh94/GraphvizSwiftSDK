@@ -9,9 +9,15 @@ import Foundation
 import SwiftUI
 @preconcurrency import CGraphvizSDK
 
-enum RendererError: Error {
-    case edgeError
+enum RendererError: LocalizedError {
     case createLayoutError
+    
+    var errorDescription: String? {
+        switch self {
+        case .createLayoutError:
+            return "Failed to create layout"
+        }
+    }
 }
 
 public final class RendererSwiftUI {
@@ -36,7 +42,7 @@ public final class RendererSwiftUI {
         let nodes = graph.nodes.map {
             $0.create(graphHeight: graphHeight)
         }
-        let edges = try graph.edges.map {
+        let edges = try graph.edges.compactMap {
             try $0.create(graphHeight: graphHeight)
         }
         let subgraphsNodes = graph.subgraphs.flatMap { subgraph in
@@ -45,7 +51,7 @@ public final class RendererSwiftUI {
             }
         }
         let subgraphsEdges = try graph.subgraphs.flatMap { subgraph in
-            try subgraph.edges.map {
+            try subgraph.edges.compactMap {
                 try $0.create(graphHeight: graphHeight)
             }
         }
