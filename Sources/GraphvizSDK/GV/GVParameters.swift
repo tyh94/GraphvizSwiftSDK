@@ -40,6 +40,7 @@ public enum GVEdgeParameters : String {
     case fontsize
     case minlen
     case penwidth
+    case headclip
 }
 
 public enum GVLayout: String {
@@ -74,6 +75,7 @@ public enum GVGraphParameters: String {
     case newrank
     case ordering
     case concentrate
+    case compound
 }
 
 public enum GVLabelLocation: String {

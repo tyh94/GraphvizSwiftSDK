@@ -31,6 +31,7 @@ public class Edge {
     @GVGraphvizProperty<GVEdgeParameters, Bool> public var constraint: Bool
     @GVGraphvizProperty<GVEdgeParameters, GVEdgePortPos> public var tailport: GVEdgePortPos
     @GVGraphvizProperty<GVEdgeParameters, GVEdgePortPos> public var headport: GVEdgePortPos
+    @GVGraphvizProperty<GVEdgeParameters, Bool> public var headclip: Bool
     
     init(
         edge: GVEdge
@@ -49,6 +50,7 @@ public class Edge {
         _constraint = GVGraphvizProperty(key: .constraint, defaultValue: true, container: edge)
         _tailport = GVGraphvizProperty(key: .tailport, defaultValue: .center, container: edge)
         _headport = GVGraphvizProperty(key: .headport, defaultValue: .center, container: edge)
+        _headclip = GVGraphvizProperty(key: .headclip, defaultValue: true, container: edge)
     }
     
     convenience init(

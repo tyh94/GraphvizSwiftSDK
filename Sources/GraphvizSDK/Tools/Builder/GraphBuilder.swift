@@ -23,6 +23,7 @@ public final class GraphBuilder: GraphBuilderProtocol {
     private var nodesep: Double?
     private var ordering: GVOrdering?
     private var concentrate: Bool?
+    private var compound: Bool?
     private var style: GVNodeStyle?
     private var newrank: Bool?
     
@@ -72,6 +73,9 @@ public final class GraphBuilder: GraphBuilderProtocol {
         }
         if let newrank {
             graph.newrank = newrank
+        }
+        if let compound {
+            graph.compound = compound
         }
         
         return graph
@@ -161,6 +165,12 @@ extension GraphBuilder {
     @discardableResult
     public func with(concentrate: Bool) -> Self {
         self.concentrate = concentrate
+        return self
+    }
+    
+    @discardableResult
+    public func with(compound: Bool) -> Self {
+        self.compound = compound
         return self
     }
     

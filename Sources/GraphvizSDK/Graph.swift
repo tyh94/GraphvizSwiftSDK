@@ -42,6 +42,7 @@ public class Graph {
     @GVGraphvizProperty<GVGraphParameters, Bool> public var concentrate: Bool
     @GVGraphvizProperty<GVNodeParameters, GVNodeStyle> public var style: GVNodeStyle
     @GVGraphvizProperty<GVGraphParameters, Bool> public var newrank: Bool
+    @GVGraphvizProperty<GVGraphParameters, Bool> public var compound: Bool
     
     init(
         _ graph: GVGraph
@@ -58,6 +59,7 @@ public class Graph {
         _concentrate = GVGraphvizProperty(key: .concentrate, defaultValue: false, container: graph)
         _style = GVGraphvizProperty(key: .style, defaultValue: .none, container: graph)
         _newrank = GVGraphvizProperty(key: .newrank, defaultValue: false, container: graph)
+        _compound = GVGraphvizProperty(key: .compound, defaultValue: false, container: graph)
     }
     
     convenience init(name: String, type: GVGraphType) throws {
