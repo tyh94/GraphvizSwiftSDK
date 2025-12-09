@@ -30,13 +30,11 @@ extension Node {
         let width = node.width
         let height = node.height
         let path: CGPath
+        
         // Get shape information
-        if let nodeType = node.nodeType,
-           let poly = node.polygon {
-            
+        if let poly = node.polygon {
             // Create path
             let cgPath = toPath(
-                type: nodeType,
                 poly: poly,
                 width: width,
                 height: height
@@ -75,6 +73,12 @@ extension Node {
 extension CGPath {
     fileprivate func rotate(degree: CGFloat) -> CGPath {
         let bounds: CGRect = self.boundingBox
+        guard !bounds.isNull,
+              !bounds.isInfinite,
+              bounds.width > 0,
+              bounds.height > 0 else {
+            return self
+        }
         let center = CGPoint(x: bounds.midX, y: bounds.midY)
         
         let radians = degree / 180.0 * .pi
@@ -104,7 +108,7 @@ private func toPolygon(_ poly: polygon_t, width: CGFloat, height: CGFloat) -> [C
 
 // MARK: - Path Conversion
 
-private func toPath(type: GVNodeShape, poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath {
+private func toPath(poly: polygon_t, width: CGFloat, height: CGFloat) -> CGPath {
     var points = toPolygon(poly, width: width, height: height)
     if points.count == 2 {
         let points = toPolygon(poly, width: width, height: height)

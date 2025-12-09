@@ -24,6 +24,7 @@ public enum GVNodeShape: String {
     case egg
     case parallelogram
     case point
+    case plain
 //    case doublecircle // TODO: add peripheries
     
     case none

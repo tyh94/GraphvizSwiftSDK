@@ -38,15 +38,15 @@ extension UnsafeMutablePointer where Pointee == Agnode_t  {
         return CGRect(midPoint: mid, size: CGSize(width: w, height: h))
     }
     
-    var nodeType: GVNodeShape? {
+    var nodeType: GVNodeShape {
         guard let shape = nd_shape(self),
               let shapeName = shape.pointee.name else {
-            return nil
+            return .none
         }
         
         let type = String(cString: shapeName)
         
-        return GVNodeShape(rawValue: type)
+        return GVNodeShape(rawValue: type) ?? .none
     }
     
     var polygon: polygon_t? {

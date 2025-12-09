@@ -42,17 +42,17 @@ public final class RendererSwiftUI {
         let nodes = graph.nodes.map {
             $0.create(graphHeight: graphHeight)
         }
-        let edges = try graph.edges.compactMap {
-            try $0.create(graphHeight: graphHeight)
+        let edges = graph.edges.compactMap {
+            $0.create(graphHeight: graphHeight)
         }
         let subgraphsNodes = graph.subgraphs.flatMap { subgraph in
             subgraph.nodes.map {
                 $0.create(graphHeight: graphHeight)
             }
         }
-        let subgraphsEdges = try graph.subgraphs.flatMap { subgraph in
-            try subgraph.edges.compactMap {
-                try $0.create(graphHeight: graphHeight)
+        let subgraphsEdges = graph.subgraphs.flatMap { subgraph in
+            subgraph.edges.compactMap {
+                $0.create(graphHeight: graphHeight)
             }
         }
         return GraphUI(

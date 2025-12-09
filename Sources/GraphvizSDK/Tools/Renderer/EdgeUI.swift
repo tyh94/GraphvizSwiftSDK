@@ -21,7 +21,7 @@ public struct EdgeUI: Sendable, Identifiable, Equatable {
 }
 
 extension Edge {
-    func create(graphHeight: CGFloat) throws -> EdgeUI? {
+    func create(graphHeight: CGFloat) -> EdgeUI? {
         guard let pathPoints = edge.getPath(),
               !pathPoints.isEmpty else {
             return nil
