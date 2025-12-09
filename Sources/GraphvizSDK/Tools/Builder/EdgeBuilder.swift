@@ -27,6 +27,7 @@ public final class EdgeBuilder {
     private var tailport: GVEdgePortPos?
     private var headport: GVEdgePortPos?
     private var headclip: Bool?
+    private var tailclip: Bool?
     
     init(
         source: NodeBuilder,
@@ -84,6 +85,9 @@ public final class EdgeBuilder {
         }
         if let headclip {
             edge.headclip = headclip
+        }
+        if let tailclip {
+            edge.tailclip = tailclip
         }
         return edge
     }
@@ -177,6 +181,12 @@ extension EdgeBuilder {
     @discardableResult
     public func with(headclip: Bool) -> Self {
         self.headclip = headclip
+        return self
+    }
+    
+    @discardableResult
+    public func with(tailclip: Bool) -> Self {
+        self.tailclip = tailclip
         return self
     }
 }

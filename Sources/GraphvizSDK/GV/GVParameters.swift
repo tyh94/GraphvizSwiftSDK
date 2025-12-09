@@ -41,6 +41,7 @@ public enum GVEdgeParameters : String {
     case minlen
     case penwidth
     case headclip
+    case tailclip
 }
 
 public enum GVLayout: String {
