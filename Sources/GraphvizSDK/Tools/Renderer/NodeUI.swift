@@ -19,6 +19,7 @@ public struct NodeUI: Sendable, Identifiable, Equatable {
     public let path: Path
     public let borderWidth: CGFloat
     public let borderColor: Color
+    public let fillColor: Color
     public let textFont: Font
     public let textColor: Color
     public let imagePath: String?
@@ -63,6 +64,7 @@ extension Node {
             path: Path(path),
             borderWidth: penwidth,
             borderColor: borderColor,
+            fillColor: fillColor,
             textFont: Font.custom(fontname, size: CGFloat(fontSize)),
             textColor: textColor,
             imagePath: image.isEmpty ? nil : image

@@ -24,6 +24,7 @@ public final class NodeBuilder {
     private var penwidth: Double?
     private var borderColor: Color?
     private var textColor: Color?
+    private var fillColor: Color?
     private var image: String?
     private var imagePosition: GVImagePosition?
     private var imageScale: GVImageScale?
@@ -68,6 +69,9 @@ public final class NodeBuilder {
         }
         if let textColor {
             node.textColor = textColor
+        }
+        if let fillColor {
+            node.fillColor = fillColor
         }
         if let image {
             node.image = image
@@ -164,6 +168,12 @@ extension NodeBuilder {
     @discardableResult
     public func with(textColor: Color) -> Self {
         self.textColor = textColor
+        return self
+    }
+    
+    @discardableResult
+    public func with(fillColor: Color) -> Self {
+        self.fillColor = fillColor
         return self
     }
     

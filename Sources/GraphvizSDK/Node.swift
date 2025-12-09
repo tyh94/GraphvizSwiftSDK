@@ -20,6 +20,7 @@ public class Node {
     
     public var borderColor: Color = .black
     public var textColor: Color = .black
+    public var fillColor: Color = .clear
     
     @GVGraphvizProperty<GVNodeParameters, String> public var label: String
     @GVGraphvizProperty<GVNodeParameters, Double> public var fontSize: Double
